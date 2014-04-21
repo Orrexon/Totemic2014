@@ -1,0 +1,208 @@
+﻿Build started 2014-04-21 15:01:27.
+     1>Project "C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Totemic\Totemic.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Audiosystem.cpp Box2DWorldDraw.cpp Config.cpp ContactFilter.cpp ContactListener.cpp dbtweener.cpp Defender.cpp Engine.cpp FileSystem.cpp GameState.cpp GameStateManager.cpp Gatherer.cpp HotSpot.cpp Level.cpp LevelEditorState.cpp LevelLoader.cpp main.cpp Math.cpp MenuState.cpp PhysicsHelper.cpp Player.cpp PlayState.cpp ResourceHolder.cpp ResourceSystem.cpp String.cpp System.cpp TotemTweenerListener.cpp UserData.cpp WindowManager.cpp
+         WindowManager.cpp
+         UserData.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(50): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
+                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(14) : see declaration of 'thor::FrameAnimation'
+         TotemTweenerListener.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(50): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
+                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(14) : see declaration of 'thor::FrameAnimation'
+         System.cpp
+         String.cpp
+         ResourceSystem.cpp
+         ResourceHolder.cpp
+         PlayState.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(50): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
+                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(14) : see declaration of 'thor::FrameAnimation'
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(515): warning C4018: '<' : signed/unsigned mismatch
+         Player.cpp
+         PhysicsHelper.cpp
+         MenuState.cpp
+         Math.cpp
+         main.cpp
+         LevelLoader.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(35): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(36): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(40): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(41): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(47): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(80): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(93): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+         LevelEditorState.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(101): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(102): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(103): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(107): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(108): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(109): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(117): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(118): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(123): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(124): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(147): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(148): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(150): warning C4800: 'Json::Value *' : forcing value to bool 'true' or 'false' (performance warning)
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(293): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(301): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(460): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(463): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(600): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(601): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(607): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(614): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(644): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(739): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(740): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(741): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(745): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(746): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(747): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(765): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(766): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(771): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(772): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(813): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(922): warning C4244: '=' : conversion from 'Json::Value::Int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(923): warning C4244: '=' : conversion from 'Json::Value::Int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(924): warning C4244: '=' : conversion from 'Json::Value::Int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(933): warning C4244: '=' : conversion from 'Json::Value::Int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(934): warning C4244: '=' : conversion from 'Json::Value::Int' to 'float', possible loss of data
+         Level.cpp
+         HotSpot.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(50): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
+                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(14) : see declaration of 'thor::FrameAnimation'
+         Gatherer.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(50): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
+                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(14) : see declaration of 'thor::FrameAnimation'
+         GameStateManager.cpp
+         GameState.cpp
+         Generating Code...
+         Compiling...
+         FileSystem.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\filesystem.cpp(104): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(204) : see declaration of 'strtok'
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\filesystem.cpp(108): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(204) : see declaration of 'strtok'
+         Engine.cpp
+         Defender.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(50): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
+                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(14) : see declaration of 'thor::FrameAnimation'
+         dbtweener.cpp
+         ContactListener.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(50): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
+                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(14) : see declaration of 'thor::FrameAnimation'
+         ContactFilter.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(50): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
+                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(14) : see declaration of 'thor::FrameAnimation'
+         Config.cpp
+         Box2DWorldDraw.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\box2dworlddraw.cpp(84): warning C4305: 'initializing' : truncation from 'double' to 'float'
+         Audiosystem.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\audiosystem.cpp(62): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\audiosystem.cpp(125): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\audiosystem.cpp(191): warning C4018: '<' : signed/unsigned mismatch
+         Generating Code...
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt linux_evdev.c macosx_hidmanager.c macosx_hidutilities.c manymouse.c windows_wminput.c x11_xinput2.c
+         x11_xinput2.c
+         windows_wminput.c
+         manymouse.c
+         macosx_hidutilities.c
+         macosx_hidmanager.c
+         linux_evdev.c
+         Generating Code...
+       ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\8.1\bin\x86\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Debug\The Submarine.res" "The Submarine.rc" 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\Totemic.exe" /INCREMENTAL /NOLOGO /LIBPATH:"..\deps\SFML-2.1\lib\\" /LIBPATH:../deps/Thor/lib /LIBPATH:../deps/Box2D/lib/ /LIBPATH:../deps/jsoncpp/lib/ /LIBPATH:../deps/SFGUI/lib/ "thor-d.lib" "Box2D-d.lib" opengl32.lib glu32.lib jsoncppd.lib "sfml-window-d.lib" "sfml-graphics-d.lib" "sfml-network-d.lib" "sfml-audio-d.lib" "sfml-system-d.lib" "sfgui-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\Totemic.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\Totemic.lib" /MACHINE:X86 "Debug\The Submarine.res"
+         Debug\Audiosystem.obj
+         Debug\Box2DWorldDraw.obj
+         Debug\Config.obj
+         Debug\ContactFilter.obj
+         Debug\ContactListener.obj
+         Debug\dbtweener.obj
+         Debug\Defender.obj
+         Debug\Engine.obj
+         Debug\FileSystem.obj
+         Debug\GameState.obj
+         Debug\GameStateManager.obj
+         Debug\Gatherer.obj
+         Debug\HotSpot.obj
+         Debug\Level.obj
+         Debug\LevelEditorState.obj
+         Debug\LevelLoader.obj
+         Debug\linux_evdev.obj
+         Debug\macosx_hidmanager.obj
+         Debug\macosx_hidutilities.obj
+         Debug\main.obj
+         Debug\manymouse.obj
+         Debug\Math.obj
+         Debug\MenuState.obj
+         Debug\PhysicsHelper.obj
+         Debug\Player.obj
+         Debug\PlayState.obj
+         Debug\ResourceHolder.obj
+         Debug\ResourceSystem.obj
+         Debug\String.obj
+         Debug\System.obj
+         Debug\TotemTweenerListener.obj
+         Debug\UserData.obj
+         Debug\WindowManager.obj
+         Debug\windows_wminput.obj
+         Debug\x11_xinput2.obj
+     1>LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+     1>Box2D-d.lib(b2DistanceJoint.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2DistanceJoint.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2FrictionJoint.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2FrictionJoint.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2GearJoint.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2GearJoint.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2Joint.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2Joint.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2MotorJoint.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2MotorJoint.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2MouseJoint.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2MouseJoint.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2PrismaticJoint.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2PrismaticJoint.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2PulleyJoint.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2PulleyJoint.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2RevoluteJoint.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2RevoluteJoint.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2RopeJoint.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2RopeJoint.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2WeldJoint.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2WeldJoint.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2WheelJoint.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2WheelJoint.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2CircleContact.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2CircleContact.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2Contact.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2Contact.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2ContactSolver.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2ContactSolver.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2PolygonAndCircleContact.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2PolygonAndCircleContact.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2EdgeAndCircleContact.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2EdgeAndCircleContact.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2EdgeAndPolygonContact.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2EdgeAndPolygonContact.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2ChainAndCircleContact.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2ChainAndCircleContact.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2ChainAndPolygonContact.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2ChainAndPolygonContact.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2PolygonContact.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2PolygonContact.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2Body.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2Body.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2ContactManager.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2ContactManager.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2Fixture.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2Fixture.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2Island.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2Island.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2World.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2World.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2WorldCallbacks.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2WorldCallbacks.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2BlockAllocator.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2BlockAllocator.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2Draw.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2Draw.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2Math.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2Math.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2Settings.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2Settings.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2StackAllocator.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2StackAllocator.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2Timer.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2Timer.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2CircleShape.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2CircleShape.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2EdgeShape.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2EdgeShape.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2ChainShape.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2ChainShape.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2PolygonShape.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2PolygonShape.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2BroadPhase.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2BroadPhase.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2CollideCircle.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2CollideCircle.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2CollideEdge.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2CollideEdge.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2CollidePolygon.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2CollidePolygon.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2Collision.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2Collision.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2Distance.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2Distance.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2DynamicTree.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2DynamicTree.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>Box2D-d.lib(b2TimeOfImpact.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2TimeOfImpact.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>jsoncppd.lib(json_reader.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'jsoncppd.lib(json_reader.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>jsoncppd.lib(json_value.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'jsoncppd.lib(json_value.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+     1>jsoncppd.lib(json_writer.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'jsoncppd.lib(json_writer.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
+         Totemic.vcxproj -> C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\Totemic.exe
+     1>Done Building Project "C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Totemic\Totemic.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:21.18
