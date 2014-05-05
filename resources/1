@@ -1,0 +1,23 @@
+{
+   "background" : {
+      "path" : "C:\\git\\ActualProjectTP14\\The Submarine\\resources\\background.jpg"
+   },
+   "players" : [
+      {
+         "defender_position" : "-100,-100",
+         "gatherer_position" : "-100,-100"
+      },
+      {
+         "defender_position" : "-100,-100",
+         "gatherer_position" : "-100,-100"
+      },
+      {
+         "defender_position" : "-100,-100",
+         "gatherer_position" : "-100,-100"
+      },
+      {
+         "defender_position" : "-100,-100",
+         "gatherer_position" : "-100,-100"
+      }
+   ]
+}
