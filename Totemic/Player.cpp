@@ -102,6 +102,18 @@ void Player::setDefender(Defender* p_defender)
 	walk_animation->addFrame(1.f, sf::IntRect(1028, 0, 256, 256));
 	walk_animation->addFrame(1.f, sf::IntRect(1285, 0, 256, 256));
 	walk_animation->addFrame(1.f, sf::IntRect(1542, 0, 256, 256));
+	walk_animation->addFrame(1.f, sf::IntRect(1799, 0, 256, 256));
+	walk_animation->addFrame(1.f, sf::IntRect(2056, 0, 256, 256));
+	walk_animation->addFrame(1.f, sf::IntRect(2313, 0, 256, 256));
+	walk_animation->addFrame(1.f, sf::IntRect(2570, 0, 256, 256));
+	walk_animation->addFrame(1.f, sf::IntRect(2827, 0, 256, 256));
+	walk_animation->addFrame(1.f, sf::IntRect(3084, 0, 256, 256));
+	walk_animation->addFrame(1.f, sf::IntRect(3341, 0, 256, 256));
+	walk_animation->addFrame(1.f, sf::IntRect(3598, 0, 256, 256));
+	walk_animation->addFrame(1.f, sf::IntRect(3855, 0, 256, 256));
+	walk_animation->addFrame(1.f, sf::IntRect(4112, 0, 256, 256));
+	walk_animation->addFrame(1.f, sf::IntRect(4369, 0, 256, 256));
+	walk_animation->addFrame(1.f, sf::IntRect(4626, 0, 256, 256));
 	
 	m_defender->addAnimation("Walk_Animation", walk_animation);
 

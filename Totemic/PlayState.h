@@ -53,6 +53,8 @@ public:
 
 private:
 	bool m_gameWon;
+	bool m_totemIsBlockingPlayer;
+
 	b2World m_world;
 	ContactListener* m_contactListener;
 	ContactFilter* m_contactFilter;

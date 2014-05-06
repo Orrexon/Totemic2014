@@ -38,6 +38,7 @@ void PlayState::entering()
 {
 	m_exclusive = false;
 	m_gameWon = false;
+	m_totemIsBlockingPlayer = false;
 
 	m_winGameTweener = new CDBTweener();
 	m_totemTweenerListener = new TotemTweenerListener();
@@ -453,6 +454,20 @@ bool PlayState::update(float dt)
 	}
 #pragma endregion
 
+#pragma region PLAYER_POST_UPDATE
+	/*
+	This loop does:
+	- Gatherer velocity capping
+	- Moves the defender and gatherer sprites from the Box2D bodies
+	- Responsible for playing animations
+	- Checks if gatherer picks up coins and powerups
+	- Handle powerup
+	- Changes the point indicator in the HUD
+	- Processes eventual death
+	- Make sure that the totem is transparent when blocking any player
+	*/
+
+	bool hasChangedTotemBlockedState = false;
 	for (auto &player : m_players)
 	{
 		if (player == nullptr) continue;
@@ -569,6 +584,66 @@ bool PlayState::update(float dt)
 		float percent = player->getPoints() / POINTS_TO_WIN;
 		float indicatorExtensionX = TIMER_POS_X + TIMER_WIDTH * percent;
 		player->getPointsIndicator()->setPosition(indicatorExtensionX, player->getPointsIndicator()->getPosition().y);
+
+		// Make sure the totem is transparent if totem is blocking player
+		if (!hasChangedTotemBlockedState)
+		{
+			if (m_totemHead.getGlobalBounds().intersects(player->getDefender()->getSprite()->getGlobalBounds()) ||
+				m_totemHead.getGlobalBounds().intersects(player->getGatherer()->getSprite()->getGlobalBounds()) ||
+				m_totemFoot.getGlobalBounds().intersects(player->getDefender()->getSprite()->getGlobalBounds()) ||
+				m_totemFoot.getGlobalBounds().intersects(player->getGatherer()->getSprite()->getGlobalBounds())
+				)
+			{
+				hasChangedTotemBlockedState = true;
+				m_totemIsBlockingPlayer = true;
+			}
+			else
+			{
+				for (std::size_t i = 0; i < m_players.size(); i++)
+				{
+					if (m_players[i]->getTotemSprite()->getGlobalBounds().intersects(player->getDefender()->getSprite()->getGlobalBounds()) ||
+						m_players[i]->getTotemSprite()->getGlobalBounds().intersects(player->getGatherer()->getSprite()->getGlobalBounds())
+						)
+					{
+						hasChangedTotemBlockedState = true;
+						m_totemIsBlockingPlayer = true;
+						break;
+					}
+				}
+			}
+		}
+	}
+	if (!hasChangedTotemBlockedState)
+	{
+		m_totemIsBlockingPlayer = false;
+	}
+#pragma endregion
+	if (m_totemIsBlockingPlayer)
+	{
+		{
+			sf::Color oldColor = m_totemHead.getColor();
+			oldColor.a = TOTEM_ALPHA_WHEN_BLOCK;
+			m_totemHead.setColor(oldColor);
+		}
+		for (auto &player : m_players)
+		{
+			sf::Color oldColor = player->getTotemSprite()->getColor();
+			oldColor.a = TOTEM_ALPHA_WHEN_BLOCK;
+			player->getTotemSprite()->setColor(oldColor);
+		}
+	}
+	else
+	{
+		sf::Color oldColor = m_totemHead.getColor();
+		oldColor.a = 255;
+		m_totemHead.setColor(oldColor);
+
+		for (auto &player : m_players)
+		{
+			sf::Color oldColor = player->getTotemSprite()->getColor();
+			oldColor.a = 255;
+			player->getTotemSprite()->setColor(oldColor);
+		}
 	}
 
 	std::vector<Player*> activePlayers = m_hotSpot->getActivePlayers(m_players);
@@ -576,6 +651,7 @@ bool PlayState::update(float dt)
 	{
 		activePlayers.back()->addPoints(POINTS_PER_SECOND * dt, activePlayers.back()->getGatherer()->getSprite()->getPosition(), SCORE_HOTSPOT);
 	}
+
 
 	sortTotem();
 	m_totemTweener.step(dt);
