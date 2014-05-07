@@ -201,6 +201,8 @@ public:
 	float m_tweeningValue;
 	float m_multiplier;
 	float m_hotspotScoreSum;
+	int m_bounty;
+	bool m_holdingTotem;
 	thor::StopWatch m_hotspotFloatingTextTimer;
 	thor::StopWatch m_stunnedTimer;
 

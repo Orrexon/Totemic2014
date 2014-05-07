@@ -1,10 +1,12 @@
 #include "Coin.h"
 #include <SFML\Graphics\Sprite.hpp>
 #include <SFML\Graphics\Rect.hpp>
+#include "Player.h"
 
 
 Coin::Coin()
 {
+	m_gathered = false;
 	m_sprite = new sf::Sprite();
 	m_animator = new thor::Animator<sf::Sprite, std::string>;
 	m_animation.addFrame(1.f, sf::IntRect(0, 0, 64, 64));
@@ -47,4 +49,19 @@ thor::Animator<sf::Sprite, std::string> *Coin::getAnimator()
 thor::FrameAnimation &Coin::getAnimation()
 {
 	return m_animation;
+}
+
+void Coin::setGathered(Player* playerGathered)
+{
+	m_playerGathered = playerGathered;
+	m_gathered = true;
+}
+
+bool Coin::isGathered()
+{
+	return m_gathered;
+}
+Player* Coin::getPlayerGathered()
+{
+	return m_playerGathered;
 }

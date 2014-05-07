@@ -76,7 +76,8 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	
 	for (auto &coin : m_coins)
 	{
-		target.draw(*coin->getSprite());
+		if (!coin->isGathered())
+			target.draw(*coin->getSprite());
 	}
 
 	for (auto &powerup : m_powerups)
@@ -161,6 +162,14 @@ void Level::setNewCoins(std::vector<Coin*> coinsCont)
 void Level::setNewPowerups(std::vector<Powerup*> powerupsCont)
 {
 	m_powerups = powerupsCont;
+}
+void Level::drawFlyingCoins(sf::RenderWindow* window)
+{
+	for (auto &coin : m_coins)
+	{
+		if (coin->isGathered())
+			window->draw(*coin->getSprite());
+	}
 }
 
 std::vector<Trap*> Level::getTraps()

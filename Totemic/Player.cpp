@@ -15,9 +15,11 @@
 
 Player::Player()
 {
+	m_bounty = 0;
 	m_hotspotScoreSum = 0.f;
 	m_multiplier = 1.f;
 	m_points = 0.f;
+	m_holdingTotem = false;
 	m_won = false;
 	m_dead = false;
 	m_stunned = false;
