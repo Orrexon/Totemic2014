@@ -29,4 +29,21 @@ namespace Math
 		if (n < min) return min;
 		return n;
 	}
+	
+	b2Vec2 collisionPoint(b2Vec2 firstV, b2Vec2 scndV, float Radius)
+	{
+		b2Vec2 DirV = firstV - scndV;
+		float FDirV = DirV.Length();
+		DirV = b2Vec2(DirV.x / FDirV, DirV.y / FDirV);
+		return Radius * DirV;
+	}
+
+	b2Vec2 collisionDirection(b2Vec2 firstV, b2Vec2 scndV)
+	{
+		b2Vec2 DirV = firstV - scndV;
+		float FDirV = DirV.Length();
+		DirV = b2Vec2(DirV.x / FDirV, DirV.y / FDirV);
+		return DirV;
+	}
 }
+

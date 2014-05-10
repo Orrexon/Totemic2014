@@ -21,7 +21,10 @@ Player::Player()
 	m_won = false;
 	m_dead = false;
 	m_stunned = false;
+	m_hasShield = false;
+	m_deflected = false;
 	m_stunnedTimer.reset();
+	m_shieldTimer.reset();
 	m_postCheckDead = false;
 	m_changingOrder = false;
 	m_defender = nullptr;
@@ -31,6 +34,10 @@ Player::Player()
 	m_deathTimer = new thor::CallbackTimer();
 	m_deathTimer->connect(std::bind(&Player::onRespawn, this, std::placeholders::_1));
 	m_totemSprite = new sf::Sprite();
+	Placeholder_shield = sf::CircleShape();
+	Placeholder_shield.setRadius(SHIELD_DEFLECTION_RADIUS);
+	Placeholder_shield.setOrigin(SHIELD_DEFLECTION_RADIUS, SHIELD_DEFLECTION_RADIUS);
+	Placeholder_shield.setFillColor(sf::Color::Blue);
 }
 
 Player::~Player()
@@ -291,4 +298,38 @@ void Player::setStunned(bool value)
 bool Player::isStunned()
 {
 	return m_stunned;
+}
+
+bool Player::hasShield()
+{
+	return m_hasShield;
+}
+void Player::setShield(bool value)
+{
+	m_hasShield = value;
+}
+void Player::setPlaceholderShieldPosition(sf::Vector2f vec)
+{
+	Placeholder_shield.setPosition(vec);
+}
+
+sf::CircleShape Player::getPlaceholderShield()
+{
+	return Placeholder_shield;
+}
+bool Player::isDeflected()
+{
+	return m_deflected;
+}
+void Player::setDeflected(bool value)
+{
+	m_deflected = value;
+	if (m_deflected)
+	{
+		m_deflectionTimer.restart();
+	}
+	else
+	{
+		m_deflectionTimer.stop();
+	}
 }

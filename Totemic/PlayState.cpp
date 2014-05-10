@@ -83,7 +83,7 @@ void PlayState::entering()
 	m_totemHead.setTexture(m_stateAsset->resourceHolder->getTexture("totempole.png"));
 	m_totemHead.setOrigin(129, m_totemHead.getGlobalBounds().height);
 	m_totemHead.setPosition(m_players.back()->getTotemSprite()->getPosition().x, m_players.back()->getTotemSprite()->getPosition().y + m_players.back()->getTotemSprite()->getGlobalBounds().height / 2.f);
-	
+
 	m_totemFoot.setTexture(m_stateAsset->resourceHolder->getTexture("totemfoot.png"));
 	m_totemFoot.setOrigin(m_totemFoot.getGlobalBounds().width / 2.f, 0.f);
 	m_totemFoot.setPosition(m_players.front()->getTotemSprite()->getPosition().x, m_players.front()->getTotemSprite()->getPosition().y + m_players.front()->getTotemSprite()->getGlobalBounds().height / 2.f - 4);
@@ -141,6 +141,7 @@ void PlayState::leaving()
 
 	delete m_contactFilter;
 	m_contactFilter = nullptr;
+
 
 	std::cout << "Leaving play state" << std::endl;
 }
@@ -304,7 +305,7 @@ bool PlayState::update(float dt)
 		}
 	}
 	coins = m_currentLevel->getCoins();
-	
+
 	for (std::size_t i = 0; i < coins.size(); i++)
 	{
 		coins[i]->getAnimator()->update(sf::seconds(dt));
@@ -317,11 +318,12 @@ bool PlayState::update(float dt)
 	ManyMouseEvent event;
 	while (ManyMouse_PollEvent(&event))
 	{
-		if (m_players[event.device] == nullptr || m_players[event.device]->isStunned()) continue;
+		if (m_players[event.device] == nullptr || m_players[event.device]->isStunned() || m_players[event.device]->isDeflected()) continue;
 		Player* player = m_players[event.device];
 
 		if (event.type == MANYMOUSE_EVENT_RELMOTION)
 		{
+
 			if (event.item == 0) // x
 			{
 				player->getDefender()->getBody()->ApplyLinearImpulse(b2Vec2(5.f * PhysicsHelper::gameToPhysicsUnits(static_cast<float>(event.value)), 0.f), player->getDefender()->getBody()->GetWorldCenter(), true);
@@ -399,10 +401,38 @@ bool PlayState::update(float dt)
 		{
 			player->setStunned(false);
 		}
+		if (player->hasShield() && player->m_shieldTimer.getElapsedTime().asSeconds() >= POWERUP_SHIELD_TIME)
+		{
+			player->setShield(false);
+
+		}
+		if (player->isDeflected() && player->m_deflectionTimer.getElapsedTime().asSeconds() >= DEFLECTIONTIME);
+		{
+			player->setDeflected(false);
+		}
 	}
 #pragma endregion
 
 	m_world.Step(1.f / 60.f, 8, 3);
+#pragma region Power_Ups_update
+	for (auto player : m_players)
+	{
+		if (player->hasShield())
+		{
+			player->setPlaceholderShieldPosition(PhysicsHelper::physicsToGameUnits(player->getGatherer()->getBody()->GetWorldCenter()));
+
+		}
+	}
+	for (auto player : m_players)
+	{
+		if (player->isDeflected())
+		{
+			//player->getDefender()->getBody()->ApplyLinearImpulse(300 * player->NormDir, player->getDefender()->getBody()->GetWorldCenter(), true);
+			//player->getDefender()->getBody()->ApplyForce(300 * player->NormDir, player->getDefender()->getBody()->GetWorldCenter(), true);
+			player->getDefender()->getBody()->SetLinearVelocity(30 * player->NormDir);
+		}
+	}
+#pragma endregion
 
 #pragma region Gatherer_Movement
 	b2Vec2 up_impulse(0.f, -15.f);
@@ -478,7 +508,7 @@ bool PlayState::update(float dt)
 		player->getDeathTimer()->update();
 		player->getDefender()->getSprite()->setPosition(PhysicsHelper::physicsToGameUnits(player->getDefender()->getBody()->GetPosition()));
 		player->getGatherer()->getSprite()->setPosition(PhysicsHelper::physicsToGameUnits(player->getGatherer()->getBody()->GetPosition()));
-		
+
 		if (!player->getDefender()->getAnimatior()->isPlayingAnimation())
 		{
 			player->getDefender()->getAnimatior()->playAnimation("walk");
@@ -489,7 +519,7 @@ bool PlayState::update(float dt)
 		}
 		player->getDefender()->getAnimatior()->update(sf::seconds(dt));
 		player->getGatherer()->getAnimatior()->update(sf::seconds(dt));
-		
+
 		player->getDefender()->getAnimatior()->animate(*player->getDefender()->getSprite());
 		player->getGatherer()->getAnimatior()->animate(*player->getGatherer()->getSprite());
 
@@ -505,7 +535,7 @@ bool PlayState::update(float dt)
 
 				// Set the spawn area as not occupied
 				m_currentLevel->setCoinSpawnOccupied((*it)->m_coinSpawnIndex, false);
-				
+
 				delete *it;
 				*it = nullptr;
 				it = coins.erase(it);
@@ -532,32 +562,34 @@ bool PlayState::update(float dt)
 				{
 				case LIGHTNING:
 				{
-					for (std::size_t i = 0; i < m_players.size(); i++)
-					{
-						if (m_players[i] != player)
-						{
-							m_players[i]->setStunned(true);
-						}
-					}
+								  for (std::size_t i = 0; i < m_players.size(); i++)
+								  {
+									  if (m_players[i] != player)
+									  {
+										  m_players[i]->setStunned(true);
+									  }
+								  }
 
-					m_lightningAlpha = 255.f;
+								  m_lightningAlpha = 255.f;
 
-					CDBTweener::CTween* tween = new CDBTweener::CTween();
-					tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
-					tween->addValue(&m_lightningAlpha, 0.f);
-					m_totemTweener.addTween(tween);
-					
-					m_stateAsset->audioSystem->playSound("Lightning");
+								  CDBTweener::CTween* tween = new CDBTweener::CTween();
+								  tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
+								  tween->addValue(&m_lightningAlpha, 0.f);
+								  m_totemTweener.addTween(tween);
 
-					break;
+								  m_stateAsset->audioSystem->playSound("Lightning");
+
+								  break;
 				}
 				case SHIELD:
-
+					player->setShield(true);
+					player->m_shieldTimer.restart();
 					break;
 				}
 				m_currentLevel->setPowerupSpawnOccupied((*powerupIt)->m_coinSpawnIndex, false);
 				(*powerupIt)->setActive(false);
 				m_currentLevel->getPowerupTimer()->restart();
+
 			}
 			else
 			{
@@ -606,7 +638,7 @@ void PlayState::draw()
 	Box2DWorldDraw debugDraw(m_stateAsset->windowManager->getWindow());
 	debugDraw.SetFlags(b2Draw::e_shapeBit);
 	m_world.SetDebugDraw(&debugDraw);
-	//m_world.DrawDebugData();
+	m_world.DrawDebugData();
 
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBarBackground);
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBar);
@@ -620,6 +652,13 @@ void PlayState::draw()
 	for (auto &FST : m_floatingScoreTexts)
 	{
 		m_stateAsset->windowManager->getWindow()->draw(*FST->getText());
+	}
+	for (auto player : m_players)
+	{
+		if (player->hasShield())
+		{
+			m_stateAsset->windowManager->getWindow()->draw(player->getPlaceholderShield());
+		}
 	}
 	m_stateAsset->windowManager->getWindow()->draw(m_lightningEffect);
 }
@@ -680,7 +719,7 @@ void PlayState::initPlayers()
 		m_players.back()->getTotemSprite()->setTexture(m_stateAsset->resourceHolder->getTexture(playerTotemImages[i]));
 		m_players.back()->setOrder(i);
 		m_players.back()->setPointsBarImage(playerBarImages[i]);
-			
+
 		sf::Sprite* sprite = new sf::Sprite();
 		sprite->setTexture(m_stateAsset->resourceHolder->getTexture(playerPointIndicatorImages[i]));
 		sprite->setOrigin(sprite->getGlobalBounds().width / 2.f, sprite->getGlobalBounds().height);
@@ -723,7 +762,7 @@ void PlayState::loadNewLevel()
 
 	m_currentLevel = m_levelLoader->parseLevel(levels[randomLevelIndex], m_world);
 	m_currentLevel->getBackground()->setTexture(m_stateAsset->resourceHolder->getTexture(m_currentLevel->getBackgroundPath(), false));
-	
+
 	m_hotSpot->setRadius(m_currentLevel->getHotspotRadius());
 	m_hotSpot->setPosition(m_currentLevel->getHotspotPosition());
 
@@ -831,7 +870,7 @@ void PlayState::sortTotem()
 {
 	std::vector<Player*> sortedPlayerVector = m_players;
 	std::sort(sortedPlayerVector.begin(), sortedPlayerVector.end(), sortTotemAlgorithm);
-	
+
 	m_timerBar.setTexture(m_stateAsset->resourceHolder->getTexture(sortedPlayerVector.back()->getPointsBarImage()));
 
 	float percent = sortedPlayerVector.back()->getPoints() / POINTS_TO_WIN;
@@ -908,7 +947,7 @@ void PlayState::createPowerup()
 
 void PlayState::setupWinTweeners()
 {
-	
+
 }
 
 b2Body* PlayState::createWall(sf::Vector2f v1, sf::Vector2f v2)
@@ -922,9 +961,9 @@ b2Body* PlayState::createWall(sf::Vector2f v1, sf::Vector2f v2)
 
 	// Length of segment
 	float length = Math::euclideanDistance(v1, v2);
-	
+
 	// Convert the position
-	b2Vec2 position = PhysicsHelper::gameToPhysicsUnits(lineCenter);	
+	b2Vec2 position = PhysicsHelper::gameToPhysicsUnits(lineCenter);
 	bodyDef.position.Set(position.x, position.y);
 	bodyDef.userData = this;
 	b2Body* body = m_world.CreateBody(&bodyDef);
@@ -944,6 +983,6 @@ b2Body* PlayState::createWall(sf::Vector2f v1, sf::Vector2f v2)
 	fixtureDef.shape = &edgeShape;
 	body->CreateFixture(&fixtureDef);
 	body->SetTransform(position, Math::angleBetween(v1, v2));
-	
+
 	return body;
 }

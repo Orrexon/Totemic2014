@@ -1,6 +1,7 @@
 #include "ContactListener.h"
 #include "Player.h"
 #include "UserData.h"
+#include "Math.h"
 
 void ContactListener::BeginContact(b2Contact* p_contact)
 {
@@ -36,16 +37,43 @@ void ContactListener::playerContactBegin(UserData* userDataA, UserData* userData
 	{
 		if (!charA->getData()->isSamePlayer(charB->getData()->getPlayer()))
 		{
-			charB->getData()->getPlayer()->setDead(true);
+			//Deflect the defender if there is a shield
+			if (charB->getData()->getPlayer()->hasShield())
+			{
+				//Get the direction from the gatherer to the defender, normalized
+				charA->getData()->getPlayer()->NormDir = Math::collisionDirection(charA->getData()->getBody()->GetWorldCenter()
+					, charB->getData()->getBody()->GetWorldCenter());
+				charA->getData()->getPlayer()->setDeflected(true);
+			}
+			else
+			{
+				charB->getData()->getPlayer()->setDead(true);
+			}
+
+
 		}
 	}
 	else if (charB->getData()->isType(DEFENDER) && charA->getData()->isType(GATHERER))
 	{
 		if (!charB->getData()->isSamePlayer(charA->getData()->getPlayer()))
 		{
-			charA->getData()->getPlayer()->setDead(true);
+			//Deflect the defender if there is a shield
+			if (charA->getData()->getPlayer()->hasShield())
+			{
+				//Get the direction from the gatherer to the defender, normalized
+				charB->getData()->getPlayer()->NormDir = Math::collisionDirection(charB->getData()->getBody()->GetWorldCenter()
+					, charA->getData()->getBody()->GetWorldCenter());
+				charB->getData()->getPlayer()->setDeflected(true);
+			}
+			else
+			{
+				charA->getData()->getPlayer()->setDead(true);
+			}
+
+
 		}
 	}
+
 }
 
 void ContactListener::playerContactEnd(b2Contact* p_contact)
