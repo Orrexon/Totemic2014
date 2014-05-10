@@ -23,4 +23,7 @@ const int FLOATING_SCORE_TEXT_MAX_SIZE = 50;
 const float FLOATING_SCORE_TEXT_POINTS_PER_FONTSIZE = 2.f; // 2 points to reach a fontsize of 2, capped at 10
 const float FLOATING_SCORE_HOTSPOT_SUM = 1.f;
 const float POWERUP_STUN_TIME = 2.f; // In seconds
+const float POWERUP_SHIELD_TIME = 3.f;
+const float SHIELD_DEFLECTION_RADIUS = 60.f;
+const float DEFLECTIONTIME = 3.f;
 const sf::Color TIMER_BG_COLOR(69, 52, 17);

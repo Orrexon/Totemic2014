@@ -194,8 +194,16 @@ public:
 	bool hasWon();
 	bool isChangingOrder();
 	bool isStunned();
+	bool hasShield();
+	void setShield(bool value);
 	void onRespawn(thor::CallbackTimer& trigger);
 	void setStunned(bool value);
+	bool isDeflected();
+	void setDeflected(bool value);
+	
+
+	void setPlaceholderShieldPosition(sf::Vector2f vec);
+	sf::CircleShape getPlaceholderShield();
 
 public:
 	float m_tweeningValue;
@@ -203,6 +211,9 @@ public:
 	float m_hotspotScoreSum;
 	thor::StopWatch m_hotspotFloatingTextTimer;
 	thor::StopWatch m_stunnedTimer;
+	thor::StopWatch m_shieldTimer;
+	thor::StopWatch m_deflectionTimer;
+	b2Vec2 NormDir;
 
 private:
 	bool m_stunned;
@@ -210,6 +221,8 @@ private:
 	bool m_dead;
 	bool m_postCheckDead;
 	bool m_changingOrder;
+	bool m_hasShield;
+	bool m_deflected;
 	unsigned int m_order;
 	unsigned int m_deviceNo;
 	Gatherer* m_gatherer;
@@ -223,4 +236,5 @@ private:
 	std::vector<FloatingScoreText*>* m_floatingScoreTexts;
 	std::string m_pointsBarImage;
 	ResourceHolder* m_resourceHolder;
+	sf::CircleShape Placeholder_shield;
 };
