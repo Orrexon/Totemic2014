@@ -11,6 +11,8 @@ namespace Math
 
 	float euclideanDistance(sf::Vector2f v1, sf::Vector2f v2);
 
+	float vectorLength(sf::Vector2f v);
+
 	float angleBetween(const sf::Vector2f &v1, const sf::Vector2f &v2);
 
 	float roundByMultiple(float n, float multiple);
@@ -20,14 +22,7 @@ namespace Math
 	b2Vec2 collisionPoint(b2Vec2 firstV, b2Vec2 scndV, float Radius);
 	
 	b2Vec2 collisionDirection(b2Vec2 firstV, b2Vec2 scndV);
+
+	sf::Vector2f direction(sf::Vector2f v1, sf::Vector2f v2);
 }
 
-//may not be used
-struct VCollection
-{
-public:
-	b2Vec2 PhysDefender_CollisionP = { 0.f, 0.f };
-	b2Vec2 physDefender_CollisionD = { 0.f, 0.f };
-
-	
-};

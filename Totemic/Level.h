@@ -69,6 +69,7 @@ public:
 	void setPowerupSpawnOccupied(int index, bool value);
 	void setNewCoins(std::vector<Coin*> coinsCont);
 	void setNewPowerups(std::vector<Powerup*> powerupsCont);
+	void drawFlyingCoins(sf::RenderWindow* window);
 
 	std::vector<Trap*> getTraps();
 	std::vector<Coin*> getCoins();

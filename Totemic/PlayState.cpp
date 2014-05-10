@@ -38,6 +38,7 @@ void PlayState::entering()
 {
 	m_exclusive = false;
 	m_gameWon = false;
+	m_totemIsBlockingPlayer = false;
 
 	m_winGameTweener = new CDBTweener();
 	m_totemTweenerListener = new TotemTweenerListener();
@@ -273,43 +274,91 @@ bool PlayState::update(float dt)
 #pragma endregion
 
 #pragma region coins_update
-	std::vector<Coin*> coins = m_currentLevel->getCoins();
-	if (coins.size() < MAX_COINS)
 	{
-		if (!m_currentLevel->getCoinTimer()->isRunning())
+		std::vector<Coin*> coins = m_currentLevel->getCoins();
+		if (coins.size() < MAX_COINS)
 		{
-			m_currentLevel->getCoinTimer()->start();
-		}
-		else
-		{
-			if (m_currentLevel->getCoinTimer()->getElapsedTime().asSeconds() > COINS_TIMER_SECONDS)
+			if (!m_currentLevel->getCoinTimer()->isRunning())
 			{
-				m_currentLevel->getCoinTimer()->reset();
-
-				// add coin
-				std::vector<CoinObject> coinSpawns = m_currentLevel->getCoinSpawns();
-				unsigned int randomCoinSpawn = thor::random(0U, coinSpawns.size() - 1);
-				while (coinSpawns[randomCoinSpawn].occupied == true)
+				m_currentLevel->getCoinTimer()->start();
+			}
+			else
+			{
+				if (m_currentLevel->getCoinTimer()->getElapsedTime().asSeconds() > COINS_TIMER_SECONDS)
 				{
-					randomCoinSpawn = thor::random(0U, coinSpawns.size() - 1);
+					m_currentLevel->getCoinTimer()->reset();
+
+					// add coin
+					std::vector<CoinObject> coinSpawns = m_currentLevel->getCoinSpawns();
+					unsigned int randomCoinSpawn = thor::random(0U, coinSpawns.size() - 1);
+					while (coinSpawns[randomCoinSpawn].occupied == true)
+					{
+						randomCoinSpawn = thor::random(0U, coinSpawns.size() - 1);
+					}
+					m_currentLevel->setCoinSpawnOccupied(randomCoinSpawn, true);
+					Coin* coin = new Coin();
+					coin->getSprite()->setTexture(m_stateAsset->resourceHolder->getTexture("Coin.png"));
+					coin->getSprite()->setPosition(coinSpawns[randomCoinSpawn].position);
+					coin->getSprite()->setOrigin(32, 32);
+					coin->getAnimator()->playAnimation("idle", true);
+					coin->m_coinSpawnIndex = randomCoinSpawn;
+					m_currentLevel->addCoin(coin);
 				}
-				m_currentLevel->setCoinSpawnOccupied(randomCoinSpawn, true);
-				Coin* coin = new Coin();
-				coin->getSprite()->setTexture(m_stateAsset->resourceHolder->getTexture("Coin.png"));
-				coin->getSprite()->setPosition(coinSpawns[randomCoinSpawn].position);
-				coin->getSprite()->setOrigin(32, 32);
-				coin->getAnimator()->playAnimation("idle", true);
-				coin->m_coinSpawnIndex = randomCoinSpawn;
-				m_currentLevel->addCoin(coin);
 			}
 		}
-	}
-	coins = m_currentLevel->getCoins();
+		coins = m_currentLevel->getCoins();
 
-	for (std::size_t i = 0; i < coins.size(); i++)
-	{
-		coins[i]->getAnimator()->update(sf::seconds(dt));
-		coins[i]->getAnimator()->animate(*coins[i]->getSprite());
+		auto it = coins.begin();
+		while (it != coins.end())
+		{
+			bool kill = false;
+			if ((*it)->isGathered())
+			{
+				if (Math::euclideanDistance(
+					(*it)->getSprite()->getPosition(),
+					(*it)->getPlayerGathered()->getTotemSprite()->getPosition()
+					) < COIN_GATHERED_SPEED)
+				{
+					kill = true;
+					(*it)->getPlayerGathered()->m_bounty += 1;
+				}
+				else
+				{
+					sf::Vector2f direction = Math::direction(
+						(*it)->getSprite()->getPosition(),
+						(*it)->getPlayerGathered()->getTotemSprite()->getPosition());
+
+					sf::Vector2f oldPosition = (*it)->getSprite()->getPosition();
+					sf::Vector2f newPosition = oldPosition + sf::Vector2f(direction.x * COIN_GATHERED_SPEED, direction.y * COIN_GATHERED_SPEED);
+
+					(*it)->getSprite()->setPosition(newPosition);
+				}
+			}
+			(*it)->getAnimator()->update(sf::seconds(dt));
+			(*it)->getAnimator()->animate(*(*it)->getSprite());
+
+			if (kill)
+			{
+				delete *it;
+				*it = nullptr;
+				it = coins.erase(it);
+			}
+			else
+			{
+				++it;
+			}
+		}
+
+		//coins = m_currentLevel->getCoins();
+
+		for (std::size_t i = 0; i < coins.size(); i++)
+		{
+			coins[i]->getAnimator()->update(sf::seconds(dt));
+			coins[i]->getAnimator()->animate(*coins[i]->getSprite());
+
+			m_currentLevel->setNewCoins(coins);
+
+		}
 	}
 #pragma endregion
 
@@ -483,6 +532,20 @@ bool PlayState::update(float dt)
 	}
 #pragma endregion
 
+#pragma region PLAYER_POST_UPDATE
+	/*
+	This loop does:
+	- Gatherer velocity capping
+	- Moves the defender and gatherer sprites from the Box2D bodies
+	- Responsible for playing animations
+	- Checks if gatherer picks up coins and powerups
+	- Handle powerup
+	- Changes the point indicator in the HUD
+	- Processes eventual death
+	- Make sure that the totem is transparent when blocking any player
+	*/
+
+	bool hasChangedTotemBlockedState = false;
 	for (auto &player : m_players)
 	{
 		if (player == nullptr) continue;
@@ -523,25 +586,27 @@ bool PlayState::update(float dt)
 		player->getDefender()->getAnimatior()->animate(*player->getDefender()->getSprite());
 		player->getGatherer()->getAnimatior()->animate(*player->getGatherer()->getSprite());
 
+		/*
+		*********************
+		COIN PICKUP
+		*********************/
 		std::vector<Coin*> coins = m_currentLevel->getCoins();
 		auto it = coins.begin();
 		while (it != coins.end())
 		{
 			// If player stands on a coin, pick it up
-			if (player->getGatherer()->getSprite()->getGlobalBounds().intersects((*it)->getSprite()->getGlobalBounds()))
+			if (!(*it)->isGathered() && player->getGatherer()->getSprite()->getGlobalBounds().intersects((*it)->getSprite()->getGlobalBounds()))
 			{
-				player->addPoints(POINTS_PER_COIN * player->m_multiplier, (*it)->getSprite()->getPosition(), SCORE_COIN);
-				player->m_multiplier *= COIN_MULTIPLIER;
-
 				// Set the spawn area as not occupied
 				m_currentLevel->setCoinSpawnOccupied((*it)->m_coinSpawnIndex, false);
-
-				delete *it;
-				*it = nullptr;
-				it = coins.erase(it);
-
+				(*it)->setGathered(player);
 
 				m_currentLevel->getCoinTimer()->restart();
+				/*delete *it;
+				*it = nullptr;
+				it = coins.erase(it);*/
+
+
 			}
 			else
 			{
@@ -601,13 +666,90 @@ bool PlayState::update(float dt)
 		float percent = player->getPoints() / POINTS_TO_WIN;
 		float indicatorExtensionX = TIMER_POS_X + TIMER_WIDTH * percent;
 		player->getPointsIndicator()->setPosition(indicatorExtensionX, player->getPointsIndicator()->getPosition().y);
+
+		// Make sure the totem is transparent if totem is blocking player
+		if (!hasChangedTotemBlockedState)
+		{
+			if (m_totemHead.getGlobalBounds().intersects(player->getDefender()->getSprite()->getGlobalBounds()) ||
+				m_totemHead.getGlobalBounds().intersects(player->getGatherer()->getSprite()->getGlobalBounds()) ||
+				m_totemFoot.getGlobalBounds().intersects(player->getDefender()->getSprite()->getGlobalBounds()) ||
+				m_totemFoot.getGlobalBounds().intersects(player->getGatherer()->getSprite()->getGlobalBounds())
+				)
+			{
+				hasChangedTotemBlockedState = true;
+				m_totemIsBlockingPlayer = true;
+			}
+			else
+			{
+				for (std::size_t i = 0; i < m_players.size(); i++)
+				{
+					if (m_players[i]->getTotemSprite()->getGlobalBounds().intersects(player->getDefender()->getSprite()->getGlobalBounds()) ||
+						m_players[i]->getTotemSprite()->getGlobalBounds().intersects(player->getGatherer()->getSprite()->getGlobalBounds())
+						)
+					{
+						hasChangedTotemBlockedState = true;
+						m_totemIsBlockingPlayer = true;
+						break;
+					}
+				}
+			}
+		}
+	}
+	if (!hasChangedTotemBlockedState)
+	{
+		m_totemIsBlockingPlayer = false;
+	}
+#pragma endregion
+	if (m_totemIsBlockingPlayer)
+	{
+		{
+			sf::Color oldColor = m_totemHead.getColor();
+			oldColor.a = TOTEM_ALPHA_WHEN_BLOCK;
+			m_totemHead.setColor(oldColor);
+		}
+		for (auto &player : m_players)
+		{
+			sf::Color oldColor = player->getTotemSprite()->getColor();
+			oldColor.a = TOTEM_ALPHA_WHEN_BLOCK;
+			player->getTotemSprite()->setColor(oldColor);
+		}
+	}
+	else
+	{
+		sf::Color oldColor = m_totemHead.getColor();
+		oldColor.a = 255;
+		m_totemHead.setColor(oldColor);
+
+		for (auto &player : m_players)
+		{
+			sf::Color oldColor = player->getTotemSprite()->getColor();
+			oldColor.a = 255;
+			player->getTotemSprite()->setColor(oldColor);
+		}
 	}
 
 	std::vector<Player*> activePlayers = m_hotSpot->getActivePlayers(m_players);
 	if (activePlayers.size() == 1)
 	{
+		if (!activePlayers.back()->m_holdingTotem)
+		{
+			activePlayers.back()->m_holdingTotem = true;
+			onEnterTotem(activePlayers.back());
+		}
 		activePlayers.back()->addPoints(POINTS_PER_SECOND * dt, activePlayers.back()->getGatherer()->getSprite()->getPosition(), SCORE_HOTSPOT);
+		if (activePlayers.back()->m_bounty > 0)
+		{
+			float score = activePlayers.back()->m_bounty * SCORE_PER_COIN;
+			activePlayers.back()->addPoints(score, activePlayers.back()->getTotemSprite()->getPosition(), PlayerScoreTypes::SCORE_COIN);
+			activePlayers.back()->m_bounty = 0;
+		}
+		updateHoldingTotem(activePlayers.back());
 	}
+	else
+	{
+		updateHoldingTotem(nullptr); // Set all to false
+	}
+
 
 	sortTotem();
 	m_totemTweener.step(dt);
@@ -635,10 +777,13 @@ void PlayState::draw()
 		m_stateAsset->windowManager->getWindow()->draw(*player->getTotemSprite());
 	}
 
-	Box2DWorldDraw debugDraw(m_stateAsset->windowManager->getWindow());
+	m_currentLevel->drawFlyingCoins(m_stateAsset->windowManager->getWindow());
+
+	/*Box2DWorldDraw debugDraw(m_stateAsset->windowManager->getWindow());
 	debugDraw.SetFlags(b2Draw::e_shapeBit);
 	m_world.SetDebugDraw(&debugDraw);
-	m_world.DrawDebugData();
+	m_world.DrawDebugData();*/
+
 
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBarBackground);
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBar);
@@ -985,4 +1130,20 @@ b2Body* PlayState::createWall(sf::Vector2f v1, sf::Vector2f v2)
 	body->SetTransform(position, Math::angleBetween(v1, v2));
 
 	return body;
+}
+
+void PlayState::onEnterTotem(Player* player)
+{
+
+}
+
+void PlayState::updateHoldingTotem(Player* player)
+{
+	for (auto &p : m_players)
+	{
+		if (p != player)
+		{
+			p->m_holdingTotem = false;
+		}
+	}
 }

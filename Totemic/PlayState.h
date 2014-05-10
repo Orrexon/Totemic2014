@@ -50,11 +50,15 @@ public:
 	void sortTotem();
 	void createPowerup();
 	void setupWinTweeners();
+	void onEnterTotem(Player* player);
+	void updateHoldingTotem(Player* player); // Sets m_holdingTotem = false except player
 
 	b2Body* createWall(sf::Vector2f v1, sf::Vector2f v2);
 
 private:
 	bool m_gameWon;
+	bool m_totemIsBlockingPlayer;
+
 	b2World m_world;
 	ContactListener* m_contactListener;
 	ContactFilter* m_contactFilter;
