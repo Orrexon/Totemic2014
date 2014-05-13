@@ -35,6 +35,7 @@ public:
 
 	PowerupEnum getType();
 
+
 public:
 	int m_coinSpawnIndex;
 

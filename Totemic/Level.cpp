@@ -210,7 +210,7 @@ void Level::drawFlyingCoins(sf::RenderWindow* window)
 {
 	for (auto &coin : m_coins)
 	{
-		if (coin->isGathered())
+		if (coin->isState(CoinState::GATHERED) || coin->isState(CoinState::SLURPING))
 			window->draw(*coin->getSprite());
 	}
 }

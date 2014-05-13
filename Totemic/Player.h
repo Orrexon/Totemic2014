@@ -200,13 +200,13 @@ public:
 	bool hasWon();
 	bool isChangingOrder();
 	bool isStunned();
+	bool hasShield();
+	void setShield(bool value);
 	void onRespawn(thor::CallbackTimer& trigger);
 	void setStunned(bool value);
-	void setShield(bool value);
 	void addToBounty(int value);
 	void resetBounty();
 	int getBounty();
-	bool hasShield();
 
 public:
 	float m_tweeningValue;
@@ -243,4 +243,5 @@ private:
 	std::vector<FloatingScoreText*>* m_floatingScoreTexts;
 	std::string m_pointsBarImage;
 	ResourceHolder* m_resourceHolder;
+	sf::CircleShape Placeholder_shield;
 };

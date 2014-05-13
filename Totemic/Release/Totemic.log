@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿Build started 2014-05-12 14:05:01.
      1>Project "C:\git\Totemic2014\Totemic\Totemic.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
@@ -76,7 +77,37 @@
      1>jsoncpp.lib(json_reader.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'jsoncpp.lib(json_reader.obj)' or at 'C:\git\Totemic2014\Release\vc120.pdb'; linking object as if no debug info
          Totemic.vcxproj -> C:\git\Totemic2014\Release\Totemic.exe
      1>Done Building Project "C:\git\Totemic2014\Totemic\Totemic.vcxproj" (Build target(s)).
+=======
+﻿Build started 2014-05-02 11:44:34.
+     1>Project "C:\Users\Anthon\Documents\Visual Studio 2013\Projects\Totemic\Totemic\Totemic.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt MenuState.cpp PlayState.cpp
+         MenuState.cpp
+     1>c:\users\anthon\documents\visual studio 2013\projects\totemic\totemic\LevelEditorState.h(133): error C2146: syntax error : missing ';' before identifier 'm_dialogEditHotspot'
+     1>c:\users\anthon\documents\visual studio 2013\projects\totemic\totemic\LevelEditorState.h(133): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>MenuState.cpp(51): warning C4018: '<' : signed/unsigned mismatch
+         PlayState.cpp
+     1>c:\users\anthon\documents\visual studio 2013\projects\totemic\totemic\Player.h(51): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
+                 c:\users\anthon\documents\visual studio 2013\projects\totemic\totemic\Powerup.h(10) : see declaration of 'thor::FrameAnimation'
+     1>PlayState.cpp(91): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>PlayState.cpp(92): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>PlayState.cpp(93): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>PlayState.cpp(94): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>PlayState.cpp(96): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>PlayState.cpp(97): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>PlayState.cpp(102): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>PlayState.cpp(687): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>PlayState.cpp(842): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>PlayState.cpp(847): warning C4018: '<' : signed/unsigned mismatch
+     1>PlayState.cpp(892): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>PlayState.cpp(898): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>Done Building Project "C:\Users\Anthon\Documents\Visual Studio 2013\Projects\Totemic\Totemic\Totemic.vcxproj" (Build target(s)) -- FAILED.
+>>>>>>> ebaf6d0bcb4d5e120af3574cbd91a9423b0d03c5
 
-Build succeeded.
+Build FAILED.
 
+<<<<<<< HEAD
 Time Elapsed 00:00:10.92
+=======
+Time Elapsed 00:00:05.66
+>>>>>>> ebaf6d0bcb4d5e120af3574cbd91a9423b0d03c5

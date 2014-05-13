@@ -27,6 +27,7 @@ Player::Player()
 	m_dead = false;
 	m_stunned = false;
 	m_stunnedTimer.reset();
+	m_shieldTimer.reset();
 	m_postCheckDead = false;
 	m_changingOrder = false;
 	m_defender = nullptr;

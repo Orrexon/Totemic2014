@@ -4,6 +4,7 @@
 #include "Box2D\Box2D.h"
 #include "dbtweener.h"
 #include <Thor\Particles.hpp>
+#include "Math.h"
 
 class Player;
 class LevelLoader;
@@ -15,6 +16,7 @@ class TotemTweenerListener;
 class Trap;
 class FloatingScoreText;
 class Powerup;
+class VCollection;
 
 namespace thor
 {

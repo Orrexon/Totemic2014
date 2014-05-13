@@ -8,6 +8,7 @@
 #include <Thor\Particles.hpp>
 #include <Thor\Math.hpp>
 #include <Thor\Vectors.hpp>
+#include "Math.h"
 
 void ContactListener::BeginContact(b2Contact* p_contact)
 {
@@ -55,6 +56,7 @@ void ContactListener::playerContactBegin(UserData* userDataA, UserData* userData
 	}
 	else if (charA->getData()->isType(DEFENDER) && charB->getData()->isType(DEFENDER))
 	{
+		/*
 		// Get direction between the bodies
 		sf::Vector2f direction = Math::direction(
 			charA->getData()->getPlayer()->getDefender()->getSprite()->getPosition(),
@@ -70,6 +72,7 @@ void ContactListener::playerContactBegin(UserData* userDataA, UserData* userData
 		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticleRotationSpeed(thor::Distributions::uniform(10.f, 20.f));
 		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticleLifetime(sf::seconds(3.f));
 		charA->getData()->getPlayer()->game->m_defenderParticleSystem->addEmitter(*charA->getData()->getPlayer()->game->m_defenderEmitter, sf::seconds(0.1));
+		*/
 	}
 }
 

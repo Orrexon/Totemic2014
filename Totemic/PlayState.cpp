@@ -96,7 +96,7 @@ void PlayState::entering()
 	m_totemHead.setTexture(m_stateAsset->resourceHolder->getTexture("totempole.png"));
 	m_totemHead.setOrigin(129, m_totemHead.getGlobalBounds().height);
 	m_totemHead.setPosition(m_players.back()->getTotemSprite()->getPosition().x, m_players.back()->getTotemSprite()->getPosition().y + m_players.back()->getTotemSprite()->getGlobalBounds().height / 2.f);
-	
+
 	m_totemFoot.setTexture(m_stateAsset->resourceHolder->getTexture("totemfoot.png"));
 	m_totemFoot.setOrigin(m_totemFoot.getGlobalBounds().width / 2.f, 0.f);
 	m_totemFoot.setPosition(m_players.front()->getTotemSprite()->getPosition().x, m_players.front()->getTotemSprite()->getPosition().y + m_players.front()->getTotemSprite()->getGlobalBounds().height / 2.f - 4);
@@ -418,6 +418,7 @@ bool PlayState::update(float dt)
 
 		if (event.type == MANYMOUSE_EVENT_RELMOTION)
 		{
+
 			if (event.item == 0) // x
 			{
 				player->getDefender()->getBody()->ApplyLinearImpulse(b2Vec2(5.f * PhysicsHelper::gameToPhysicsUnits(static_cast<float>(event.value)), 0.f), player->getDefender()->getBody()->GetWorldCenter(), true);
@@ -551,6 +552,11 @@ bool PlayState::update(float dt)
 						}
 					}
 				}
+			}
+
+			if (player->hasShield() && player->m_shieldTimer.getElapsedTime().asSeconds() >= SHIELD_TIMER)
+			{
+				player->setShield(false);
 			}
 		}
 	}
@@ -703,14 +709,13 @@ bool PlayState::update(float dt)
 		player->getDefender()->getAnimatior()->update(sf::seconds(dt));
 		player->getGatherer()->getAnimatior()->update(sf::seconds(dt));
 		player->getGatherer()->m_shieldOverlayAnimatior->update(sf::seconds(dt));
-		
 		player->getDefender()->getAnimatior()->animate(*player->getDefender()->getSprite());
 		player->getGatherer()->getAnimatior()->animate(*player->getGatherer()->getSprite());
 		player->getGatherer()->m_shieldOverlayAnimatior->animate(*player->getGatherer()->m_shieldOverlay);
 		
 		/*
 		*********************
-			COIN PICKUP
+		COIN PICKUP
 		*********************/
 		std::vector<Coin*> coins = m_currentLevel->getCoins();
 		auto it = coins.begin();
@@ -725,6 +730,11 @@ bool PlayState::update(float dt)
 				(*it)->setState(CoinState::GATHERED);
 				m_stateAsset->audioSystem->playSound("Coin_Pickup");
 				m_currentLevel->getCoinTimer()->restart();
+				/*delete *it;
+				*it = nullptr;
+				it = coins.erase(it);*/
+
+
 			}
 			else
 			{
@@ -745,32 +755,34 @@ bool PlayState::update(float dt)
 				{
 				case LIGHTNING:
 				{
-					for (std::size_t i = 0; i < m_players.size(); i++)
-					{
-						if (m_players[i] != player)
-						{
-							m_players[i]->setStunned(true);
-						}
-					}
+								  for (std::size_t i = 0; i < m_players.size(); i++)
+								  {
+									  if (m_players[i] != player)
+									  {
+										  m_players[i]->setStunned(true);
+									  }
+								  }
 
-					m_lightningAlpha = 255.f;
+								  m_lightningAlpha = 255.f;
 
-					CDBTweener::CTween* tween = new CDBTweener::CTween();
-					tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
-					tween->addValue(&m_lightningAlpha, 0.f);
-					m_totemTweener.addTween(tween);
-					
-					m_stateAsset->audioSystem->playSound("Lightning");
+								  CDBTweener::CTween* tween = new CDBTweener::CTween();
+								  tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
+								  tween->addValue(&m_lightningAlpha, 0.f);
+								  m_totemTweener.addTween(tween);
 
-					break;
+								  m_stateAsset->audioSystem->playSound("Lightning");
+
+								  break;
 				}
 				case SHIELD:
 					player->setShield(true);
+					player->m_shieldTimer.restart();
 					break;
 				}
 				m_currentLevel->setPowerupSpawnOccupied((*powerupIt)->m_coinSpawnIndex, false);
 				(*powerupIt)->setActive(false);
 				m_currentLevel->getPowerupTimer()->restart();
+
 			}
 			else
 			{
@@ -911,6 +923,7 @@ void PlayState::draw()
 	m_world.SetDebugDraw(&debugDraw);
 	//m_world.DrawDebugData();
 
+
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBarBackground);
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBar);
 	m_stateAsset->windowManager->getWindow()->draw(m_frame);
@@ -994,7 +1007,7 @@ void PlayState::initPlayers()
 		m_players.back()->getTotemSprite()->setTexture(m_stateAsset->resourceHolder->getTexture(playerTotemImages[i]));
 		m_players.back()->setOrder(i);
 		m_players.back()->setPointsBarImage(playerBarImages[i]);
-			
+
 		sf::Sprite* sprite = new sf::Sprite();
 		sprite->setTexture(m_stateAsset->resourceHolder->getTexture(playerPointIndicatorImages[i]));
 		sprite->setOrigin(sprite->getGlobalBounds().width / 2.f, sprite->getGlobalBounds().height);
@@ -1074,7 +1087,7 @@ void PlayState::loadNewLevel()
 	m_currentLevel = m_levelLoader->parseLevel(levels[randomLevelIndex], m_world);
 	m_currentLevel->game = this;
 	m_currentLevel->getBackground()->setTexture(m_stateAsset->resourceHolder->getTexture(m_currentLevel->getBackgroundPath(), false));
-	
+
 	m_hotSpot->setRadius(m_currentLevel->getHotspotRadius());
 	m_hotSpot->setPosition(m_currentLevel->getHotspotPosition());
 
@@ -1184,7 +1197,7 @@ void PlayState::sortTotem()
 {
 	std::vector<Player*> sortedPlayerVector = m_players;
 	std::sort(sortedPlayerVector.begin(), sortedPlayerVector.end(), sortTotemAlgorithm);
-	
+
 	m_timerBar.setTexture(m_stateAsset->resourceHolder->getTexture(sortedPlayerVector.back()->getPointsBarImage()));
 
 	float percent = sortedPlayerVector.back()->getPoints() / POINTS_TO_WIN;
@@ -1261,7 +1274,7 @@ void PlayState::createPowerup()
 
 void PlayState::setupWinTweeners()
 {
-	
+
 }
 
 b2Body* PlayState::createWall(sf::Vector2f v1, sf::Vector2f v2)
@@ -1275,9 +1288,9 @@ b2Body* PlayState::createWall(sf::Vector2f v1, sf::Vector2f v2)
 
 	// Length of segment
 	float length = Math::euclideanDistance(v1, v2);
-	
+
 	// Convert the position
-	b2Vec2 position = PhysicsHelper::gameToPhysicsUnits(lineCenter);	
+	b2Vec2 position = PhysicsHelper::gameToPhysicsUnits(lineCenter);
 	bodyDef.position.Set(position.x, position.y);
 	bodyDef.userData = this;
 	b2Body* body = m_world.CreateBody(&bodyDef);
@@ -1297,7 +1310,7 @@ b2Body* PlayState::createWall(sf::Vector2f v1, sf::Vector2f v2)
 	fixtureDef.shape = &edgeShape;
 	body->CreateFixture(&fixtureDef);
 	body->SetTransform(position, Math::angleBetween(v1, v2));
-	
+
 	return body;
 }
 
@@ -1311,7 +1324,7 @@ void PlayState::onEnterTotem(Player* player)
 
 void PlayState::updateHoldingTotem(Player* player)
 {
-	for (auto &p: m_players)
+	for (auto &p : m_players)
 	{
 		if (p != player)
 		{
