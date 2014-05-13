@@ -6,12 +6,18 @@
 #include "Trap.h"
 #include "Coin.h"
 #include "Powerup.h"
+#include "Math.h"
+#include "PlayState.h"
+#include "Player.h"
+#include "Defender.h"
+#include "Config.h"
 
 Level::Level()
 {
 	m_background = new sf::Sprite();
 	m_defenderSpawn.resize(4);
 	m_gathererSpawn.resize(4);
+	m_playerSpawns.resize(4, nullptr);
 
 	m_coinTimer = new thor::StopWatch();
 	m_trapTimer = new thor::StopWatch();
@@ -20,7 +26,6 @@ Level::Level()
 	m_trapTimer->start();
 	m_powerupTimer->start();
 }
-
 Level::~Level()
 {
 	delete m_background;
@@ -57,6 +62,31 @@ Level::~Level()
 		*powerupIt = nullptr;
 		++powerupIt;
 	}
+
+	auto playerSpawnIt = m_playerSpawns.begin();
+	while (playerSpawnIt != m_playerSpawns.end())
+	{
+		delete *playerSpawnIt;
+		*playerSpawnIt = nullptr;
+		++playerSpawnIt;
+	}
+}
+
+void Level::update(float dt)
+{
+	for (auto &playerSpawn : m_playerSpawns)
+	{
+		if (playerSpawn == nullptr) continue;
+		bool isOccupied = false;
+		for (auto &player : game->m_players)
+		{
+			if (!player->isDead() && Math::euclideanDistance(playerSpawn->gat_spawn, player->getDefender()->getSprite()->getPosition()) < RANDOM_PLAYER_SPAWN_TOLERANCE)
+			{
+				isOccupied = true;
+			}
+		}
+		playerSpawn->occupied = isOccupied;
+	}
 }
 void Level::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
@@ -89,6 +119,7 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	{
 		target.draw(image->sprite);
 	}
+
 }
 void Level::addObject(LevelObject* obj)
 {
@@ -147,6 +178,14 @@ void Level::setGathererSpawn(int player_index, float x, float y)
 	sf::Vector2f spawn(x, y);
 	m_gathererSpawn[player_index] = spawn;
 }
+void Level::setPlayerSpawn(int player_index, sf::Vector2f def_spawn, sf::Vector2f gat_spawn)
+{
+	PlayerSpawn* playerSpawn = new PlayerSpawn();
+	playerSpawn->def_spawn = def_spawn;
+	playerSpawn->gat_spawn = gat_spawn;
+	playerSpawn->occupied = false;
+	m_playerSpawns[player_index] = playerSpawn;
+}
 void Level::setCoinSpawnOccupied(int index, bool value)
 {
 	m_coinsSpawns[index].occupied = value;
@@ -154,6 +193,10 @@ void Level::setCoinSpawnOccupied(int index, bool value)
 void Level::setPowerupSpawnOccupied(int index, bool value)
 {
 	m_powerupsSpawn[index].occupied = value;
+}
+void Level::setPlayerSpawnOccupied(int index, bool value)
+{
+	m_playerSpawns[index]->occupied = value;
 }
 void Level::setNewCoins(std::vector<Coin*> coinsCont)
 {
@@ -167,7 +210,7 @@ void Level::drawFlyingCoins(sf::RenderWindow* window)
 {
 	for (auto &coin : m_coins)
 	{
-		if (coin->isGathered())
+		if (coin->isState(CoinState::GATHERED) || coin->isState(CoinState::SLURPING))
 			window->draw(*coin->getSprite());
 	}
 }
@@ -191,6 +234,10 @@ std::vector<CoinObject> &Level::getCoinSpawns()
 std::vector<PowerupObject> &Level::getPowerupsSpawns()
 {
 	return m_powerupsSpawn;
+}
+std::vector<PlayerSpawn*> Level::getPlayerSpawns()
+{
+	return m_playerSpawns;
 }
 sf::Vector2f Level::getDefenderSpawn(int player_index)
 {

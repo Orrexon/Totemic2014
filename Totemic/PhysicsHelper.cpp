@@ -23,4 +23,9 @@ namespace PhysicsHelper
 	{
 		return sf::Vector2f(p_position.x * 32.f, p_position.y * 32.f);
 	}
+
+	float physicsToGameUnits(float32 value)
+	{
+		return value * 32.f;
+	}
 }

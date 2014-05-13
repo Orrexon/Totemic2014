@@ -36,6 +36,13 @@ struct PowerupObject
 	bool occupied;
 };
 
+struct PlayerSpawn
+{
+	sf::Vector2f def_spawn;
+	sf::Vector2f gat_spawn;
+	bool occupied;
+};
+
 struct Image
 {
 	sf::Sprite sprite;
@@ -45,6 +52,7 @@ class ResourceHolder;
 class Trap;
 class Coin;
 class Powerup;
+class PlayState;
 
 class Level: public sf::Drawable
 {
@@ -52,6 +60,7 @@ public:
 	Level();
 	~Level();
 
+	void update(float dt);
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 	void addObject(LevelObject* obj);
 	void addTrap(Trap* trap);
@@ -61,12 +70,14 @@ public:
 	void setBackgroundPath(std::string p_filepath);
 	void setDefenderSpawn(int player_index, float x, float y);
 	void setGathererSpawn(int player_index, float x, float y);
+	void setPlayerSpawn(int player_index, sf::Vector2f def_spawn, sf::Vector2f gat_spawn);
 	void setHotspotPosition(float x, float y);
 	void setHotspotRadius(float radius);
 	void addCoinSpawn(sf::Vector2f position);
 	void addPowerupSpawn(sf::Vector2f position);
 	void setCoinSpawnOccupied(int index, bool value);
 	void setPowerupSpawnOccupied(int index, bool value);
+	void setPlayerSpawnOccupied(int index, bool value);
 	void setNewCoins(std::vector<Coin*> coinsCont);
 	void setNewPowerups(std::vector<Powerup*> powerupsCont);
 	void drawFlyingCoins(sf::RenderWindow* window);
@@ -76,6 +87,7 @@ public:
 	std::vector<Powerup*> getPowerups();
 	std::vector<CoinObject> &getCoinSpawns();
 	std::vector<PowerupObject> &getPowerupsSpawns();
+	std::vector<PlayerSpawn*> getPlayerSpawns();
 	sf::Vector2f getDefenderSpawn(int player_index);
 	sf::Vector2f getGathererSpawn(int player_index);
 	sf::Sprite* getBackground();
@@ -86,11 +98,15 @@ public:
 	thor::StopWatch *getCoinTimer();
 	thor::StopWatch *getPowerupTimer();
 
+public:
+	PlayState* game;
+
 private:
 	sf::Sprite* m_background;
 	std::string m_backgroundPath;
 	std::vector<CoinObject> m_coinsSpawns;
 	std::vector<PowerupObject> m_powerupsSpawn;
+	std::vector<PlayerSpawn*> m_playerSpawns;
 	std::vector<sf::Vector2f> m_defenderSpawn;
 	std::vector<sf::Vector2f> m_gathererSpawn;
 	std::vector<LevelObject*> m_objects;

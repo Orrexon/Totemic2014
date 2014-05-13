@@ -35,6 +35,7 @@ struct PlayerCharBase
 {
 	PlayerCharBase()
 	{
+		m_shieldStunned = false;
 		m_sprite = new sf::Sprite();
 		m_animatior = new thor::Animator<sf::Sprite, std::string>;
 	}
@@ -141,6 +142,8 @@ struct PlayerCharBase
 		return m_animatior;
 	}
 
+	bool m_shieldStunned;
+	thor::StopWatch m_shieldStunnedTimer;
 	int m_type;
 	Player* m_player;
 	sf::Sprite* m_sprite;
@@ -157,6 +160,9 @@ enum PlayerScoreTypes
 	SCORE_COIN
 };
 
+class Level;
+class PlayState;
+
 class Player: public sf::Drawable
 {
 public:
@@ -168,7 +174,7 @@ public:
 	void clear(b2World &world);
 	void setDefender(Defender* p_defender);
 	void setGatherer(Gatherer* p_gatherer);
-	void processEventualDeath();
+	void processEventualDeath(Level* level);
 	void setDead(bool value);
 	void setColor(sf::Color color);
 	void setOrder(unsigned int index);
@@ -198,12 +204,9 @@ public:
 	void setShield(bool value);
 	void onRespawn(thor::CallbackTimer& trigger);
 	void setStunned(bool value);
-	bool isDeflected();
-	void setDeflected(bool value);
-	
-
-	void setPlaceholderShieldPosition(sf::Vector2f vec);
-	sf::CircleShape getPlaceholderShield();
+	void addToBounty(int value);
+	void resetBounty();
+	int getBounty();
 
 public:
 	float m_tweeningValue;
@@ -214,8 +217,11 @@ public:
 	thor::StopWatch m_hotspotFloatingTextTimer;
 	thor::StopWatch m_stunnedTimer;
 	thor::StopWatch m_shieldTimer;
-	thor::StopWatch m_deflectionTimer;
-	b2Vec2 NormDir;
+	PlayState* game;
+	sf::Text* m_totemBountyAmount;
+	sf::Sprite* m_totemBountyIcon;
+	thor::Animator<sf::Sprite, std::string>* m_totemBountyIconAnimator;
+	thor::FrameAnimation* m_totemBountyAnimation;
 
 private:
 	bool m_stunned;
@@ -223,8 +229,7 @@ private:
 	bool m_dead;
 	bool m_postCheckDead;
 	bool m_changingOrder;
-	bool m_hasShield;
-	bool m_deflected;
+	bool m_shield;
 	unsigned int m_order;
 	unsigned int m_deviceNo;
 	Gatherer* m_gatherer;

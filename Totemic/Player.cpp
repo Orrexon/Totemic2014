@@ -1,5 +1,6 @@
 #include <Thor\Time\StopWatch.hpp>
 #include <Thor\Animation\FrameAnimation.hpp>
+#include <Thor\Math\Random.hpp>
 #include <iostream>
 #include <Box2D\Dynamics\b2World.h>
 
@@ -12,6 +13,7 @@
 #include "Config.h"
 #include "Math.h"
 #include "FloatingScoreText.h"
+#include "Level.h"
 
 Player::Player()
 {
@@ -19,12 +21,11 @@ Player::Player()
 	m_hotspotScoreSum = 0.f;
 	m_multiplier = 1.f;
 	m_points = 0.f;
+	m_shield = false;
 	m_holdingTotem = false;
 	m_won = false;
 	m_dead = false;
 	m_stunned = false;
-	m_hasShield = false;
-	m_deflected = false;
 	m_stunnedTimer.reset();
 	m_shieldTimer.reset();
 	m_postCheckDead = false;
@@ -36,12 +37,10 @@ Player::Player()
 	m_deathTimer = new thor::CallbackTimer();
 	m_deathTimer->connect(std::bind(&Player::onRespawn, this, std::placeholders::_1));
 	m_totemSprite = new sf::Sprite();
-	Placeholder_shield = sf::CircleShape();
-	Placeholder_shield.setRadius(SHIELD_DEFLECTION_RADIUS);
-	Placeholder_shield.setOrigin(SHIELD_DEFLECTION_RADIUS, SHIELD_DEFLECTION_RADIUS);
-	Placeholder_shield.setFillColor(sf::Color::Blue);
+	m_totemBountyIcon = new sf::Sprite();
+	m_totemBountyIconAnimator = new thor::Animator<sf::Sprite, std::string>;
+	m_totemBountyAmount = new sf::Text();
 }
-
 Player::~Player()
 {
 	delete m_gatherer;
@@ -61,6 +60,18 @@ Player::~Player()
 
 	delete m_timer;
 	m_timer = nullptr;
+
+	delete m_totemBountyAmount;
+	m_totemBountyAmount = nullptr;
+
+	delete m_totemBountyIcon;
+	m_totemBountyIcon = nullptr;
+
+	delete m_totemBountyIconAnimator;
+	m_totemBountyIconAnimator = nullptr;
+
+	delete m_totemBountyAnimation;
+	m_totemBountyAnimation = nullptr;
 }
 
 void Player::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -68,6 +79,8 @@ void Player::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	if (!m_dead)
 	{
 		target.draw(*m_gatherer->getSprite());
+		if (m_shield)
+		target.draw(*m_gatherer->m_shieldOverlay);
 		target.draw(*m_defender->getSprite());
 	}
 }
@@ -131,10 +144,14 @@ void Player::setDefender(Defender* p_defender)
 void Player::setGatherer(Gatherer* p_gatherer)
 {
 	m_gatherer = p_gatherer;
+
 	m_gatherer->setPlayer(this);
 	m_gatherer->setType(GATHERER);
 	m_gatherer->getSprite()->setPosition(m_gatherer->getSpawnPosition());
 	m_gatherer->getSprite()->setOrigin(64.f, 64.f);
+
+	m_gatherer->m_shieldOverlay->setPosition(m_gatherer->getSpawnPosition());
+	m_gatherer->m_shieldOverlay->setOrigin(73, 69);
 	
 	thor::FrameAnimation* walk_animation = new thor::FrameAnimation();
 	walk_animation->addFrame(1.f, sf::IntRect(0, 0, 128, 128));
@@ -143,6 +160,10 @@ void Player::setGatherer(Gatherer* p_gatherer)
 	walk_animation->addFrame(1.f, sf::IntRect(385, 0, 128, 128));
 	walk_animation->addFrame(1.f, sf::IntRect(512, 0, 128, 128));
 
+	thor::FrameAnimation* death_animation = new thor::FrameAnimation();
+	death_animation->addFrame(1.f, sf::IntRect(0, 0, 128, 128));
+
+	m_gatherer->addAnimation("Death_Animation", death_animation);
 	m_gatherer->addAnimation("Walk_Animation", walk_animation);
 
 	m_gatherer->getAnimatior()->addAnimation("walk", *walk_animation, sf::seconds(0.5f));
@@ -219,18 +240,26 @@ void Player::setResourceHolder(ResourceHolder* resourceHolder)
 {
 	m_resourceHolder = resourceHolder;
 }
-void Player::processEventualDeath()
+void Player::processEventualDeath(Level* level)
 {
 	if (!m_postCheckDead) return;
 	if (m_dead)
 	{
+		std::vector<PlayerSpawn*> playerSpawns = level->getPlayerSpawns();
+		int randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
+		while (playerSpawns[randomSpawnIndex]->occupied == true)
+		{
+			randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
+		}
+		level->setPlayerSpawnOccupied(randomSpawnIndex, true);
+
 		m_gatherer->getBody()->SetActive(false);
-		m_gatherer->getBody()->SetTransform(PhysicsHelper::gameToPhysicsUnits(m_gatherer->getSpawnPosition()), m_gatherer->getBody()->GetAngle());
+		m_gatherer->getBody()->SetTransform(PhysicsHelper::gameToPhysicsUnits(playerSpawns[randomSpawnIndex]->gat_spawn), m_gatherer->getBody()->GetAngle());
 		m_gatherer->getBody()->SetLinearVelocity(b2Vec2(0.f, 0.f));
 		m_gatherer->getBody()->SetAngularVelocity(0.f);
 
 		m_defender->getBody()->SetActive(false);
-		m_defender->getBody()->SetTransform(PhysicsHelper::gameToPhysicsUnits(m_defender->getSpawnPosition()), m_defender->getBody()->GetAngle());
+		m_defender->getBody()->SetTransform(PhysicsHelper::gameToPhysicsUnits(playerSpawns[randomSpawnIndex]->def_spawn), m_defender->getBody()->GetAngle());
 		m_defender->getBody()->SetLinearVelocity(b2Vec2(0.f, 0.f));
 		m_defender->getBody()->SetAngularVelocity(0.f);
 
@@ -313,37 +342,26 @@ bool Player::isStunned()
 {
 	return m_stunned;
 }
-
-bool Player::hasShield()
-{
-	return m_hasShield;
-}
 void Player::setShield(bool value)
 {
-	m_hasShield = value;
+	m_shield = value;
+	m_shieldTimer.restart();
 }
-void Player::setPlaceholderShieldPosition(sf::Vector2f vec)
+void Player::addToBounty(int value)
 {
-	Placeholder_shield.setPosition(vec);
+	m_bounty += value;
+	m_totemBountyAmount->setString("x" + std::to_string(m_bounty));
+	m_totemBountyAmount->setOrigin(m_totemBountyAmount->getGlobalBounds().width / 2.f, 0);
 }
-
-sf::CircleShape Player::getPlaceholderShield()
+void Player::resetBounty()
 {
-	return Placeholder_shield;
+	m_bounty = 0;
 }
-bool Player::isDeflected()
+bool Player::hasShield()
 {
-	return m_deflected;
+	return m_shield;
 }
-void Player::setDeflected(bool value)
+int Player::getBounty()
 {
-	m_deflected = value;
-	if (m_deflected)
-	{
-		m_deflectionTimer.restart();
-	}
-	else
-	{
-		m_deflectionTimer.stop();
-	}
+	return m_bounty;
 }

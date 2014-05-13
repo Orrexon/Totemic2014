@@ -200,7 +200,7 @@ void Audiosystem::playMusic(std::string identifier)
 void Audiosystem::update()
 {
 	auto it = m_sounds.begin();
-	while (it != m_sounds.begin())
+	while (it != m_sounds.end())
 	{
 		it->second->update();
 		++it;
