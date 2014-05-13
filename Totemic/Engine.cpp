@@ -42,6 +42,7 @@ bool Engine::init(std::string p_title)
 
 	m_audioSystem = new Audiosystem();
 	m_audioSystem->createSound("Lightning", "../assets/sounds/lightning_sfx.ogg");
+	m_audioSystem->createSound("Coin_Pickup", "../assets/sounds/crystal.wav");
 
 	m_gameStateManager->getStateAsset()->windowManager = m_windowManager;
 	m_gameStateManager->getStateAsset()->actionMap = m_actionMap;
@@ -78,6 +79,7 @@ void Engine::loop()
 		m_windowManager->getWindow()->clear();
 		m_gameStateManager->draw();
 		m_windowManager->getWindow()->display();
+		m_audioSystem->update();
 	}
 	exit();
 }

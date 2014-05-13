@@ -4,28 +4,20 @@
    },
    "coins" : [
       {
-         "x" : 322,
-         "y" : 254
+         "x" : 384,
+         "y" : 736
       },
       {
-         "x" : 317,
-         "y" : 835
+         "x" : 1472,
+         "y" : 288
       },
       {
-         "x" : 1599,
-         "y" : 254
+         "x" : 1536,
+         "y" : 768
       },
       {
-         "x" : 1604,
-         "y" : 836
-      },
-      {
-         "x" : 959,
-         "y" : 193
-      },
-      {
-         "x" : 961,
-         "y" : 898
+         "x" : 384,
+         "y" : 320
       }
    ],
    "hotspot" : {
@@ -39,8 +31,8 @@
    "image_objects" : [
       {
          "image_path" : "../assets/textures/bladvaxt.png",
-         "x" : 1181,
-         "y" : 712
+         "x" : 1218,
+         "y" : 802
       },
       {
          "image_path" : "../assets/textures/bladvaxt.png",
@@ -49,23 +41,23 @@
       },
       {
          "image_path" : "../assets/textures/plant.png",
-         "x" : 638,
-         "y" : 667
+         "x" : 642,
+         "y" : 545
       },
       {
          "image_path" : "../assets/textures/plant_1.png",
-         "x" : 1282,
-         "y" : 659
+         "x" : 1260,
+         "y" : 547
       },
       {
          "image_path" : "../assets/textures/plant_2.png",
-         "x" : 639,
-         "y" : 405
+         "x" : 683,
+         "y" : 230
       },
       {
          "image_path" : "../assets/textures/plant_3.png",
-         "x" : 1287,
-         "y" : 407
+         "x" : 1274,
+         "y" : 360
       },
       {
          "image_path" : "../assets/textures/flower.png",
@@ -73,218 +65,148 @@
          "y" : 933
       },
       {
-         "image_path" : "../assets/textures/tuva_1.png",
-         "x" : 568,
-         "y" : 815
-      },
-      {
-         "image_path" : "../assets/textures/tuva_2.png",
-         "x" : 1626,
-         "y" : 559
-      },
-      {
-         "image_path" : "../assets/textures/tuva.png",
-         "x" : 997,
-         "y" : 130
-      },
-      {
-         "image_path" : "../assets/textures/tuva_2.png",
-         "x" : 347,
-         "y" : 560
-      },
-      {
-         "image_path" : "../assets/textures/flower.png",
-         "x" : 258,
-         "y" : 217
-      },
-      {
          "image_path" : "../assets/textures/plant.png",
-         "x" : 919,
-         "y" : 61
+         "x" : 894,
+         "y" : 172
       },
       {
          "image_path" : "../assets/textures/flower.png",
-         "x" : 1558,
-         "y" : 162
-      },
-      {
-         "image_path" : "../assets/textures/bladvaxt.png",
-         "x" : 771,
-         "y" : 398
+         "x" : 1465,
+         "y" : 147
       }
    ],
    "objects" : [
       {
-         "path" : "../assets/objects/brokenpillar_br.objx",
-         "x" : 128,
-         "y" : 64
+         "path" : "../assets/objects/ruin_bl_1.objx",
+         "x" : 256,
+         "y" : 384
       },
       {
-         "path" : "../assets/objects/brokenpillar_tr.objx",
-         "x" : 1536,
-         "y" : 64
+         "path" : "../assets/objects/ruin_br_2.objx",
+         "x" : 1216,
+         "y" : 384
       },
       {
-         "path" : "../assets/objects/pillar.objx",
+         "path" : "../assets/objects/ruin_tl_3.objx",
+         "x" : 256,
+         "y" : 96
+      },
+      {
+         "path" : "../assets/objects/ruin_tr_3.objx",
+         "x" : 1216,
+         "y" : 96
+      },
+      {
+         "path" : "../assets/objects/fin_pillar_1.objx",
+         "x" : 832,
+         "y" : -64
+      },
+      {
+         "path" : "../assets/objects/fin_pillar_1.objx",
+         "x" : 832,
+         "y" : 864
+      },
+      {
+         "path" : "../assets/objects/fin_stone_1.objx",
+         "x" : 192,
+         "y" : 96
+      },
+      {
+         "path" : "../assets/objects/fin_stone_1.objx",
+         "x" : 192,
+         "y" : 672
+      },
+      {
+         "path" : "../assets/objects/fin_stone_1.objx",
+         "x" : 1472,
+         "y" : 96
+      },
+      {
+         "path" : "../assets/objects/fin_stone_1.objx",
+         "x" : 1472,
+         "y" : 704
+      },
+      {
+         "path" : "../assets/objects/fin_box_1.objx",
          "x" : 1088,
-         "y" : 320
+         "y" : 384
       },
       {
-         "path" : "../assets/objects/pillar1.objx",
-         "x" : 704,
-         "y" : 320
+         "path" : "../assets/objects/fin_box_3.objx",
+         "x" : 576,
+         "y" : 384
       },
       {
-         "path" : "../assets/objects/pillar2.objx",
-         "x" : 704,
-         "y" : 640
-      },
-      {
-         "path" : "../assets/objects/pillar3.objx",
-         "x" : 1088,
-         "y" : 640
-      },
-      {
-         "path" : "../assets/objects/rock.objx",
+         "path" : "../assets/objects/fin_pillar_1.objx",
          "x" : -64,
          "y" : 416
       },
       {
-         "path" : "../assets/objects/rock.objx",
-         "x" : 1152,
-         "y" : 416
-      },
-      {
-         "path" : "../assets/objects/box.objx",
-         "x" : 775,
-         "y" : 933
-      },
-      {
-         "path" : "../assets/objects/box1.objx",
-         "x" : 254,
-         "y" : 474
-      },
-      {
-         "path" : "../assets/objects/box2.objx",
-         "x" : 1539,
-         "y" : 475
-      },
-      {
-         "path" : "../assets/objects/box3.objx",
-         "x" : 896,
-         "y" : 64
-      },
-      {
-         "path" : "../assets/objects/ruin_bottomleft.objx",
-         "x" : 833,
-         "y" : -76
-      },
-      {
-         "path" : "../assets/objects/ruin_bottomright.objx",
+         "path" : "../assets/objects/fin_pillar_1.objx",
          "x" : 1728,
          "y" : 416
-      },
-      {
-         "path" : "../assets/objects/ruin_topleft.objx",
-         "x" : 832,
-         "y" : 896
-      },
-      {
-         "path" : "../assets/objects/brokenpillar_br.objx",
-         "x" : 1536,
-         "y" : 768
-      },
-      {
-         "path" : "../assets/objects/brokenpillar_tr.objx",
-         "x" : 128,
-         "y" : 768
-      },
-      {
-         "path" : "../assets/objects/rock.objx",
-         "x" : 512,
-         "y" : 416
-      },
-      {
-         "path" : "../assets/objects/ruin_bottomleft.objx",
-         "x" : 384,
-         "y" : 640
-      },
-      {
-         "path" : "../assets/objects/ruin_bottomright.objx",
-         "x" : 320,
-         "y" : 192
-      },
-      {
-         "path" : "../assets/objects/ruin_topleft.objx",
-         "x" : 1344,
-         "y" : 192
-      },
-      {
-         "path" : "../assets/objects/rock.objx",
-         "x" : 1344,
-         "y" : 640
       }
    ],
    "players" : [
       {
-         "defender_position_x" : 100.0,
-         "defender_position_y" : 100.0,
-         "gatherer_position_x" : 50.0,
-         "gatherer_position_y" : 50.0
+         "defender_position_x" : 192.0,
+         "defender_position_y" : 64.0,
+         "gatherer_position_x" : 64.0,
+         "gatherer_position_y" : 64.0
       },
       {
-         "defender_position_x" : 1820.0,
-         "defender_position_y" : 100.0,
-         "gatherer_position_x" : 1870.0,
-         "gatherer_position_y" : 50.0
+         "defender_position_x" : 1728.0,
+         "defender_position_y" : 64.0,
+         "gatherer_position_x" : 1856.0,
+         "gatherer_position_y" : 64.0
       },
       {
-         "defender_position_x" : 1820.0,
-         "defender_position_y" : 980.0,
-         "gatherer_position_x" : 1870.0,
-         "gatherer_position_y" : 1030.0
+         "defender_position_x" : 1728.0,
+         "defender_position_y" : 1024.0,
+         "gatherer_position_x" : 1856.0,
+         "gatherer_position_y" : 1024.0
       },
       {
-         "defender_position_x" : 100.0,
-         "defender_position_y" : 980.0,
-         "gatherer_position_x" : 50.0,
-         "gatherer_position_y" : 1030.0
+         "defender_position_x" : 192.0,
+         "defender_position_y" : 1024.0,
+         "gatherer_position_x" : 64.0,
+         "gatherer_position_y" : 1024.0
       }
    ],
    "powerups" : [
       {
-         "x" : 444,
+         "x" : 512,
          "y" : 544
       },
       {
-         "x" : 1474,
+         "x" : 1408,
          "y" : 544
       }
    ],
    "traps" : [
       {
-         "x" : 319,
-         "y" : 447
+         "x" : 256,
+         "y" : 544
       },
       {
-         "x" : 318,
-         "y" : 702
+         "x" : 768,
+         "y" : 864
       },
       {
-         "x" : 1600,
-         "y" : 708
+         "x" : 1152,
+         "y" : 864
       },
       {
-         "x" : 1597,
-         "y" : 452
+         "x" : 1152,
+         "y" : 224
       },
       {
-         "x" : 958,
-         "y" : 320
+         "x" : 768,
+         "y" : 224
       },
       {
-         "x" : 962,
-         "y" : 768
+         "x" : 1664,
+         "y" : 544
       }
    ]
 }

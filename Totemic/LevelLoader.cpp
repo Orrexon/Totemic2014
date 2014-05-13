@@ -41,8 +41,12 @@ Level* LevelLoader::parseLevel(const std::string &filepath, b2World& world)
 	level->setHotspotPosition(root["hotspot"]["position"]["x"].asDouble(), root["hotspot"]["position"]["y"].asDouble());
 	level->setHotspotRadius(root["hotspot"]["radius"].asDouble());
 	level->setBackgroundPath(root["background"]["path"].asString());
+
 	for (auto it = root["players"].begin(); it != root["players"].end(); ++it)
 	{
+		level->setPlayerSpawn(it.index(), 
+			sf::Vector2f((*it)["defender_position_x"].asDouble(), (*it)["defender_position_y"].asDouble()),
+			sf::Vector2f((*it)["gatherer_position_x"].asDouble(), (*it)["gatherer_position_y"].asDouble()));
 		level->setDefenderSpawn(it.index(), (*it)["defender_position_x"].asDouble(), (*it)["defender_position_y"].asDouble());
 		level->setGathererSpawn(it.index(), (*it)["gatherer_position_x"].asDouble(), (*it)["gatherer_position_y"].asDouble());
 	}
@@ -194,6 +198,6 @@ Trap* LevelLoader::createTrap(sf::Vector2f position)
 	trap->getSprite().setOrigin(128, 128);
 	trap->getSprite().setTexture(m_resourceHolder->getTexture("trap.png"));
 	trap->setExplosionPosition(position.x, position.y);
-	trap->setExplosionRadius(200);
+	trap->setExplosionRadius(125);
 	return trap;
 }

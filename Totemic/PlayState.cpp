@@ -1,5 +1,6 @@
 ﻿#include <SFML\Graphics.hpp>
-#include <Thor\Math\Random.hpp>
+#include <Thor\Math.hpp>
+#include <Thor\Particles.hpp>
 #include <iostream>
 #include "PlayState.h"
 #include "MenuState.h"
@@ -28,6 +29,10 @@
 PlayState::PlayState() : m_world(b2Vec2(0.f, 0.f))
 {
 	m_winGameTweener = nullptr;
+	m_defenderParticleSystem = nullptr;
+	m_timerParticleSystem = nullptr;
+	m_defenderEmitter = nullptr;
+	m_timerEmitter = nullptr;
 }
 
 PlayState::~PlayState()
@@ -36,6 +41,13 @@ PlayState::~PlayState()
 
 void PlayState::entering()
 {
+	m_timerParticleSystem = new thor::ParticleSystem();
+	m_timerParticleSystem->setTexture(m_stateAsset->resourceHolder->getTexture("timer_particle.png"));
+	m_timerEmitter = new thor::UniversalEmitter();
+	m_defenderParticleSystem = new thor::ParticleSystem();
+	m_defenderParticleSystem->setTexture(m_stateAsset->resourceHolder->getTexture("defender_particle.png"));
+	m_defenderEmitter = new thor::UniversalEmitter();
+
 	m_exclusive = false;
 	m_gameWon = false;
 	m_totemIsBlockingPlayer = false;
@@ -143,6 +155,18 @@ void PlayState::leaving()
 	delete m_contactFilter;
 	m_contactFilter = nullptr;
 
+	delete m_defenderParticleSystem;
+	m_defenderParticleSystem = nullptr;
+
+	delete m_defenderEmitter;
+	m_defenderEmitter = nullptr;
+
+	delete m_timerParticleSystem;
+	m_timerParticleSystem = nullptr;
+
+	delete m_timerEmitter;
+	m_timerEmitter = nullptr;
+
 	std::cout << "Leaving play state" << std::endl;
 }
 
@@ -172,11 +196,26 @@ bool PlayState::update(float dt)
 		return true;
 	}
 
+	m_defenderParticleSystem->update(sf::seconds(dt));
+	m_timerParticleSystem->update(sf::seconds(dt));
+
 	for (auto &player : m_players)
 	{
 		if (player->hasWon())
 		{
 			m_gameWon = true;
+		}
+
+		if (player->getGatherer()->m_shieldStunned && player->getGatherer()->m_shieldStunnedTimer.getElapsedTime().asSeconds() >= SHIELD_STUNNED_TIMER)
+		{
+			player->getGatherer()->m_shieldStunned = false;
+			player->getGatherer()->m_shieldStunnedTimer.reset();
+		}
+
+		if (player->getDefender()->m_shieldStunned && player->getDefender()->m_shieldStunnedTimer.getElapsedTime().asSeconds() >= SHIELD_STUNNED_TIMER)
+		{
+			player->getDefender()->m_shieldStunned = false;
+			player->getDefender()->m_shieldStunnedTimer.reset();
 		}
 	}
 
@@ -275,7 +314,12 @@ bool PlayState::update(float dt)
 #pragma region coins_update
 	{
 		std::vector<Coin*> coins = m_currentLevel->getCoins();
-		if (coins.size() < MAX_COINS)
+		int amount = 0;
+		for (int i = 0; i < coins.size(); i++)
+		{
+			if (coins[i]->isState(CoinState::IDLE)) amount++;
+		}
+		if (amount < MAX_COINS)
 		{
 			if (!m_currentLevel->getCoinTimer()->isRunning())
 			{
@@ -296,7 +340,8 @@ bool PlayState::update(float dt)
 					}
 					m_currentLevel->setCoinSpawnOccupied(randomCoinSpawn, true);
 					Coin* coin = new Coin();
-					coin->getSprite()->setTexture(m_stateAsset->resourceHolder->getTexture("Coin.png"));
+					coin->setState(CoinState::IDLE);
+					coin->getSprite()->setTexture(m_stateAsset->resourceHolder->getTexture("coin.png"));
 					coin->getSprite()->setPosition(coinSpawns[randomCoinSpawn].position);
 					coin->getSprite()->setOrigin(32, 32);
 					coin->getAnimator()->playAnimation("idle", true);
@@ -311,15 +356,14 @@ bool PlayState::update(float dt)
 		while (it != coins.end())
 		{
 			bool kill = false;
-			if ((*it)->isGathered())
+			if ((*it)->isState(CoinState::GATHERED))
 			{
 				if (Math::euclideanDistance(
 					(*it)->getSprite()->getPosition(),
 					(*it)->getPlayerGathered()->getTotemSprite()->getPosition()
 					) < COIN_GATHERED_SPEED)
 				{
-					kill = true;
-					(*it)->getPlayerGathered()->m_bounty += 1;
+					(*it)->setState(CoinState::SLURPING);
 				}
 				else
 				{
@@ -331,6 +375,19 @@ bool PlayState::update(float dt)
 					sf::Vector2f newPosition = oldPosition + sf::Vector2f(direction.x * COIN_GATHERED_SPEED, direction.y * COIN_GATHERED_SPEED);
 
 					(*it)->getSprite()->setPosition(newPosition);
+				}
+			}
+			else if ((*it)->isState(CoinState::SLURPING))
+			{
+				sf::Vector2f oldScale = (*it)->getSprite()->getScale();
+				oldScale.x -= 0.006f;
+				oldScale.y -= 0.006f;
+				(*it)->getSprite()->scale(oldScale);
+				
+				if ((*it)->getSprite()->getGlobalBounds().width <= 0.5f)
+				{
+					kill = true;
+					(*it)->getPlayerGathered()->addToBounty(1);
 				}
 			}
 			(*it)->getAnimator()->update(sf::seconds(dt));
@@ -356,7 +413,7 @@ bool PlayState::update(float dt)
 	ManyMouseEvent event;
 	while (ManyMouse_PollEvent(&event))
 	{
-		if (m_players[event.device] == nullptr || m_players[event.device]->isStunned()) continue;
+		if (m_players[event.device] == nullptr || m_players[event.device]->isStunned() || m_players[event.device]->getDefender()->m_shieldStunned) continue;
 		Player* player = m_players[event.device];
 
 		if (event.type == MANYMOUSE_EVENT_RELMOTION)
@@ -438,10 +495,69 @@ bool PlayState::update(float dt)
 		{
 			player->setStunned(false);
 		}
+
+		if (player->hasShield())
+		{
+			if (player->m_shieldTimer.getElapsedTime().asSeconds() >= SHIELD_TIMER)
+			{
+				player->setShield(false);
+			}
+			else
+			{
+				for (std::size_t i = 0; i < m_players.size(); i++)
+				{
+					if (player != m_players[i])
+					{
+						// Gatherer knockback
+						if (Math::euclideanDistance(
+							player->getGatherer()->getSprite()->getPosition(),
+							m_players[i]->getGatherer()->getSprite()->getPosition()) <= SHIELD_RADIUS)
+						{
+							m_players[i]->getGatherer()->m_shieldStunned = true;
+							m_players[i]->getGatherer()->m_shieldStunnedTimer.restart();
+							sf::Vector2f v1 = m_players[i]->getGatherer()->getSprite()->getPosition();
+							sf::Vector2f v2 = player->getGatherer()->getSprite()->getPosition();
+							sf::Vector2f direction = Math::direction(v2, v1);
+							float length = Math::euclideanDistance(v1, v2);
+							float force = 
+								(Math::clamp(SHIELD_RADIUS - length, SHIELD_RADIUS, SHIELD_FORCE_RADIUS_MIN)) /
+								SHIELD_RADIUS * SHIELD_MAX_FORCE;
+							m_players[i]->getGatherer()->getBody()->ApplyLinearImpulse(
+								PhysicsHelper::gameToPhysicsUnits(sf::Vector2f(
+									direction.x * force, 
+									direction.y * force)),
+								m_players[i]->getGatherer()->getBody()->GetWorldCenter(), true);
+						}
+
+						// Defender knockback
+						if (Math::euclideanDistance(
+							player->getGatherer()->getSprite()->getPosition(),
+							m_players[i]->getDefender()->getSprite()->getPosition()) <= SHIELD_RADIUS)
+						{
+							m_players[i]->getDefender()->m_shieldStunned = true;
+							m_players[i]->getDefender()->m_shieldStunnedTimer.restart();
+							sf::Vector2f v1 = m_players[i]->getDefender()->getSprite()->getPosition();
+							sf::Vector2f v2 = player->getGatherer()->getSprite()->getPosition();
+							sf::Vector2f direction = Math::direction(v2, v1);
+							float length = Math::euclideanDistance(v1, v2);
+							float force =
+								(Math::clamp(SHIELD_RADIUS - length, SHIELD_RADIUS, SHIELD_FORCE_RADIUS_MIN)) /
+								SHIELD_RADIUS * SHIELD_MAX_FORCE;
+							m_players[i]->getDefender()->getBody()->ApplyLinearImpulse(
+								PhysicsHelper::gameToPhysicsUnits(sf::Vector2f(
+								direction.x * force,
+								direction.y * force)),
+								m_players[i]->getDefender()->getBody()->GetWorldCenter(), true);
+						}
+					}
+				}
+			}
+		}
 	}
 #pragma endregion
 
 	m_world.Step(1.f / 60.f, 8, 3);
+	m_currentLevel->update(dt); // There can be no player->setDead(true); after this
 
 #pragma region Gatherer_Movement
 	b2Vec2 up_impulse(0.f, -15.f);
@@ -449,7 +565,7 @@ bool PlayState::update(float dt)
 	b2Vec2 left_impulse(-15.f, 0.f);
 	b2Vec2 right_impulse(15.f, 0.f);
 
-	if (m_players[0] != nullptr && m_players[0]->getGatherer()->getBody()->IsActive() && !m_players[0]->isStunned())
+	if (m_players[0] != nullptr && !m_players[0]->getGatherer()->m_shieldStunned && m_players[0]->getGatherer()->getBody()->IsActive() && !m_players[0]->isStunned())
 	{
 		b2Vec2 body_point = m_players[0]->getGatherer()->getBody()->GetWorldCenter();
 		if (m_actionMap->isActive("p1_up"))
@@ -470,7 +586,7 @@ bool PlayState::update(float dt)
 		}
 	}
 
-	if (m_players[1] != nullptr && m_players[1]->getGatherer()->getBody()->IsActive() && !m_players[1]->isStunned())
+	if (m_players[1] != nullptr && !m_players[1]->getGatherer()->m_shieldStunned && m_players[1]->getGatherer()->getBody()->IsActive() && !m_players[1]->isStunned())
 	{
 		b2Vec2 body_point = m_players[1]->getGatherer()->getBody()->GetWorldCenter();
 		if (m_actionMap->isActive("p2_up"))
@@ -488,6 +604,49 @@ bool PlayState::update(float dt)
 		if (m_actionMap->isActive("p2_right"))
 		{
 			m_players[1]->getGatherer()->getBody()->ApplyLinearImpulse(right_impulse, body_point, true);
+		}
+	}
+
+	if (m_players[2] != nullptr && !m_players[2]->getGatherer()->m_shieldStunned && m_players[2]->getGatherer()->getBody()->IsActive() && !m_players[2]->isStunned())
+	{
+		b2Vec2 body_point = m_players[2]->getGatherer()->getBody()->GetWorldCenter();
+		if (m_actionMap->isActive("p3_up"))
+		{
+			m_players[2]->getGatherer()->getBody()->ApplyLinearImpulse(up_impulse, body_point, true);
+		}
+		if (m_actionMap->isActive("p3_down"))
+		{
+			m_players[2]->getGatherer()->getBody()->ApplyLinearImpulse(down_impulse, body_point, true);
+		}
+		if (m_actionMap->isActive("p3_left"))
+		{
+			m_players[2]->getGatherer()->getBody()->ApplyLinearImpulse(left_impulse, body_point, true);
+		}
+		if (m_actionMap->isActive("p3_right"))
+		{
+			m_players[2]->getGatherer()->getBody()->ApplyLinearImpulse(right_impulse, body_point, true);
+		}
+	}
+
+
+	if (m_players[3] != nullptr && !m_players[3]->getGatherer()->m_shieldStunned && m_players[3]->getGatherer()->getBody()->IsActive() && !m_players[3]->isStunned())
+	{
+		b2Vec2 body_point = m_players[1]->getGatherer()->getBody()->GetWorldCenter();
+		if (m_actionMap->isActive("p4_up"))
+		{
+			m_players[3]->getGatherer()->getBody()->ApplyLinearImpulse(up_impulse, body_point, true);
+		}
+		if (m_actionMap->isActive("p4_down"))
+		{
+			m_players[3]->getGatherer()->getBody()->ApplyLinearImpulse(down_impulse, body_point, true);
+		}
+		if (m_actionMap->isActive("p4_left"))
+		{
+			m_players[3]->getGatherer()->getBody()->ApplyLinearImpulse(left_impulse, body_point, true);
+		}
+		if (m_actionMap->isActive("p4_right"))
+		{
+			m_players[3]->getGatherer()->getBody()->ApplyLinearImpulse(right_impulse, body_point, true);
 		}
 	}
 #pragma endregion
@@ -527,10 +686,11 @@ bool PlayState::update(float dt)
 			player->getGatherer()->getBody()->SetLinearVelocity(b2Vec2(player->getGatherer()->getBody()->GetLinearVelocity().x, -MAX_VELOCITY_GATHERER.y));
 		}
 
-		player->processEventualDeath();
+		player->processEventualDeath(m_currentLevel);
 		player->getDeathTimer()->update();
 		player->getDefender()->getSprite()->setPosition(PhysicsHelper::physicsToGameUnits(player->getDefender()->getBody()->GetPosition()));
 		player->getGatherer()->getSprite()->setPosition(PhysicsHelper::physicsToGameUnits(player->getGatherer()->getBody()->GetPosition()));
+		player->getGatherer()->m_shieldOverlay->setPosition(PhysicsHelper::physicsToGameUnits(player->getGatherer()->getBody()->GetPosition()));
 		
 		if (!player->getDefender()->getAnimatior()->isPlayingAnimation())
 		{
@@ -542,10 +702,12 @@ bool PlayState::update(float dt)
 		}
 		player->getDefender()->getAnimatior()->update(sf::seconds(dt));
 		player->getGatherer()->getAnimatior()->update(sf::seconds(dt));
+		player->getGatherer()->m_shieldOverlayAnimatior->update(sf::seconds(dt));
 		
 		player->getDefender()->getAnimatior()->animate(*player->getDefender()->getSprite());
 		player->getGatherer()->getAnimatior()->animate(*player->getGatherer()->getSprite());
-
+		player->getGatherer()->m_shieldOverlayAnimatior->animate(*player->getGatherer()->m_shieldOverlay);
+		
 		/*
 		*********************
 			COIN PICKUP
@@ -560,7 +722,8 @@ bool PlayState::update(float dt)
 				// Set the spawn area as not occupied
 				m_currentLevel->setCoinSpawnOccupied((*it)->m_coinSpawnIndex, false);
 				(*it)->setGathered(player);
-
+				(*it)->setState(CoinState::GATHERED);
+				m_stateAsset->audioSystem->playSound("Coin_Pickup");
 				m_currentLevel->getCoinTimer()->restart();
 			}
 			else
@@ -602,7 +765,7 @@ bool PlayState::update(float dt)
 					break;
 				}
 				case SHIELD:
-
+					player->setShield(true);
 					break;
 				}
 				m_currentLevel->setPowerupSpawnOccupied((*powerupIt)->m_coinSpawnIndex, false);
@@ -647,12 +810,16 @@ bool PlayState::update(float dt)
 				}
 			}
 		}
+
+		player->m_totemBountyIconAnimator->update(sf::seconds(dt));
+		player->m_totemBountyIconAnimator->animate(*player->m_totemBountyIcon);
 	}
 	if (!hasChangedTotemBlockedState)
 	{
 		m_totemIsBlockingPlayer = false;
 	}
 #pragma endregion
+	
 	if (m_totemIsBlockingPlayer)
 	{
 		{
@@ -690,11 +857,11 @@ bool PlayState::update(float dt)
 			onEnterTotem(activePlayers.back());
 		}
 		activePlayers.back()->addPoints(POINTS_PER_SECOND * dt, activePlayers.back()->getGatherer()->getSprite()->getPosition(), SCORE_HOTSPOT);
-		if (activePlayers.back()->m_bounty > 0)
+		if (activePlayers.back()->getBounty() > 0)
 		{
-			float score = activePlayers.back()->m_bounty * SCORE_PER_COIN;
+			float score = activePlayers.back()->getBounty() * SCORE_PER_COIN;
 			activePlayers.back()->addPoints(score, activePlayers.back()->getTotemSprite()->getPosition(), PlayerScoreTypes::SCORE_COIN);
-			activePlayers.back()->m_bounty = 0;
+			activePlayers.back()->resetBounty();
 		}
 		updateHoldingTotem(activePlayers.back());
 	}
@@ -706,6 +873,13 @@ bool PlayState::update(float dt)
 
 	sortTotem();
 	m_totemTweener.step(dt);
+
+	// Update totem text position accordingly to the totem sprite
+	for (auto &player : m_players)
+	{
+		player->m_totemBountyAmount->setPosition(player->getTotemSprite()->getPosition());
+		player->m_totemBountyIcon->setPosition(player->getTotemSprite()->getPosition());
+	}
 
 	// Update lightning effect
 	sf::Color oldColor = m_lightningEffect.getFillColor();
@@ -732,10 +906,10 @@ void PlayState::draw()
 
 	m_currentLevel->drawFlyingCoins(m_stateAsset->windowManager->getWindow());
 
-	/*Box2DWorldDraw debugDraw(m_stateAsset->windowManager->getWindow());
+	Box2DWorldDraw debugDraw(m_stateAsset->windowManager->getWindow());
 	debugDraw.SetFlags(b2Draw::e_shapeBit);
 	m_world.SetDebugDraw(&debugDraw);
-	m_world.DrawDebugData();*/
+	//m_world.DrawDebugData();
 
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBarBackground);
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBar);
@@ -744,6 +918,13 @@ void PlayState::draw()
 	for (auto &player : m_players)
 	{
 		m_stateAsset->windowManager->getWindow()->draw(*player->getPointsIndicator());
+
+
+		if (player->m_bounty > 0)
+		{
+			m_stateAsset->windowManager->getWindow()->draw(*player->m_totemBountyAmount);
+			m_stateAsset->windowManager->getWindow()->draw(*player->m_totemBountyIcon);
+		}
 	}
 
 	for (auto &FST : m_floatingScoreTexts)
@@ -751,6 +932,8 @@ void PlayState::draw()
 		m_stateAsset->windowManager->getWindow()->draw(*FST->getText());
 	}
 	m_stateAsset->windowManager->getWindow()->draw(m_lightningEffect);
+	m_stateAsset->windowManager->getWindow()->draw(*m_defenderParticleSystem);
+	m_stateAsset->windowManager->getWindow()->draw(*m_timerParticleSystem);
 }
 
 void PlayState::initManyMouse()
@@ -759,6 +942,7 @@ void PlayState::initManyMouse()
 	for (int i = 0; i < numDevices; i++)
 	{
 		std::string name = ManyMouse_DeviceName(i);
+		std::cout << name << std::endl;
 		if (name.find("Pad") != std::string::npos)
 		{
 			//m_mouseIndicies.push_back(-1);
@@ -803,6 +987,7 @@ void PlayState::initPlayers()
 	for (std::size_t i = 0; i < 4; i++)
 	{
 		m_players.push_back(new Player());
+		m_players.back()->game = this;
 		m_players.back()->setResourceHolder(m_stateAsset->resourceHolder);
 		m_players.back()->setFSTRef(m_floatingScoreTexts);
 		m_players.back()->setColor(playerColors[i]);
@@ -815,6 +1000,37 @@ void PlayState::initPlayers()
 		sprite->setOrigin(sprite->getGlobalBounds().width / 2.f, sprite->getGlobalBounds().height);
 		sprite->setPosition(TIMER_POS_X, TIMER_POS_Y);
 		m_players.back()->setPointsIndicator(sprite);
+
+		m_players.back()->m_totemBountyAmount->setFont(m_stateAsset->resourceHolder->getFont("lithospro.otf"));
+		m_players.back()->m_totemBountyAmount->setCharacterSize(20);
+		m_players.back()->m_totemBountyAmount->setColor(sf::Color::Black);
+		m_players.back()->m_totemBountyAmount->setString("x0");
+
+		m_players.back()->m_totemBountyAmount->setOrigin(m_players.back()->m_totemBountyAmount->getGlobalBounds().width / 2.f, m_players.back()->m_totemBountyAmount->getGlobalBounds().height / 2.f);
+
+		m_players.back()->m_totemBountyIcon->setTexture(m_stateAsset->resourceHolder->getTexture("coin.png"));
+
+		m_players.back()->m_totemBountyAnimation = new thor::FrameAnimation();
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(64, 0, 64, 64));
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(128, 0, 64, 64));
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(192, 0, 64, 64));
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(256, 0, 64, 64));
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(320, 0, 64, 64));
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(384, 0, 64, 64));
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(448, 0, 64, 64));
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(512, 0, 64, 64));
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(576, 0, 64, 64));
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(640, 0, 64, 64));
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(704, 0, 64, 64));
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(768, 0, 64, 64));
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(832, 0, 64, 64));
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(896, 0, 64, 64));
+		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(960, 0, 64, 64));
+		m_players.back()->m_totemBountyIconAnimator->addAnimation("idle", *m_players.back()->m_totemBountyAnimation, sf::seconds(1.f));
+		
+		m_players.back()->m_totemBountyIcon->setOrigin(32, 64);
+		m_players.back()->m_totemBountyIcon->setScale(0.3, 0.3);
+		m_players.back()->m_totemBountyIconAnimator->playAnimation("idle", true);
 	}
 }
 
@@ -835,6 +1051,11 @@ void PlayState::setupActions()
 	m_actionMap->operator[]("p3_left") = thor::Action(sf::Keyboard::G, thor::Action::Hold);
 	m_actionMap->operator[]("p3_right") = thor::Action(sf::Keyboard::J, thor::Action::Hold);
 
+	m_actionMap->operator[]("p4_up") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
+	m_actionMap->operator[]("p4_down") = thor::Action(sf::Keyboard::Numpad5, thor::Action::Hold);
+	m_actionMap->operator[]("p4_left") = thor::Action(sf::Keyboard::Numpad4, thor::Action::Hold);
+	m_actionMap->operator[]("p4_right") = thor::Action(sf::Keyboard::Numpad6, thor::Action::Hold);
+
 	m_actionMap->operator[]("Exit") = thor::Action(sf::Keyboard::Escape, thor::Action::PressOnce);
 	m_actionMap->operator[]("Restart") = thor::Action(sf::Keyboard::R, thor::Action::PressOnce);
 }
@@ -851,6 +1072,7 @@ void PlayState::loadNewLevel()
 	}
 
 	m_currentLevel = m_levelLoader->parseLevel(levels[randomLevelIndex], m_world);
+	m_currentLevel->game = this;
 	m_currentLevel->getBackground()->setTexture(m_stateAsset->resourceHolder->getTexture(m_currentLevel->getBackgroundPath(), false));
 	
 	m_hotSpot->setRadius(m_currentLevel->getHotspotRadius());
@@ -861,6 +1083,7 @@ void PlayState::loadNewLevel()
 	{
 		player->getTotemSprite()->setOrigin(player->getTotemSprite()->getGlobalBounds().width / 2.f, player->getTotemSprite()->getGlobalBounds().height / 2.f);
 		player->getTotemSprite()->setPosition(m_hotSpot->getPosition().x, start_y_position);
+		player->m_totemBountyAmount->setPosition(player->getTotemSprite()->getPosition());
 		start_y_position -= player->getTotemSprite()->getGlobalBounds().height - 2;
 	}
 
@@ -888,12 +1111,13 @@ void PlayState::loadNewLevel()
 
 		defender->getSprite()->setTexture(m_stateAsset->resourceHolder->getTexture(defender_textures[i]));
 		gatherer->getSprite()->setTexture(m_stateAsset->resourceHolder->getTexture(gatherer_textures[i]));
-
+		
 		defender->setSpawnPosition(m_currentLevel->getDefenderSpawn(i));
 		gatherer->setSpawnPosition(m_currentLevel->getGathererSpawn(i));
 
 		m_players[i]->setDefender(defender);
 		m_players[i]->setGatherer(gatherer);
+		gatherer->m_shieldOverlay->setTexture(m_stateAsset->resourceHolder->getTexture("shield_animation.png"));
 	}
 
 	createPlayerBodies();
@@ -916,7 +1140,7 @@ void PlayState::createPlayerBodies()
 			b2Body* body = m_world.CreateBody(&bodyDef);
 
 			b2CircleShape shape;
-			shape.m_radius = PhysicsHelper::gameToPhysicsUnits(48);
+			shape.m_radius = PhysicsHelper::gameToPhysicsUnits(32);
 
 			b2FixtureDef fixtureDef;
 			fixtureDef.density = 1;
@@ -1079,7 +1303,10 @@ b2Body* PlayState::createWall(sf::Vector2f v1, sf::Vector2f v2)
 
 void PlayState::onEnterTotem(Player* player)
 {
-	
+	//m_timerEmitter->setEmissionRate(40);
+	//m_timerEmitter->setParticlePosition(player->getPointsIndicator()->getPosition());
+	//m_timerEmitter->setParticleVelocity(thor::Distribution::deflect());
+	//m_timerEmitterConnection = m_timerParticleSystem->addEmitter()
 }
 
 void PlayState::updateHoldingTotem(Player* player)

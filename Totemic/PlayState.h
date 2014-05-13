@@ -3,6 +3,7 @@
 #include "GameState.h"
 #include "Box2D\Box2D.h"
 #include "dbtweener.h"
+#include <Thor\Particles.hpp>
 
 class Player;
 class LevelLoader;
@@ -53,7 +54,7 @@ public:
 
 	b2Body* createWall(sf::Vector2f v1, sf::Vector2f v2);
 
-private:
+public:
 	bool m_gameWon;
 	bool m_totemIsBlockingPlayer;
 
@@ -83,4 +84,10 @@ private:
 	CDBTweener *m_winGameTweener;
 	CDBTweener m_totemTweener;
 	TotemTweenerListener* m_totemTweenerListener;
+
+	thor::ParticleSystem* m_defenderParticleSystem;
+	thor::UniversalEmitter* m_defenderEmitter;
+	thor::ParticleSystem* m_timerParticleSystem;
+	thor::UniversalEmitter* m_timerEmitter;
+	thor::Connection m_timerEmitterConnection;
 };
