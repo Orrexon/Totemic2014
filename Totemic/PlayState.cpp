@@ -29,10 +29,6 @@
 PlayState::PlayState() : m_world(b2Vec2(0.f, 0.f))
 {
 	m_winGameTweener = nullptr;
-	m_defenderParticleSystem = nullptr;
-	m_timerParticleSystem = nullptr;
-	m_defenderEmitter = nullptr;
-	m_timerEmitter = nullptr;
 }
 
 PlayState::~PlayState()
@@ -41,13 +37,6 @@ PlayState::~PlayState()
 
 void PlayState::entering()
 {
-	m_timerParticleSystem = new thor::ParticleSystem();
-	m_timerParticleSystem->setTexture(m_stateAsset->resourceHolder->getTexture("timer_particle.png"));
-	m_timerEmitter = new thor::UniversalEmitter();
-	m_defenderParticleSystem = new thor::ParticleSystem();
-	m_defenderParticleSystem->setTexture(m_stateAsset->resourceHolder->getTexture("defender_particle.png"));
-	m_defenderEmitter = new thor::UniversalEmitter();
-
 	m_exclusive = false;
 	m_gameWon = false;
 	m_totemIsBlockingPlayer = false;
@@ -93,9 +82,49 @@ void PlayState::entering()
 
 	body->CreateFixture(&fixtureDef);
 
-	m_totemHead.setTexture(m_stateAsset->resourceHolder->getTexture("totempole.png"));
-	m_totemHead.setOrigin(129, m_totemHead.getGlobalBounds().height);
+	m_totemHead.setTexture(m_stateAsset->resourceHolder->getTexture("totemhead.png"));
+	m_totemHead.setOrigin(129, 157);
 	m_totemHead.setPosition(m_players.back()->getTotemSprite()->getPosition().x, m_players.back()->getTotemSprite()->getPosition().y + m_players.back()->getTotemSprite()->getGlobalBounds().height / 2.f);
+
+	int width = 263;
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 0, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 1, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 2, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 3, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 4, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 5, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 6, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 7, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 8, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 9, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 10, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 11, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 12, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 13, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 14, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 15, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 16, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 17, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 18, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 19, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 20, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 21, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 22, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 23, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 24, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 25, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 26, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 27, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 28, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 29, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 30, 0, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 31, 0, 263, 157));
+
+	m_totemHeadIdleAnimation.addFrame(1.f, sf::IntRect(0, 157, 263, 157));
+
+	m_totemHeadAnimator.addAnimation("active", m_totemHeadActiveAnimation, sf::seconds(0.6));
+	m_totemHeadAnimator.addAnimation("idle", m_totemHeadIdleAnimation, sf::seconds(64));
+	m_totemHeadAnimator.playAnimation("idle", true);
 
 	m_totemFoot.setTexture(m_stateAsset->resourceHolder->getTexture("totemfoot.png"));
 	m_totemFoot.setOrigin(m_totemFoot.getGlobalBounds().width / 2.f, 0.f);
@@ -155,18 +184,6 @@ void PlayState::leaving()
 	delete m_contactFilter;
 	m_contactFilter = nullptr;
 
-	delete m_defenderParticleSystem;
-	m_defenderParticleSystem = nullptr;
-
-	delete m_defenderEmitter;
-	m_defenderEmitter = nullptr;
-
-	delete m_timerParticleSystem;
-	m_timerParticleSystem = nullptr;
-
-	delete m_timerEmitter;
-	m_timerEmitter = nullptr;
-
 	std::cout << "Leaving play state" << std::endl;
 }
 
@@ -195,9 +212,6 @@ bool PlayState::update(float dt)
 		setupWinTweeners();
 		return true;
 	}
-
-	m_defenderParticleSystem->update(sf::seconds(dt));
-	m_timerParticleSystem->update(sf::seconds(dt));
 
 	for (auto &player : m_players)
 	{
@@ -287,7 +301,7 @@ bool PlayState::update(float dt)
 					{
 						if (Math::pointInCircle(m_players[k]->getGatherer()->getSprite()->getPosition(), traps[i]->getExplosionPosition(), traps[i]->getExplosionRadius()))
 						{
-							m_players[k]->setDead(true);
+							m_players[k]->setDying(true);
 						}
 						else if (Math::pointInCircle(m_players[k]->getDefender()->getSprite()->getPosition(), traps[i]->getExplosionPosition(), traps[i]->getExplosionRadius()))
 						{
@@ -694,8 +708,8 @@ bool PlayState::update(float dt)
 
 		player->processEventualDeath(m_currentLevel);
 		player->getDeathTimer()->update();
-		player->getDefender()->getSprite()->setPosition(PhysicsHelper::physicsToGameUnits(player->getDefender()->getBody()->GetPosition()));
-		player->getGatherer()->getSprite()->setPosition(PhysicsHelper::physicsToGameUnits(player->getGatherer()->getBody()->GetPosition()));
+		player->getDefender()->getSprite()->setPosition(PhysicsHelper::physicsToGameUnits(player->getDefender()->getBody()->GetPosition()) - sf::Vector2f(0, 64));
+		player->getGatherer()->getSprite()->setPosition(PhysicsHelper::physicsToGameUnits(player->getGatherer()->getBody()->GetPosition()) - sf::Vector2f(0, 15));
 		player->getGatherer()->m_shieldOverlay->setPosition(PhysicsHelper::physicsToGameUnits(player->getGatherer()->getBody()->GetPosition()));
 		
 		if (!player->getDefender()->getAnimatior()->isPlayingAnimation())
@@ -706,9 +720,25 @@ bool PlayState::update(float dt)
 		{
 			player->getGatherer()->getAnimatior()->playAnimation("walk");
 		}
+
+		if (player->isDying())
+		{
+			player->getDefender()->getDeathAnimator()->update(sf::seconds(dt));
+			player->getGatherer()->getDeathAnimator()->update(sf::seconds(dt));
+			player->getDefender()->getDeathAnimator()->animate(*player->getDefender()->getDeathSprite());
+			player->getGatherer()->getDeathAnimator()->animate(*player->getGatherer()->getDeathSprite());
+
+			if (!player->getGatherer()->getDeathAnimator()->isPlayingAnimation() &&
+				!player->getDefender()->getDeathAnimator()->isPlayingAnimation())
+			{
+				player->setDying(false);
+				player->setDead(true);
+			}
+		}
 		player->getDefender()->getAnimatior()->update(sf::seconds(dt));
 		player->getGatherer()->getAnimatior()->update(sf::seconds(dt));
 		player->getGatherer()->m_shieldOverlayAnimatior->update(sf::seconds(dt));
+
 		player->getDefender()->getAnimatior()->animate(*player->getDefender()->getSprite());
 		player->getGatherer()->getAnimatior()->animate(*player->getGatherer()->getSprite());
 		player->getGatherer()->m_shieldOverlayAnimatior->animate(*player->getGatherer()->m_shieldOverlay);
@@ -730,11 +760,6 @@ bool PlayState::update(float dt)
 				(*it)->setState(CoinState::GATHERED);
 				m_stateAsset->audioSystem->playSound("Coin_Pickup");
 				m_currentLevel->getCoinTimer()->restart();
-				/*delete *it;
-				*it = nullptr;
-				it = coins.erase(it);*/
-
-
 			}
 			else
 			{
@@ -755,24 +780,24 @@ bool PlayState::update(float dt)
 				{
 				case LIGHTNING:
 				{
-								  for (std::size_t i = 0; i < m_players.size(); i++)
-								  {
-									  if (m_players[i] != player)
-									  {
-										  m_players[i]->setStunned(true);
-									  }
-								  }
+					for (std::size_t i = 0; i < m_players.size(); i++)
+					{
+						if (m_players[i] != player)
+						{
+							m_players[i]->setStunned(true);
+						}
+					}
 
-								  m_lightningAlpha = 255.f;
+					m_lightningAlpha = 255.f;
 
-								  CDBTweener::CTween* tween = new CDBTweener::CTween();
-								  tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
-								  tween->addValue(&m_lightningAlpha, 0.f);
-								  m_totemTweener.addTween(tween);
+					CDBTweener::CTween* tween = new CDBTweener::CTween();
+					tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
+					tween->addValue(&m_lightningAlpha, 0.f);
+					m_totemTweener.addTween(tween);
 
-								  m_stateAsset->audioSystem->playSound("Lightning");
+					m_stateAsset->audioSystem->playSound("Lightning");
 
-								  break;
+					break;
 				}
 				case SHIELD:
 					player->setShield(true);
@@ -863,6 +888,8 @@ bool PlayState::update(float dt)
 	std::vector<Player*> activePlayers = m_hotSpot->getActivePlayers(m_players);
 	if (activePlayers.size() == 1)
 	{
+		if (m_totemHeadAnimator.getPlayingAnimation() != "active")
+			m_totemHeadAnimator.playAnimation("active", true);
 		if (!activePlayers.back()->m_holdingTotem)
 		{
 			activePlayers.back()->m_holdingTotem = true;
@@ -879,6 +906,8 @@ bool PlayState::update(float dt)
 	}
 	else
 	{
+		if (m_totemHeadAnimator.getPlayingAnimation() != "idle")
+			m_totemHeadAnimator.playAnimation("idle", true);
 		updateHoldingTotem(nullptr); // Set all to false
 	}
 
@@ -897,6 +926,10 @@ bool PlayState::update(float dt)
 	sf::Color oldColor = m_lightningEffect.getFillColor();
 	oldColor.a = static_cast<int>(m_lightningAlpha);
 	m_lightningEffect.setFillColor(oldColor);
+
+	// Update totemhead animations
+	m_totemHeadAnimator.update(sf::seconds(dt));
+	m_totemHeadAnimator.animate(m_totemHead);
 	return true;
 }
 
@@ -921,8 +954,7 @@ void PlayState::draw()
 	Box2DWorldDraw debugDraw(m_stateAsset->windowManager->getWindow());
 	debugDraw.SetFlags(b2Draw::e_shapeBit);
 	m_world.SetDebugDraw(&debugDraw);
-	//m_world.DrawDebugData();
-
+	m_world.DrawDebugData();
 
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBarBackground);
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBar);
@@ -945,8 +977,6 @@ void PlayState::draw()
 		m_stateAsset->windowManager->getWindow()->draw(*FST->getText());
 	}
 	m_stateAsset->windowManager->getWindow()->draw(m_lightningEffect);
-	m_stateAsset->windowManager->getWindow()->draw(*m_defenderParticleSystem);
-	m_stateAsset->windowManager->getWindow()->draw(*m_timerParticleSystem);
 }
 
 void PlayState::initManyMouse()
@@ -1113,11 +1143,26 @@ void PlayState::loadNewLevel()
 	gatherer_textures.push_back("g_yellow.png");
 	gatherer_textures.push_back("g_purple.png");
 
+	std::string playerGathererDeathTextures[4];
+	playerGathererDeathTextures[0] = "death_blue.png";
+	playerGathererDeathTextures[1] = "death_red.png";
+	playerGathererDeathTextures[2] = "death_yellow.png";
+	playerGathererDeathTextures[3] = "death_purple.png";
+
+	std::string playerDefenderDeathTextures[4];
+	playerDefenderDeathTextures[0] = "blue_d_death.png";
+	playerDefenderDeathTextures[1] = "red_d_death.png";
+	playerDefenderDeathTextures[2] = "yellow_d_death.png";
+	playerDefenderDeathTextures[3] = "purple_d_death.png";
+
 	for (std::size_t i = 0; i < m_players.size(); i++)
 	{
 		m_players[i]->clear(m_world);
 		Defender* defender = new Defender();
 		Gatherer* gatherer = new Gatherer();
+
+		defender->getDeathSprite()->setTexture(m_stateAsset->resourceHolder->getTexture(playerDefenderDeathTextures[i]));
+		gatherer->getDeathSprite()->setTexture(m_stateAsset->resourceHolder->getTexture(playerGathererDeathTextures[i]));
 
 		m_stateAsset->resourceHolder->getTexture(defender_textures[i]).setSmooth(true);
 		m_stateAsset->resourceHolder->getTexture(gatherer_textures[i]).setSmooth(true);

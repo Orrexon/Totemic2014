@@ -4,6 +4,7 @@
 #include "Box2D\Box2D.h"
 #include "dbtweener.h"
 #include <Thor\Particles.hpp>
+#include <Thor\Animation.hpp>
 #include "Math.h"
 
 class Player;
@@ -81,15 +82,12 @@ public:
 	sf::Sprite m_timerBar;
 	sf::Sprite m_frame;
 	sf::Sprite m_totemHead;
+	thor::Animator<sf::Sprite, std::string> m_totemHeadAnimator;
+	thor::FrameAnimation m_totemHeadActiveAnimation;
+	thor::FrameAnimation m_totemHeadIdleAnimation;
 	sf::Sprite m_totemFoot;
 
 	CDBTweener *m_winGameTweener;
 	CDBTweener m_totemTweener;
 	TotemTweenerListener* m_totemTweenerListener;
-
-	thor::ParticleSystem* m_defenderParticleSystem;
-	thor::UniversalEmitter* m_defenderEmitter;
-	thor::ParticleSystem* m_timerParticleSystem;
-	thor::UniversalEmitter* m_timerEmitter;
-	thor::Connection m_timerEmitterConnection;
 };
