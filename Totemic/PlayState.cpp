@@ -130,7 +130,7 @@ void PlayState::entering()
 	m_totemFoot.setOrigin(m_totemFoot.getGlobalBounds().width / 2.f, 0.f);
 	m_totemFoot.setPosition(m_players.front()->getTotemSprite()->getPosition().x, m_players.front()->getTotemSprite()->getPosition().y + m_players.front()->getTotemSprite()->getGlobalBounds().height / 2.f - 4);
 
-	m_walls.push_back(createWall(sf::Vector2f(FRAME_BORDER_WIDTH, FRAME_BORDER_WIDTH), sf::Vector2f(1920 - FRAME_BORDER_WIDTH, FRAME_BORDER_WIDTH))); // ⍐
+	m_walls.push_back(createWall(sf::Vector2f(FRAME_BORDER_WIDTH, FRAME_BORDER_WIDTH + 32), sf::Vector2f(1920 - FRAME_BORDER_WIDTH, FRAME_BORDER_WIDTH + 32))); // ⍐
 	m_walls.push_back(createWall(sf::Vector2f(1920 - FRAME_BORDER_WIDTH, FRAME_BORDER_WIDTH), sf::Vector2f(1920 - FRAME_BORDER_WIDTH, 1080 - FRAME_BORDER_WIDTH))); // ⍈
 	m_walls.push_back(createWall(sf::Vector2f(FRAME_BORDER_WIDTH, 1080 - FRAME_BORDER_WIDTH), sf::Vector2f(1920 - FRAME_BORDER_WIDTH, 1080 - FRAME_BORDER_WIDTH))); // ⍗
 	m_walls.push_back(createWall(sf::Vector2f(FRAME_BORDER_WIDTH, FRAME_BORDER_WIDTH), sf::Vector2f(FRAME_BORDER_WIDTH, 1080 - FRAME_BORDER_WIDTH))); // ⍇
@@ -954,7 +954,7 @@ void PlayState::draw()
 	Box2DWorldDraw debugDraw(m_stateAsset->windowManager->getWindow());
 	debugDraw.SetFlags(b2Draw::e_shapeBit);
 	m_world.SetDebugDraw(&debugDraw);
-	m_world.DrawDebugData();
+	//m_world.DrawDebugData();
 
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBarBackground);
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBar);
