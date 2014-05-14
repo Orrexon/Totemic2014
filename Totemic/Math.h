@@ -24,5 +24,13 @@ namespace Math
 	b2Vec2 collisionDirection(b2Vec2 firstV, b2Vec2 scndV);
 
 	sf::Vector2f direction(sf::Vector2f v1, sf::Vector2f v2);
+
+	float sumMagnitude(sf::Vector2f& V1, sf::Vector2f& V2);//overloaded for flexibility
+
+	float sumMagnitude(const b2Vec2& V1, const b2Vec2& V2);
+
+	float sumMagnitude(b2Vec2& V1, sf::Vector2f& V2);
+
+	float sumMagnitude(sf::Vector2f& V1, b2Vec2& V2);
 }
 
