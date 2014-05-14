@@ -56,23 +56,32 @@ void ContactListener::playerContactBegin(UserData* userDataA, UserData* userData
 	}
 	else if (charA->getData()->isType(DEFENDER) && charB->getData()->isType(DEFENDER))
 	{
-		/*
+		
 		// Get direction between the bodies
 		sf::Vector2f direction = Math::direction(
 			charA->getData()->getPlayer()->getDefender()->getSprite()->getPosition(),
 			charB->getData()->getPlayer()->getDefender()->getSprite()->getPosition());
 		sf::Vector2f collision_position = charA->getData()->getPlayer()->getDefender()->getSprite()->getPosition();
-		collision_position += direction * PhysicsHelper::physicsToGameUnits(charA->getData()->getPlayer()->getDefender()->getBody()->GetFixtureList()[0].GetShape()->m_radius);
+		collision_position = collision_position + direction * PhysicsHelper::physicsToGameUnits(charA->getData()->getPlayer()->getDefender()->getBody()->GetFixtureList()[0].GetShape()->m_radius);
 		
-		sf::Vector2f velocity(thor::random(-1, 1) * 200, thor::random(-1, 1) * 200);
-		charA->getData()->getPlayer()->game->m_defenderEmitter->setEmissionRate(90);
+		//Get the magnitude of the colliding defenders' velocities
+		//to get a relative emmission rate
+		float emission = Math::sumMagnitude(charA->getData()->getBody()->GetLinearVelocity(), charB->getData()->getBody()->GetLinearVelocity());
+
+		charA->getData()->getPlayer()->game->m_defenderEmitter->setEmissionRate(emission * 3);
 		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticlePosition(collision_position);
-		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticleVelocity(thor::Distributions::deflect(velocity, 180.f));
+		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticleVelocity(thor::Distributions::deflect(300.f*direction, 45.f));
 		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticleRotation(thor::Distributions::uniform(0.f, 360.f));
 		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticleRotationSpeed(thor::Distributions::uniform(10.f, 20.f));
 		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticleLifetime(sf::seconds(3.f));
 		charA->getData()->getPlayer()->game->m_defenderParticleSystem->addEmitter(*charA->getData()->getPlayer()->game->m_defenderEmitter, sf::seconds(0.1));
-		*/
+
+		//particle spreads the opposite way as well
+		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticlePosition(collision_position);
+		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticleVelocity(thor::Distributions::deflect(-300.f*direction, 45.f));
+		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticleRotation(thor::Distributions::uniform(0.f, 360.f));
+		charA->getData()->getPlayer()->game->m_defenderParticleSystem->addEmitter(*charA->getData()->getPlayer()->game->m_defenderEmitter, sf::seconds(0.1));
+		
 	}
 }
 
