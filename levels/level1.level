@@ -23,8 +23,8 @@
    "hotspot" : {
       "image" : "../assets/textures/hotspot.psd",
       "position" : {
-         "x" : 960.0,
-         "y" : 540.0
+         "x" : 958.0,
+         "y" : 540.50
       },
       "radius" : 200.0
    },
@@ -33,46 +33,6 @@
          "image_path" : "../assets/textures/bladvaxt.png",
          "x" : 1218,
          "y" : 802
-      },
-      {
-         "image_path" : "../assets/textures/bladvaxt.png",
-         "x" : 550,
-         "y" : 318
-      },
-      {
-         "image_path" : "../assets/textures/plant.png",
-         "x" : 642,
-         "y" : 545
-      },
-      {
-         "image_path" : "../assets/textures/plant_1.png",
-         "x" : 1260,
-         "y" : 547
-      },
-      {
-         "image_path" : "../assets/textures/plant_2.png",
-         "x" : 683,
-         "y" : 230
-      },
-      {
-         "image_path" : "../assets/textures/plant_3.png",
-         "x" : 1274,
-         "y" : 360
-      },
-      {
-         "image_path" : "../assets/textures/flower.png",
-         "x" : 873,
-         "y" : 933
-      },
-      {
-         "image_path" : "../assets/textures/plant.png",
-         "x" : 894,
-         "y" : 172
-      },
-      {
-         "image_path" : "../assets/textures/flower.png",
-         "x" : 1465,
-         "y" : 147
       }
    ],
    "objects" : [
@@ -88,8 +48,8 @@
       },
       {
          "path" : "../assets/objects/ruin_tl_3.objx",
-         "x" : 256,
-         "y" : 96
+         "x" : 234,
+         "y" : 102
       },
       {
          "path" : "../assets/objects/ruin_tr_3.objx",
@@ -149,16 +109,16 @@
    ],
    "players" : [
       {
-         "defender_position_x" : 192.0,
-         "defender_position_y" : 64.0,
-         "gatherer_position_x" : 64.0,
-         "gatherer_position_y" : 64.0
+         "defender_position_x" : 193.0,
+         "defender_position_y" : 96.49996948242188,
+         "gatherer_position_x" : 62.0,
+         "gatherer_position_y" : 98.50
       },
       {
          "defender_position_x" : 1728.0,
-         "defender_position_y" : 64.0,
-         "gatherer_position_x" : 1856.0,
-         "gatherer_position_y" : 64.0
+         "defender_position_y" : 96.0,
+         "gatherer_position_x" : 1862.0,
+         "gatherer_position_y" : 98.0
       },
       {
          "defender_position_x" : 1728.0,
@@ -168,9 +128,9 @@
       },
       {
          "defender_position_x" : 192.0,
-         "defender_position_y" : 1024.0,
+         "defender_position_y" : 1022.0,
          "gatherer_position_x" : 64.0,
-         "gatherer_position_y" : 1024.0
+         "gatherer_position_y" : 1022.0
       }
    ],
    "powerups" : [

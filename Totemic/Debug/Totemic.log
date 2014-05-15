@@ -1,150 +1,34 @@
-﻿Build started 2014-05-13 11:48:21.
+﻿Build started 2014-05-15 08:39:43.
      1>Project "C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Totemic\Totemic.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Audiosystem.cpp Box2DWorldDraw.cpp Coin.cpp Config.cpp ContactFilter.cpp ContactListener.cpp Defender.cpp Engine.cpp FileSystem.cpp FloatingScoreText.cpp GameState.cpp GameStateManager.cpp Gatherer.cpp HotSpot.cpp Level.cpp LevelEditorState.cpp LevelLoader.cpp Math.cpp MenuState.cpp PhysicsHelper.cpp PlayState.cpp Player.cpp Powerup.cpp ResourceHolder.cpp String.cpp System.cpp TotemTweenerListener.cpp Trap.cpp UserData.cpp WindowManager.cpp dbtweener.cpp main.cpp
-         main.cpp
-         dbtweener.cpp
-         WindowManager.cpp
-         UserData.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(52): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
-                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(13) : see declaration of 'thor::FrameAnimation'
-         Trap.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\config.h(32): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
-         TotemTweenerListener.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(52): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
-                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(13) : see declaration of 'thor::FrameAnimation'
-         System.cpp
-         String.cpp
-         ResourceHolder.cpp
-         Powerup.cpp
-         Player.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\config.h(32): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ContactListener.cpp Level.cpp MenuState.cpp PlayState.cpp Player.cpp
          PlayState.cpp
      1>c:\users\orre\documents\desktop\github\totemic2014\totemic\config.h(32): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(52): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
-                 c:\users\orre\documents\desktop\github\totemic2014\totemic\powerup.h(10) : see declaration of 'thor::FrameAnimation'
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(104): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(105): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(106): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(107): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(109): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(110): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(115): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(318): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1014): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1045): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1208): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1213): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1258): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1264): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-         PhysicsHelper.cpp
-         MenuState.cpp
-         Math.cpp
-         LevelLoader.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(41): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(42): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(48): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(49): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(50): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(51): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(57): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(64): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(71): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(77): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(84): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(123): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\levelloader.cpp(136): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-         LevelEditorState.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(107): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(108): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(109): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(113): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(114): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(115): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(123): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(124): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(129): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(130): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(153): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(154): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(156): warning C4800: 'Json::Value *' : forcing value to bool 'true' or 'false' (performance warning)
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(302): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(310): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(526): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(529): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(721): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(722): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(728): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(735): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(743): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(751): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(759): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(796): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(919): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(920): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(921): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(925): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(926): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(927): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(945): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(946): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(951): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(952): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(1146): warning C4244: '=' : conversion from 'Json::Value::Int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(1147): warning C4244: '=' : conversion from 'Json::Value::Int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(1148): warning C4244: '=' : conversion from 'Json::Value::Int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(1157): warning C4244: '=' : conversion from 'Json::Value::Int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\leveleditorstate.cpp(1158): warning C4244: '=' : conversion from 'Json::Value::Int' to 'float', possible loss of data
-         Level.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\config.h(32): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
-         HotSpot.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(52): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
-                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(13) : see declaration of 'thor::FrameAnimation'
-         Gatherer.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(52): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(125): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(133): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(134): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(135): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(136): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(138): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(139): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(144): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(332): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1044): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1075): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1253): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1258): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1303): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1309): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+         ContactListener.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(54): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
                  c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(13) : see declaration of 'thor::FrameAnimation'
          Generating Code...
          Compiling...
-         GameStateManager.cpp
-         GameState.cpp
-         FloatingScoreText.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\config.h(32): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\floatingscoretext.cpp(25): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-         FileSystem.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\filesystem.cpp(104): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(204) : see declaration of 'strtok'
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\filesystem.cpp(108): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(204) : see declaration of 'strtok'
-         Engine.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\config.h(32): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
-         Defender.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(52): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
-                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(13) : see declaration of 'thor::FrameAnimation'
-         ContactListener.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(52): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
-                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(13) : see declaration of 'thor::FrameAnimation'
-         ContactFilter.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(52): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
-                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(13) : see declaration of 'thor::FrameAnimation'
-         Config.cpp
-         Coin.cpp
-         Box2DWorldDraw.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\box2dworlddraw.cpp(84): warning C4305: 'initializing' : truncation from 'double' to 'float'
-         Audiosystem.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\audiosystem.cpp(62): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\audiosystem.cpp(125): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\audiosystem.cpp(212): warning C4018: '<' : signed/unsigned mismatch
+         MenuState.cpp
          Generating Code...
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt linux_evdev.c macosx_hidmanager.c macosx_hidutilities.c manymouse.c windows_wminput.c x11_xinput2.c
-         x11_xinput2.c
-         windows_wminput.c
-         manymouse.c
-         macosx_hidutilities.c
-         macosx_hidmanager.c
-         linux_evdev.c
-         Generating Code...
-       ResourceCompile:
-         C:\Program Files (x86)\Windows Kits\8.1\bin\x86\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Debug\The Submarine.res" "The Submarine.rc" 
+         Skipping... (no relevant changes detected)
+         Player.cpp
+         Level.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\Totemic.exe" /INCREMENTAL /NOLOGO /LIBPATH:../deps/FTGL/lib/ /LIBPATH:"..\deps\SFML-2.1\lib\\" /LIBPATH:../deps/Thor/lib /LIBPATH:../deps/Box2D/lib/ /LIBPATH:../deps/jsoncpp/lib/ /LIBPATH:../deps/SFGUI/lib/ ftgld.lib "thor-d.lib" "Box2D-d.lib" opengl32.lib glu32.lib jsoncppd.lib "sfml-window-d.lib" "sfml-graphics-d.lib" "sfml-network-d.lib" "sfml-audio-d.lib" "sfml-system-d.lib" "sfgui-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\Totemic.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\Totemic.lib" /MACHINE:X86 "Debug\The Submarine.res"
          Debug\Audiosystem.obj
@@ -185,7 +69,6 @@
          Debug\WindowManager.obj
          Debug\windows_wminput.obj
          Debug\x11_xinput2.obj
-         LINK : C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\Totemic.exe not found or not built by the last incremental link; performing full link
      1>LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
      1>Box2D-d.lib(b2DistanceJoint.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2DistanceJoint.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
      1>Box2D-d.lib(b2FrictionJoint.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'Box2D-d.lib(b2FrictionJoint.obj)' or at 'C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\vc120.pdb'; linking object as if no debug info
@@ -240,4 +123,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:26.09
+Time Elapsed 00:00:05.07

@@ -37,7 +37,9 @@ struct PlayerCharBase
 	{
 		m_shieldStunned = false;
 		m_sprite = new sf::Sprite();
-		m_animatior = new thor::Animator<sf::Sprite, std::string>;
+		m_deathSprite = new sf::Sprite();
+		m_animatior = new thor::Animator<sf::Sprite, std::string>();
+		m_deathAnimator = new thor::Animator<sf::Sprite, std::string>();
 	}
 	~PlayerCharBase()
 	{
@@ -93,6 +95,10 @@ struct PlayerCharBase
 	{
 		return m_sprite;
 	}
+	sf::Sprite* getDeathSprite()
+	{
+		return m_deathSprite;
+	}
 
 	void setSpawnPosition(sf::Vector2f spawn_position)
 	{
@@ -141,17 +147,23 @@ struct PlayerCharBase
 	{
 		return m_animatior;
 	}
+	thor::Animator<sf::Sprite, std::string>* getDeathAnimator()
+	{
+		return m_deathAnimator;
+	}
 
 	bool m_shieldStunned;
 	thor::StopWatch m_shieldStunnedTimer;
 	int m_type;
 	Player* m_player;
 	sf::Sprite* m_sprite;
+	sf::Sprite* m_deathSprite;
 	std::map<std::string, thor::FrameAnimation*> m_animations;
 	sf::Vector2f m_spawnPosition;
 	b2Body* m_body;
 	PlayerUD* m_userData;
 	thor::Animator<sf::Sprite, std::string>* m_animatior;
+	thor::Animator<sf::Sprite, std::string>* m_deathAnimator;
 };
 
 enum PlayerScoreTypes
@@ -176,6 +188,7 @@ public:
 	void setGatherer(Gatherer* p_gatherer);
 	void processEventualDeath(Level* level);
 	void setDead(bool value);
+	void setDying(bool value);
 	void setColor(sf::Color color);
 	void setOrder(unsigned int index);
 	void setChangingOrder(bool value);
@@ -200,6 +213,7 @@ public:
 	bool hasWon();
 	bool isChangingOrder();
 	bool isStunned();
+	bool isDying();
 	bool hasShield();
 	void setShield(bool value);
 	void onRespawn(thor::CallbackTimer& trigger);
@@ -210,7 +224,6 @@ public:
 
 public:
 	float m_tweeningValue;
-	float m_multiplier;
 	float m_hotspotScoreSum;
 	int m_bounty;
 	bool m_holdingTotem;
@@ -227,6 +240,7 @@ private:
 	bool m_stunned;
 	bool m_won;
 	bool m_dead;
+	bool m_dying;
 	bool m_postCheckDead;
 	bool m_changingOrder;
 	bool m_shield;

@@ -16,7 +16,7 @@ WindowManager::WindowManager(std::string p_title)
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 0;
 	m_postFocus = false;
-	m_window = new sf::RenderWindow(sf::VideoMode(1920, 1080), p_title, sf::Style::None, settings);
+	m_window = new sf::RenderWindow(sf::VideoMode(1920, 1080), p_title, sf::Style::Fullscreen, settings);
 	m_window->setVerticalSyncEnabled(true);
 	m_window->setKeyRepeatEnabled(false);
 }
