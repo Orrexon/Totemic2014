@@ -1,40 +1,27 @@
-<<<<<<< HEAD
-﻿Build started 2014-05-12 14:05:01.
+﻿Build started 2014-05-19 15:24:49.
      1>Project "C:\git\Totemic2014\Totemic\Totemic.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Engine.cpp FloatingScoreText.cpp Level.cpp PlayState.cpp Player.cpp Trap.cpp
-         Engine.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt MenuState.cpp
+         MenuState.cpp
      1>c:\git\totemic2014\totemic\Config.h(32): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
-         FloatingScoreText.cpp
-     1>c:\git\totemic2014\totemic\Config.h(32): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
-     1>FloatingScoreText.cpp(25): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-         Level.cpp
-     1>c:\git\totemic2014\totemic\Config.h(32): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
-         PlayState.cpp
-     1>c:\git\totemic2014\totemic\Config.h(32): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
-     1>c:\git\totemic2014\totemic\Player.h(52): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
-                 c:\git\totemic2014\totemic\Powerup.h(10) : see declaration of 'thor::FrameAnimation'
-     1>PlayState.cpp(104): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(105): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(106): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(107): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(109): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(110): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(115): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(927): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(1091): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>PlayState.cpp(1096): warning C4018: '<' : signed/unsigned mismatch
-     1>PlayState.cpp(1141): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>PlayState.cpp(1147): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-         Player.cpp
-     1>c:\git\totemic2014\totemic\Config.h(32): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
-         Trap.cpp
-     1>c:\git\totemic2014\totemic\Config.h(32): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
+     1>c:\git\totemic2014\totemic\Config.h(45): warning C4305: 'initializing' : truncation from 'double' to 'const float'
+     1>c:\git\totemic2014\totemic\Config.h(46): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
+     1>MenuState.cpp(31): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>MenuState.cpp(32): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>MenuState.cpp(85): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>MenuState.cpp(97): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>MenuState.cpp(106): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>MenuState.cpp(125): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>MenuState.cpp(132): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>MenuState.cpp(136): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>MenuState.cpp(141): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>MenuState.cpp(143): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\git\Totemic2014\Release\Totemic.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:../deps/FTGL/lib/ /LIBPATH:"..\deps\SFML-2.1\lib\\" /LIBPATH:../deps/Thor/lib /LIBPATH:../deps/Box2D/lib/ /LIBPATH:../deps/jsoncpp/lib/ /LIBPATH:../deps/SFGUI/lib/ ftgl.lib "sfml-window.lib" "sfml-graphics.lib" "sfml-network.lib" "sfml-audio.lib" "sfml-system.lib" thor.lib Box2D.lib opengl32.lib glu32.lib jsoncpp.lib sfgui.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\git\Totemic2014\Release\Totemic.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\git\Totemic2014\Release\Totemic.lib" /MACHINE:X86 /SAFESEH "Release\The Submarine.res"
          Release\Audiosystem.obj
          Release\Box2DWorldDraw.obj
          Release\Coin.obj
+         Release\Coinbird.obj
          Release\Config.obj
          Release\ContactFilter.obj
          Release\ContactListener.obj
@@ -51,6 +38,7 @@
          Release\LevelEditorState.obj
          Release\LevelLoader.obj
          Release\linux_evdev.obj
+         Release\LoadingState.obj
          Release\macosx_hidmanager.obj
          Release\macosx_hidutilities.obj
          Release\main.obj
@@ -77,37 +65,7 @@
      1>jsoncpp.lib(json_reader.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'jsoncpp.lib(json_reader.obj)' or at 'C:\git\Totemic2014\Release\vc120.pdb'; linking object as if no debug info
          Totemic.vcxproj -> C:\git\Totemic2014\Release\Totemic.exe
      1>Done Building Project "C:\git\Totemic2014\Totemic\Totemic.vcxproj" (Build target(s)).
-=======
-﻿Build started 2014-05-02 11:44:34.
-     1>Project "C:\Users\Anthon\Documents\Visual Studio 2013\Projects\Totemic\Totemic\Totemic.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt MenuState.cpp PlayState.cpp
-         MenuState.cpp
-     1>c:\users\anthon\documents\visual studio 2013\projects\totemic\totemic\LevelEditorState.h(133): error C2146: syntax error : missing ';' before identifier 'm_dialogEditHotspot'
-     1>c:\users\anthon\documents\visual studio 2013\projects\totemic\totemic\LevelEditorState.h(133): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-     1>MenuState.cpp(51): warning C4018: '<' : signed/unsigned mismatch
-         PlayState.cpp
-     1>c:\users\anthon\documents\visual studio 2013\projects\totemic\totemic\Player.h(51): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
-                 c:\users\anthon\documents\visual studio 2013\projects\totemic\totemic\Powerup.h(10) : see declaration of 'thor::FrameAnimation'
-     1>PlayState.cpp(91): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(92): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(93): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(94): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(96): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(97): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(102): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(687): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(842): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>PlayState.cpp(847): warning C4018: '<' : signed/unsigned mismatch
-     1>PlayState.cpp(892): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>PlayState.cpp(898): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>Done Building Project "C:\Users\Anthon\Documents\Visual Studio 2013\Projects\Totemic\Totemic\Totemic.vcxproj" (Build target(s)) -- FAILED.
->>>>>>> ebaf6d0bcb4d5e120af3574cbd91a9423b0d03c5
 
-Build FAILED.
+Build succeeded.
 
-<<<<<<< HEAD
-Time Elapsed 00:00:10.92
-=======
-Time Elapsed 00:00:05.66
->>>>>>> ebaf6d0bcb4d5e120af3574cbd91a9423b0d03c5
+Time Elapsed 00:00:07.77

@@ -30,7 +30,7 @@ public:
 	Music* getMusic(std::string identifier);
 
 	void playSound(std::string identifier);
-	void playMusic(std::string identifier);
+	void playMusic(std::string identifier, bool loop = false);
 	
 	void update();
 

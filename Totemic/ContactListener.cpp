@@ -10,6 +10,7 @@
 #include <Thor\Math.hpp>
 #include <Thor\Vectors.hpp>
 #include "Math.h"
+#include "Config.h"
 
 void ContactListener::BeginContact(b2Contact* p_contact)
 {
@@ -43,8 +44,11 @@ void ContactListener::playerContactBegin(UserData* userDataA, UserData* userData
 
 	if (charA->getData()->isType(DEFENDER) && charB->getData()->isType(GATHERER))
 	{
-		if (!charA->getData()->isSamePlayer(charB->getData()->getPlayer()))
+		if (!charA->getData()->isSamePlayer(charB->getData()->getPlayer()) &&
+			!charA->getData()->getPlayer()->isProtected() &&
+			!charB->getData()->getPlayer()->isProtected())
 		{
+			charA->getData()->getPlayer()->addPoints(SCORE_PER_KILL, charA->getData()->getPlayer()->getGatherer()->getSprite()->getPosition(), PlayerScoreTypes::SCORE_KILL);
 			charB->getData()->getPlayer()->setDying(true);
 			sf::Vector2f oldScale = charA->getData()->getPlayer()->getDefender()->getSprite()->getScale();
 			charB->getData()->getPlayer()->getGatherer()->getDeathSprite()->setScale(sf::Vector2f(oldScale.x * -1, oldScale.y));
@@ -78,7 +82,9 @@ void ContactListener::playerContactBegin(UserData* userDataA, UserData* userData
 	}
 	else if (charB->getData()->isType(DEFENDER) && charA->getData()->isType(GATHERER))
 	{
-		if (!charB->getData()->isSamePlayer(charA->getData()->getPlayer()))
+		if (!charB->getData()->isSamePlayer(charA->getData()->getPlayer()) && 
+			!charB->getData()->getPlayer()->isProtected() &&
+			!charA->getData()->getPlayer()->isProtected())
 		{
 			charA->getData()->getPlayer()->setDying(true);
 			sf::Vector2f oldScale = charB->getData()->getPlayer()->getDefender()->getSprite()->getScale();
@@ -113,6 +119,7 @@ void ContactListener::playerContactBegin(UserData* userDataA, UserData* userData
 	}
 	else if (charA->getData()->isType(DEFENDER) && charB->getData()->isType(DEFENDER))
 	{
+
 		// Get direction between the bodies
 		sf::Vector2f direction = Math::direction(
 			charA->getData()->getPlayer()->getDefender()->getSprite()->getPosition(),

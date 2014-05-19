@@ -20,12 +20,14 @@ Player::Player()
 	m_bounty = 0;
 	m_hotspotScoreSum = 0.f;
 	m_points = 0.f;
+	m_online = true;
 	m_dying = false;
 	m_shield = false;
 	m_holdingTotem = false;
 	m_won = false;
 	m_dead = false;
 	m_stunned = false;
+	m_respawnProtection = false;
 	m_stunnedTimer.reset();
 	m_shieldTimer.reset();
 	m_postCheckDead = false;
@@ -40,6 +42,7 @@ Player::Player()
 	m_totemBountyIcon = new sf::Sprite();
 	m_totemBountyIconAnimator = new thor::Animator<sf::Sprite, std::string>;
 	m_totemBountyAmount = new sf::Text();
+
 }
 Player::~Player()
 {
@@ -192,6 +195,13 @@ void Player::setGatherer(Gatherer* p_gatherer)
 	walk_animation->addFrame(1.f, sf::IntRect(385, 0, 128, 128));
 	walk_animation->addFrame(1.f, sf::IntRect(512, 0, 128, 128));
 
+	thor::FrameAnimation* stun_animation = new thor::FrameAnimation();
+	stun_animation->addFrame(1.f, sf::IntRect(0, 128, 128, 128));
+	stun_animation->addFrame(1.f, sf::IntRect(128, 128, 128, 128));
+	stun_animation->addFrame(1.f, sf::IntRect(256, 128, 128, 128));
+	walk_animation->addFrame(1.f, sf::IntRect(385, 128, 128, 128));
+	walk_animation->addFrame(1.f, sf::IntRect(512, 128, 128, 128));
+
 	int width = 272;
 	thor::FrameAnimation* death_animation = new thor::FrameAnimation();
 	death_animation->addFrame(1.f, sf::IntRect(width * 0, 0, width, width));
@@ -214,14 +224,17 @@ void Player::setGatherer(Gatherer* p_gatherer)
 
 	m_gatherer->addAnimation("Death_Animation", death_animation);
 	m_gatherer->addAnimation("Walk_Animation", walk_animation);
+	m_gatherer->addAnimation("Stun_Animation", stun_animation);
 
 	m_gatherer->getDeathAnimator()->addAnimation("death", *death_animation, sf::seconds(GATHERER_DEATH_ANIM_DURATION));
 	m_gatherer->getAnimatior()->addAnimation("walk", *walk_animation, sf::seconds(GATHERER_WALK_ANIM_DURATION));
+	m_gatherer->getAnimatior()->addAnimation("stun", *stun_animation, sf::seconds(0.4f));
 }
 void Player::setDead(bool value)
 {
 	m_dead = value;
 	m_postCheckDead = true;
+	m_respawnProtectionTimer.reset();
 }
 void Player::setDying(bool value)
 {
@@ -263,7 +276,7 @@ void Player::addPoints(float value, sf::Vector2f position, PlayerScoreTypes type
 			m_hotspotScoreSum = FLOATING_SCORE_HOTSPOT_SUM - m_hotspotScoreSum;
 			FloatingScoreText* FST = new FloatingScoreText();
 			FST->getText()->setPosition(position);
-			FST->getText()->setFont(m_resourceHolder->getFont("arial.ttf"));
+			FST->getText()->setFont(m_resourceHolder->getFont("lithospro.otf"));
 
 			FST->getText()->setString("+" + std::to_string(static_cast<int>(FLOATING_SCORE_HOTSPOT_SUM)));
 			FST->setScore(FLOATING_SCORE_HOTSPOT_SUM);
@@ -278,7 +291,7 @@ void Player::addPoints(float value, sf::Vector2f position, PlayerScoreTypes type
 	{
 		FloatingScoreText* FST = new FloatingScoreText();
 		FST->getText()->setPosition(position);
-		FST->getText()->setFont(m_resourceHolder->getFont("arial.ttf"));
+		FST->getText()->setFont(m_resourceHolder->getFont("lithospro.otf"));
 
 		FST->getText()->setString("+" + std::to_string(static_cast<int>(value)));
 		FST->setScore(value);
@@ -313,6 +326,7 @@ void Player::processEventualDeath(Level* level)
 		{
 			randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
 		}
+		std::cout << "Spawn player " << playerSpawns[randomSpawnIndex]->occupied << std::endl;
 		level->setPlayerSpawnOccupied(randomSpawnIndex, true);
 
 		m_gatherer->getBody()->SetActive(false);
@@ -327,12 +341,7 @@ void Player::processEventualDeath(Level* level)
 	}
 	if (m_dead)
 	{
-		m_deathTimer->restart(sf::seconds(3.f));
-	}
-	else
-	{
-		m_defender->getBody()->SetActive(true);
-		m_gatherer->getBody()->SetActive(true);
+		m_deathTimer->restart(sf::seconds(4.f));
 	}
 	m_postCheckDead = false;
 }
@@ -382,7 +391,7 @@ std::string Player::getPointsBarImage()
 }
 bool Player::isDead()
 {
-	return m_dead || m_dying;
+	return m_dead;
 }
 bool Player::isChangingOrder()
 {
@@ -398,7 +407,16 @@ bool Player::isDying()
 }
 void Player::onRespawn(thor::CallbackTimer& trigger)
 {
-	setDead(false);
+	m_dead = false;
+	m_dying = false;
+	m_respawnProtection = true;
+	m_respawnProtectionTimer.start();
+	m_defender->getBody()->SetActive(true);
+	m_gatherer->getBody()->SetActive(true);
+}
+void Player::setRespawnProtection(bool value)
+{
+	m_respawnProtection = value;
 }
 void Player::setStunned(bool value)
 {
@@ -432,4 +450,12 @@ bool Player::hasShield()
 int Player::getBounty()
 {
 	return m_bounty;
+}
+thor::StopWatch Player::getRespawnProtectionTimer()
+{
+	return m_respawnProtectionTimer;
+}
+bool Player::isProtected()
+{
+	return m_respawnProtection;
 }

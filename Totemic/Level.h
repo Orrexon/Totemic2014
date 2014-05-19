@@ -53,6 +53,7 @@ class Trap;
 class Coin;
 class Powerup;
 class PlayState;
+class Coinbird;
 
 class Level: public sf::Drawable
 {
@@ -65,6 +66,7 @@ public:
 	void addObject(LevelObject* obj);
 	void addTrap(Trap* trap);
 	void addCoin(Coin* obj);
+	void addCoinbird(Coinbird* coinbird);
 	void addPowerup(Powerup* powerup);
 	void addImage(Image* image);
 	void setBackgroundPath(std::string p_filepath);
@@ -112,6 +114,7 @@ private:
 	std::vector<LevelObject*> m_objects;
 	std::vector<Trap*> m_traps;
 	std::vector<Coin*> m_coins;
+	std::vector<Coinbird*> m_coinBirds;
 	std::vector<Powerup*> m_powerups;
 	std::vector<Image*> m_images;
 	sf::Vector2f m_hotspotPosition;

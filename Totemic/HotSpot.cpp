@@ -45,6 +45,7 @@ std::vector<Player*> HotSpot::getActivePlayers(std::vector<Player*> &players)
 	std::vector<Player*> newVector;
 	for (auto &player : players)
 	{
+		if (player == nullptr) continue;
 		if (Math::pointInCircle(player->getGatherer()->getSprite()->getPosition(), m_position, m_radius))
 		{
 			newVector.push_back(player);

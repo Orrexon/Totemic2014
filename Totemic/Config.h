@@ -3,7 +3,7 @@
 #include <SFML\Graphics\Color.hpp>
 
 const float POINTS_PER_SECOND = 100.f;
-const float POINTS_TO_WIN = 5000.f;
+const float POINTS_TO_WIN = 5000.f; // 5000.f
 const float TRAP_SECONDS_INTERVAL = 5.f;
 const float TRAP_LOADS_SECONDS = 2.f;
 const float TRAP_EXPLODES_SECONDS = 1.f;
@@ -28,9 +28,9 @@ const float SPAWNZONE_RADIUS = 250; // Not used..
 const unsigned int SPAWNZONE_POINTCOUNT = 60; // Not used..
 const float SPAWNZONE_STROKE_THICKNESS = 4; // Not used..
 const int TOTEM_ALPHA_WHEN_BLOCK = 140; // The opacity of the totem when a player is behind it
-const float COIN_GATHERED_SPEED = 10.f; // Speed of the coin traveling to the totem
+const float COIN_GATHERED_SPEED = 17.f; // Speed of the coin traveling to the totem
 const float SCORE_PER_COIN = POINTS_TO_WIN * 0.04; // Amount of score given by a coin; 4% of maxium score
-const float RANDOM_PLAYER_SPAWN_TOLERANCE = 300; // How far must a gatherer be from a spawnpoint before it becomes "not occupied"
+const float RANDOM_PLAYER_SPAWN_TOLERANCE = 500; // How far must a gatherer be from a spawnpoint before it becomes "not occupied"
 const float SHIELD_TIMER = 4.f; // The powerup shield is activated for 5 seconds
 const float SHIELD_RADIUS = 140.f; // Radius of the powerup shield
 const float SHIELD_FORCE_RADIUS_MIN = 50.f;
@@ -40,4 +40,9 @@ const float GATHERER_DEATH_ANIM_DURATION = 1.f;
 const float DEFENDER_DEATH_ANIM_DURATION = 1.f;
 const float GATHERER_WALK_ANIM_DURATION = 0.1f;
 const float DEFENDER_WALK_ANIM_DURATION = 0.5f;
+const float MENU_TIME_READY = 2.f;
+const float COINBIRD_SPEED = 10.f;
+const float COINBIRD_ANIM_SPEED = 0.4;
+const float SCORE_PER_KILL = POINTS_TO_WIN * 0.02;
 const sf::Color TIMER_BG_COLOR(69, 52, 17);
+const float PLAYER_SPAWNPROTECTION_TIME = 2.51f;

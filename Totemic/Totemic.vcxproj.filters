@@ -45,6 +45,8 @@
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="FloatingScoreText.cpp" />
     <ClCompile Include="Powerup.cpp" />
+    <ClCompile Include="Coinbird.cpp" />
+    <ClCompile Include="LoadingState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box2DWorldDraw.h" />
@@ -82,6 +84,8 @@
     <ClInclude Include="Coin.h" />
     <ClInclude Include="FloatingScoreText.h" />
     <ClInclude Include="Powerup.h" />
+    <ClInclude Include="Coinbird.h" />
+    <ClInclude Include="LoadingState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="System.inl" />
