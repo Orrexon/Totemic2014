@@ -24,5 +24,8 @@ namespace Math
 	b2Vec2 collisionDirection(b2Vec2 firstV, b2Vec2 scndV);
 
 	sf::Vector2f direction(sf::Vector2f v1, sf::Vector2f v2);
+
+	float RAD2DEG(float rad);
+	float DEG2RAD(float def);
 }
 

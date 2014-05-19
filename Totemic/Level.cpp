@@ -11,6 +11,7 @@
 #include "Player.h"
 #include "Defender.h"
 #include "Config.h"
+#include "Coinbird.h"
 
 Level::Level()
 {
@@ -76,16 +77,40 @@ void Level::update(float dt)
 {
 	for (auto &playerSpawn : m_playerSpawns)
 	{
-		if (playerSpawn == nullptr) continue;
 		bool isOccupied = false;
 		for (auto &player : game->m_players)
 		{
+			if (!player->m_online) continue;
 			if (!player->isDead() && Math::euclideanDistance(playerSpawn->gat_spawn, player->getDefender()->getSprite()->getPosition()) < RANDOM_PLAYER_SPAWN_TOLERANCE)
 			{
 				isOccupied = true;
 			}
 		}
 		playerSpawn->occupied = isOccupied;
+	}
+
+	auto it = m_coinBirds.begin();
+	while (it != m_coinBirds.end())
+	{
+		if ((*it)->m_coin != nullptr && (*it)->isThere()) {
+			(*it)->m_coin->getSprite()->setPosition((*it)->m_dropTarget);
+			(*it)->m_coin->setState(CoinState::IDLE);
+			(*it)->m_coin = nullptr;
+		}
+
+		if ((*it)->m_coin == nullptr && (*it)->outofBounds())
+		{
+			delete *it;
+			*it = nullptr;
+			it = m_coinBirds.erase(it);
+		}
+		else
+		{
+			(*it)->m_sprite->setPosition((*it)->m_sprite->getPosition() + (*it)->m_velocity);
+			(*it)->m_animator->update(sf::seconds(dt));
+			(*it)->m_animator->animate(*(*it)->m_sprite);
+			++it;
+		}
 	}
 }
 void Level::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -106,7 +131,7 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	
 	for (auto &coin : m_coins)
 	{
-		if (!coin->isGathered())
+		if (!coin->isState(CoinState::SENDED))
 			target.draw(*coin->getSprite());
 	}
 
@@ -120,6 +145,27 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		target.draw(image->sprite);
 	}
 
+	for (auto &coinbird : m_coinBirds)
+	{
+		target.draw(*coinbird->m_sprite);
+	}
+
+	for (auto &playerSpawn : m_playerSpawns)
+	{
+		sf::CircleShape shape;
+		shape.setRadius(32);
+		shape.setOrigin(32, 32);
+		shape.setPosition(playerSpawn->def_spawn);
+		shape.setFillColor(sf::Color::Red);
+
+		if (playerSpawn->occupied)
+		{
+			sf::Color oldColor = shape.getFillColor();
+			oldColor.a = 100;
+			shape.setFillColor(oldColor);
+		}
+		target.draw(shape);
+	}
 }
 void Level::addObject(LevelObject* obj)
 {
@@ -128,6 +174,10 @@ void Level::addObject(LevelObject* obj)
 void Level::addCoin(Coin* obj)
 {
 	m_coins.push_back(obj);
+}
+void Level::addCoinbird(Coinbird* coinbird)
+{
+	m_coinBirds.push_back(coinbird);
 }
 void Level::addTrap(Trap* trap)
 {

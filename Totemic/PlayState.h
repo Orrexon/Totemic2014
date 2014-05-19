@@ -51,20 +51,22 @@ public:
 	void createPlayerBodies();
 	void sortTotem();
 	void createPowerup();
-	void setupWinTweeners();
+	void setupGameWon();
 	void onEnterTotem(Player* player);
 	void updateHoldingTotem(Player* player); // Sets m_holdingTotem = false except player
 
 	b2Body* createWall(sf::Vector2f v1, sf::Vector2f v2);
 
 public:
+	bool m_setupGameWon;
 	bool m_gameWon;
+	bool m_starting;
 	bool m_totemIsBlockingPlayer;
 
 	b2World m_world;
 	ContactListener* m_contactListener;
 	ContactFilter* m_contactFilter;
-
+	
 	std::vector<unsigned int> m_mouseIndicies;
 	std::vector<Player*> m_players;
 	std::vector<b2Body*> m_walls;
@@ -82,12 +84,15 @@ public:
 	sf::Sprite m_timerBar;
 	sf::Sprite m_frame;
 	sf::Sprite m_totemHead;
+	sf::Sprite m_123GO;
+	thor::Animator<sf::Sprite, std::string> m_123GOAnimator;
 	thor::Animator<sf::Sprite, std::string> m_totemHeadAnimator;
 	thor::FrameAnimation m_totemHeadActiveAnimation;
 	thor::FrameAnimation m_totemHeadIdleAnimation;
+	thor::FrameAnimation m_123GOAnimation;
 	sf::Sprite m_totemFoot;
 
-	CDBTweener *m_winGameTweener;
+	CDBTweener m_winGameTweener;
 	CDBTweener m_totemTweener;
 	TotemTweenerListener* m_totemTweenerListener;
 };

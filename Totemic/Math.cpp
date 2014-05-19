@@ -56,5 +56,15 @@ namespace Math
 		float length = vectorLength(delta);
 		return sf::Vector2f(delta.x / length, delta.y / length);
 	}
+
+	float RAD2DEG(float rad)
+	{
+		return rad * 180 / b2_pi;
+	}
+
+	float DEG2RAD(float def)
+	{
+		return def * b2_pi / 180;
+	}
 }
 

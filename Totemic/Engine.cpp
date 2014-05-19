@@ -43,6 +43,11 @@ bool Engine::init(std::string p_title)
 	m_audioSystem = new Audiosystem();
 	m_audioSystem->createSound("Lightning", "../assets/sounds/lightning_sfx.ogg");
 	m_audioSystem->createSound("Coin_Pickup", "../assets/sounds/crystal.wav");
+	m_audioSystem->createSound("Player_Ready", "../assets/sounds/player_ready.wav");
+	m_audioSystem->createSound("Coinbird", "../assets/sounds/coinbird.wav");
+	m_audioSystem->createSound("321GO", "../assets/sounds/321go.wav");
+	m_audioSystem->createMusic("Bamboozle", "../assets/music/bamboozle.wav");
+	m_audioSystem->getMusic("Bamboozle")->setVolume(10);
 
 	m_gameStateManager->getStateAsset()->windowManager = m_windowManager;
 	m_gameStateManager->getStateAsset()->actionMap = m_actionMap;

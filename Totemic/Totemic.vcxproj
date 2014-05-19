@@ -85,6 +85,7 @@
     <ClCompile Include="Audiosystem.cpp" />
     <ClCompile Include="Box2DWorldDraw.cpp" />
     <ClCompile Include="Coin.cpp" />
+    <ClCompile Include="Coinbird.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="ContactFilter.cpp" />
     <ClCompile Include="ContactListener.cpp" />
@@ -101,6 +102,7 @@
     <ClCompile Include="LevelEditorState.cpp" />
     <ClCompile Include="LevelLoader.cpp" />
     <ClCompile Include="linux_evdev.c" />
+    <ClCompile Include="LoadingState.cpp" />
     <ClCompile Include="macosx_hidmanager.c" />
     <ClCompile Include="macosx_hidutilities.c" />
     <ClCompile Include="main.cpp" />
@@ -125,6 +127,7 @@
     <ClInclude Include="Audiosystem.h" />
     <ClInclude Include="Box2DWorldDraw.h" />
     <ClInclude Include="Coin.h" />
+    <ClInclude Include="Coinbird.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="ContactFilter.h" />
     <ClInclude Include="ContactListener.h" />
@@ -141,6 +144,7 @@
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelEditorState.h" />
     <ClInclude Include="LevelLoader.h" />
+    <ClInclude Include="LoadingState.h" />
     <ClInclude Include="manymouse.hpp" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="MenuState.h" />

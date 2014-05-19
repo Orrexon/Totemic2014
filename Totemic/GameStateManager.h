@@ -2,6 +2,9 @@
 
 #include <SFML\Window\Event.hpp>
 #include <Thor\Resources.hpp>
+#include <Thor\Animation.hpp>
+#include <SFML\Graphics\Sprite.hpp>
+#include <SFML\Graphics\Text.hpp>
 #include <vector>
 #include <memory>
 
@@ -25,6 +28,17 @@ struct StateAsset
 	Audiosystem* audioSystem;
 };
 
+struct PlayerMenu
+{
+	std::string m_key_ready;
+	bool m_ready;
+	sf::Text m_readyText;
+	sf::Sprite m_sprite;
+	sf::Sprite m_fireSprite;
+	thor::Animator<sf::Sprite, std::string> m_fireAnimator;
+	thor::Animator<sf::Sprite, std::string> m_animator;
+};
+
 class GameStateManager
 {
 public:
@@ -46,5 +60,8 @@ private:
 	std::vector<GameState*> m_activeStates;
 	int m_currentStateIdentifier;
 	StateAsset* m_stateAsset;
+
+public: // Public variables
+	std::vector<PlayerMenu> m_players;
 };
 

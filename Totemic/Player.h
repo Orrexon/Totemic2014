@@ -152,6 +152,8 @@ struct PlayerCharBase
 		return m_deathAnimator;
 	}
 
+	float m_tweenX;
+	float m_tweenY;
 	bool m_shieldStunned;
 	thor::StopWatch m_shieldStunnedTimer;
 	int m_type;
@@ -169,7 +171,8 @@ struct PlayerCharBase
 enum PlayerScoreTypes
 {
 	SCORE_HOTSPOT,
-	SCORE_COIN
+	SCORE_COIN,
+	SCORE_KILL
 };
 
 class Level;
@@ -192,11 +195,13 @@ public:
 	void setColor(sf::Color color);
 	void setOrder(unsigned int index);
 	void setChangingOrder(bool value);
+	void setRespawnProtection(bool value);
 	void addPoints(float value, sf::Vector2f position, enum PlayerScoreTypes);
 	void setPointsBarImage(std::string value);
 	void setPointsIndicator(sf::Sprite* sprite);
 	void setFSTRef(std::vector<FloatingScoreText*> &FSTRef);
 	void setResourceHolder(ResourceHolder* resourceHolder);
+	
 
 	thor::CallbackTimer* getDeathTimer();
 	Gatherer* getGatherer();
@@ -214,6 +219,7 @@ public:
 	bool isChangingOrder();
 	bool isStunned();
 	bool isDying();
+	bool isProtected();
 	bool hasShield();
 	void setShield(bool value);
 	void onRespawn(thor::CallbackTimer& trigger);
@@ -221,12 +227,14 @@ public:
 	void addToBounty(int value);
 	void resetBounty();
 	int getBounty();
+	thor::StopWatch getRespawnProtectionTimer();
 
 public:
 	float m_tweeningValue;
 	float m_hotspotScoreSum;
 	int m_bounty;
 	bool m_holdingTotem;
+	bool m_online;
 	thor::StopWatch m_hotspotFloatingTextTimer;
 	thor::StopWatch m_stunnedTimer;
 	thor::StopWatch m_shieldTimer;
@@ -237,6 +245,7 @@ public:
 	thor::FrameAnimation* m_totemBountyAnimation;
 
 private:
+	bool m_respawnProtection;
 	bool m_stunned;
 	bool m_won;
 	bool m_dead;
@@ -244,6 +253,7 @@ private:
 	bool m_postCheckDead;
 	bool m_changingOrder;
 	bool m_shield;
+	float m_points;
 	unsigned int m_order;
 	unsigned int m_deviceNo;
 	Gatherer* m_gatherer;
@@ -251,7 +261,7 @@ private:
 	sf::Sprite* m_totemSprite;
 	sf::Sprite* m_barPointsIndicator;
 	sf::Color m_color;
-	float m_points;
+	thor::StopWatch m_respawnProtectionTimer;
 	thor::StopWatch* m_timer;
 	thor::CallbackTimer* m_deathTimer;
 	std::vector<FloatingScoreText*>* m_floatingScoreTexts;

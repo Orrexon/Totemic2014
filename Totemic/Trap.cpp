@@ -26,6 +26,9 @@ Trap::Trap()
 	m_explosion.addFrame(1.f, sf::IntRect(4369, 0, 256, 256));
 	m_explosion.addFrame(1.f, sf::IntRect(4626, 0, 256, 256));
 	m_explosion.addFrame(1.f, sf::IntRect(4883, 0, 256, 256));
+	m_explosion.addFrame(1.f, sf::IntRect(5140, 0, 256, 256));
+	m_explosion.addFrame(1.f, sf::IntRect(5397, 0, 256, 256));
+	m_explosion.addFrame(1.f, sf::IntRect(5654, 0, 256, 256));
 
 	m_animator.addAnimation("crackle", m_crackle, sf::seconds(TRAP_LOADS_SECONDS));
 	m_animator.addAnimation("explosion", m_explosion, sf::seconds(TRAP_EXPLODES_SECONDS));
