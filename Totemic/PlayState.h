@@ -90,4 +90,17 @@ public:
 	CDBTweener *m_winGameTweener;
 	CDBTweener m_totemTweener;
 	TotemTweenerListener* m_totemTweenerListener;
+
+	thor::UniversalEmitter* m_defenderEmitter;
+	thor::ParticleSystem* m_defenderParticleSystem;
+	sf::Texture tex;
+
+	thor::UniversalEmitter* m_gathererDeathEmitter;
+	thor::ParticleSystem* m_gathererDeathSystem;
+	thor::ForceAffector* m_gathererDeathAffector;
+	thor::TorqueAffector* m_gathererTorqueAffector;
+	sf::Texture feather;
+	sf::Texture feather2;
+	sf::Texture feather3;
+	sf::Texture feather4;
 };
