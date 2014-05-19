@@ -136,7 +136,7 @@ void ContactListener::playerContactBegin(UserData* userDataA, UserData* userData
 		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticleVelocity(thor::Distributions::deflect(300.f*direction, 45.f));
 		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticleRotation(thor::Distributions::uniform(0.f, 360.f));
 		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticleRotationSpeed(thor::Distributions::uniform(10.f, 20.f));
-		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticleLifetime(sf::seconds(3.f));
+		charA->getData()->getPlayer()->game->m_defenderEmitter->setParticleLifetime(sf::seconds(0.5f));
 		charA->getData()->getPlayer()->game->m_defenderParticleSystem->addEmitter(*charA->getData()->getPlayer()->game->m_defenderEmitter, sf::seconds(0.1));
 
 		//particle spreads the opposite way as well
