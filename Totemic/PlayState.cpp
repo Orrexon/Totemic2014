@@ -149,6 +149,23 @@ void PlayState::entering()
 	m_lightningEffect.setFillColor(sf::Color(255, 255, 255, 0));
 	m_lightningAlpha = 0.f;
 
+	m_defenderEmitter = new thor::UniversalEmitter;
+	m_defenderParticleSystem = new thor::ParticleSystem;
+	tex.loadFromFile("../assets/textures/defender_particle.png", sf::IntRect(0, 0, 8, 8));
+	m_defenderParticleSystem->setTexture(tex);
+
+	m_gathererDeathEmitter = new thor::UniversalEmitter;
+	m_gathererDeathSystem = new thor::ParticleSystem;
+	feather.loadFromFile("../assets/textures/death_particle_blue.png", sf::IntRect(0, 0, 16, 16));
+	feather2.loadFromFile("../assets/textures/death_particle_red.png", sf::IntRect(0, 0, 16, 16));
+	feather3.loadFromFile("../assets/textures/death_particle_yellow.png", sf::IntRect(0, 0, 16, 16));
+	feather4.loadFromFile("../assets/textures/death_particle_purple.png", sf::IntRect(0, 0, 16, 16));
+	m_gathererDeathSystem->setTexture(feather);
+	m_gathererDeathAffector = new thor::ForceAffector(sf::Vector2f(0.f, 0.f));
+	m_gathererDeathAffector->setAcceleration(sf::Vector2f(0.f, 9.98f));
+	m_gathererTorqueAffector = new thor::TorqueAffector(0.f);
+	m_gathererTorqueAffector->setAngularAcceleration(90.f);
+
 	std::cout << "Entering play state" << std::endl;
 }
 
@@ -397,7 +414,7 @@ bool PlayState::update(float dt)
 				oldScale.x -= 0.006f;
 				oldScale.y -= 0.006f;
 				(*it)->getSprite()->scale(oldScale);
-				
+
 				if ((*it)->getSprite()->getGlobalBounds().width <= 0.5f)
 				{
 					kill = true;
@@ -534,13 +551,13 @@ bool PlayState::update(float dt)
 							sf::Vector2f v2 = player->getGatherer()->getSprite()->getPosition();
 							sf::Vector2f direction = Math::direction(v2, v1);
 							float length = Math::euclideanDistance(v1, v2);
-							float force = 
+							float force =
 								(Math::clamp(SHIELD_RADIUS - length, SHIELD_RADIUS, SHIELD_FORCE_RADIUS_MIN)) /
 								SHIELD_RADIUS * SHIELD_MAX_FORCE;
 							m_players[i]->getGatherer()->getBody()->ApplyLinearImpulse(
 								PhysicsHelper::gameToPhysicsUnits(sf::Vector2f(
-									direction.x * force, 
-									direction.y * force)),
+								direction.x * force,
+								direction.y * force)),
 								m_players[i]->getGatherer()->getBody()->GetWorldCenter(), true);
 						}
 
@@ -575,7 +592,9 @@ bool PlayState::update(float dt)
 		}
 	}
 #pragma endregion
-
+	
+	m_defenderParticleSystem->update(sf::seconds(dt));
+	m_gathererDeathSystem->update(sf::seconds(dt));
 	m_world.Step(1.f / 60.f, 8, 3);
 	m_currentLevel->update(dt); // There can be no player->setDead(true); after this
 
@@ -711,7 +730,7 @@ bool PlayState::update(float dt)
 		player->getDefender()->getSprite()->setPosition(PhysicsHelper::physicsToGameUnits(player->getDefender()->getBody()->GetPosition()) - sf::Vector2f(0, 64));
 		player->getGatherer()->getSprite()->setPosition(PhysicsHelper::physicsToGameUnits(player->getGatherer()->getBody()->GetPosition()) - sf::Vector2f(0, 15));
 		player->getGatherer()->m_shieldOverlay->setPosition(PhysicsHelper::physicsToGameUnits(player->getGatherer()->getBody()->GetPosition()));
-		
+
 		if (!player->getDefender()->getAnimatior()->isPlayingAnimation())
 		{
 			player->getDefender()->getAnimatior()->playAnimation("walk");
@@ -742,7 +761,7 @@ bool PlayState::update(float dt)
 		player->getDefender()->getAnimatior()->animate(*player->getDefender()->getSprite());
 		player->getGatherer()->getAnimatior()->animate(*player->getGatherer()->getSprite());
 		player->getGatherer()->m_shieldOverlayAnimatior->animate(*player->getGatherer()->m_shieldOverlay);
-		
+
 		/*
 		*********************
 		COIN PICKUP
@@ -780,24 +799,24 @@ bool PlayState::update(float dt)
 				{
 				case LIGHTNING:
 				{
-					for (std::size_t i = 0; i < m_players.size(); i++)
-					{
-						if (m_players[i] != player)
-						{
-							m_players[i]->setStunned(true);
-						}
-					}
+								  for (std::size_t i = 0; i < m_players.size(); i++)
+								  {
+									  if (m_players[i] != player)
+									  {
+										  m_players[i]->setStunned(true);
+									  }
+								  }
 
-					m_lightningAlpha = 255.f;
+								  m_lightningAlpha = 255.f;
 
-					CDBTweener::CTween* tween = new CDBTweener::CTween();
-					tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
-					tween->addValue(&m_lightningAlpha, 0.f);
-					m_totemTweener.addTween(tween);
+								  CDBTweener::CTween* tween = new CDBTweener::CTween();
+								  tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
+								  tween->addValue(&m_lightningAlpha, 0.f);
+								  m_totemTweener.addTween(tween);
 
-					m_stateAsset->audioSystem->playSound("Lightning");
+								  m_stateAsset->audioSystem->playSound("Lightning");
 
-					break;
+								  break;
 				}
 				case SHIELD:
 					player->setShield(true);
@@ -856,7 +875,7 @@ bool PlayState::update(float dt)
 		m_totemIsBlockingPlayer = false;
 	}
 #pragma endregion
-	
+
 	if (m_totemIsBlockingPlayer)
 	{
 		{
@@ -959,7 +978,8 @@ void PlayState::draw()
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBarBackground);
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBar);
 	m_stateAsset->windowManager->getWindow()->draw(m_frame);
-
+	m_stateAsset->windowManager->getWindow()->draw(*m_defenderParticleSystem);
+	m_stateAsset->windowManager->getWindow()->draw(*m_gathererDeathSystem);
 	for (auto &player : m_players)
 	{
 		m_stateAsset->windowManager->getWindow()->draw(*player->getPointsIndicator());
@@ -985,7 +1005,11 @@ void PlayState::initManyMouse()
 	for (int i = 0; i < numDevices; i++)
 	{
 		std::string name = ManyMouse_DeviceName(i);
+		std::string driver = ManyMouse_DriverName();
+		std::cout << "----" << std::endl;
+		std::cout << driver << std::endl;
 		std::cout << name << std::endl;
+		std::cout << "----" << std::endl;
 		if (name.find("Pad") != std::string::npos)
 		{
 			//m_mouseIndicies.push_back(-1);
@@ -1070,7 +1094,7 @@ void PlayState::initPlayers()
 		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(896, 0, 64, 64));
 		m_players.back()->m_totemBountyAnimation->addFrame(1.f, sf::IntRect(960, 0, 64, 64));
 		m_players.back()->m_totemBountyIconAnimator->addAnimation("idle", *m_players.back()->m_totemBountyAnimation, sf::seconds(1.f));
-		
+
 		m_players.back()->m_totemBountyIcon->setOrigin(32, 64);
 		m_players.back()->m_totemBountyIcon->setScale(0.3, 0.3);
 		m_players.back()->m_totemBountyIconAnimator->playAnimation("idle", true);
@@ -1079,25 +1103,25 @@ void PlayState::initPlayers()
 
 void PlayState::setupActions()
 {
-	m_actionMap->operator[]("p1_up") = thor::Action(sf::Keyboard::W, thor::Action::Hold);
-	m_actionMap->operator[]("p1_down") = thor::Action(sf::Keyboard::S, thor::Action::Hold);
-	m_actionMap->operator[]("p1_left") = thor::Action(sf::Keyboard::A, thor::Action::Hold);
-	m_actionMap->operator[]("p1_right") = thor::Action(sf::Keyboard::D, thor::Action::Hold);
+	m_actionMap->operator[]("p4_up") = thor::Action(sf::Keyboard::W, thor::Action::Hold);
+	m_actionMap->operator[]("p4_down") = thor::Action(sf::Keyboard::S, thor::Action::Hold);
+	m_actionMap->operator[]("p4_left") = thor::Action(sf::Keyboard::A, thor::Action::Hold);
+	m_actionMap->operator[]("p4_right") = thor::Action(sf::Keyboard::D, thor::Action::Hold);
 
 	m_actionMap->operator[]("p2_up") = thor::Action(sf::Keyboard::Up, thor::Action::Hold);
 	m_actionMap->operator[]("p2_down") = thor::Action(sf::Keyboard::Down, thor::Action::Hold);
 	m_actionMap->operator[]("p2_left") = thor::Action(sf::Keyboard::Left, thor::Action::Hold);
 	m_actionMap->operator[]("p2_right") = thor::Action(sf::Keyboard::Right, thor::Action::Hold);
 
-	m_actionMap->operator[]("p3_up") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
-	m_actionMap->operator[]("p3_down") = thor::Action(sf::Keyboard::H, thor::Action::Hold);
-	m_actionMap->operator[]("p3_left") = thor::Action(sf::Keyboard::G, thor::Action::Hold);
-	m_actionMap->operator[]("p3_right") = thor::Action(sf::Keyboard::J, thor::Action::Hold);
+	m_actionMap->operator[]("p1_up") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
+	m_actionMap->operator[]("p1_down") = thor::Action(sf::Keyboard::H, thor::Action::Hold);
+	m_actionMap->operator[]("p1_left") = thor::Action(sf::Keyboard::G, thor::Action::Hold);
+	m_actionMap->operator[]("p1_right") = thor::Action(sf::Keyboard::J, thor::Action::Hold);
 
-	m_actionMap->operator[]("p4_up") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
-	m_actionMap->operator[]("p4_down") = thor::Action(sf::Keyboard::Numpad5, thor::Action::Hold);
-	m_actionMap->operator[]("p4_left") = thor::Action(sf::Keyboard::Numpad4, thor::Action::Hold);
-	m_actionMap->operator[]("p4_right") = thor::Action(sf::Keyboard::Numpad6, thor::Action::Hold);
+	m_actionMap->operator[]("p3_up") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
+	m_actionMap->operator[]("p3_down") = thor::Action(sf::Keyboard::Numpad5, thor::Action::Hold);
+	m_actionMap->operator[]("p3_left") = thor::Action(sf::Keyboard::Numpad4, thor::Action::Hold);
+	m_actionMap->operator[]("p3_right") = thor::Action(sf::Keyboard::Numpad6, thor::Action::Hold);
 
 	m_actionMap->operator[]("Exit") = thor::Action(sf::Keyboard::Escape, thor::Action::PressOnce);
 	m_actionMap->operator[]("Restart") = thor::Action(sf::Keyboard::R, thor::Action::PressOnce);
@@ -1169,7 +1193,7 @@ void PlayState::loadNewLevel()
 
 		defender->getSprite()->setTexture(m_stateAsset->resourceHolder->getTexture(defender_textures[i]));
 		gatherer->getSprite()->setTexture(m_stateAsset->resourceHolder->getTexture(gatherer_textures[i]));
-		
+
 		defender->setSpawnPosition(m_currentLevel->getDefenderSpawn(i));
 		gatherer->setSpawnPosition(m_currentLevel->getGathererSpawn(i));
 
