@@ -56,7 +56,7 @@ void Audiosystem::createSound(std::string identifier, std::string filepath)
 		return;
 	}
 
-	float myModifiedVolume = static_cast<float>(m_soundVolume)* m_masterVolume;
+	int myModifiedVolume = static_cast<int>(static_cast<float>(m_soundVolume)* m_masterVolume);
 
 	Sound* sound = new Sound();
 	sound->setVolume(myModifiedVolume);
@@ -122,7 +122,7 @@ void Audiosystem::changeMusicVolume(int volume)
 	auto it = m_music.begin();
 	while (it != m_music.end())
 	{
-		it->second->setVolume(static_cast<int>(myModifiedVolume));
+		it->second->setVolume(myModifiedVolume);
 		++it;
 	}
 }
@@ -210,7 +210,7 @@ void Audiosystem::update()
 
 void Sound::update()
 {
-	for (int i = 0; i < m_soundInstances.size(); ++i)
+	for (std::size_t i = 0; i < m_soundInstances.size(); ++i)
 	{
 		if (m_soundInstances[i].getStatus() == sf::Sound::Stopped)
 		{
@@ -259,6 +259,20 @@ std::string Sound::getFilepath()
 sf::SoundBuffer &Sound::getBuffer()
 {
 	return m_soundBuffer;
+}
+
+bool Sound::isPlaying()
+{
+	bool r = false;
+	for (std::size_t i = 0; i < m_soundInstances.size(); i++)
+	{
+		if (m_soundInstances[i].getStatus() == sf::Sound::Status::Playing)
+		{
+			r = true;
+			break;
+		}
+	}
+	return r;
 }
 
 Music::Music()

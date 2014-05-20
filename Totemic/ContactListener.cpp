@@ -59,20 +59,20 @@ void ContactListener::playerContactBegin(UserData* userDataA, UserData* userData
 			}
 			else if (charB->getData()->getPlayer()->getColor() == sf::Color::Red)
 			{
-				charB->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charB->getData()->getPlayer()->game->feather2);
+				charB->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charB->getData()->getPlayer()->game->featherRed);
 			}
 			else if (charB->getData()->getPlayer()->getColor() == sf::Color::Yellow)
 			{
-				charB->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charB->getData()->getPlayer()->game->feather3);
+				charB->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charB->getData()->getPlayer()->game->featherYellow);
 			}
 			else if (charB->getData()->getPlayer()->getColor() == sf::Color(204, 0, 204))
 			{
-				charB->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charB->getData()->getPlayer()->game->feather4);
+				charB->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charB->getData()->getPlayer()->game->featherPurple);
 			}
 
-			charB->getData()->getPlayer()->game->m_gathererDeathEmitter->setEmissionRate(100);
-			charB->getData()->getPlayer()->game->m_gathererDeathEmitter->setParticlePosition(PhysicsHelper::physicsToGameUnits(charB->getData()->getBody()->GetPosition()));
-			charB->getData()->getPlayer()->game->m_gathererDeathEmitter->setParticleVelocity(thor::Distributions::deflect(30.f*sf::Vector2f(sqrtf(2.f),sqrtf(2.f)), 180.f));
+			charB->getData()->getPlayer()->game->m_gathererDeathEmitter->setEmissionRate(200);
+			charB->getData()->getPlayer()->game->m_gathererDeathEmitter->setParticlePosition(thor::Distributions::circle(PhysicsHelper::physicsToGameUnits(charB->getData()->getBody()->GetPosition()), 50.f));
+			charB->getData()->getPlayer()->game->m_gathererDeathEmitter->setParticleVelocity(thor::Distributions::deflect(80.f*sf::Vector2f(sqrtf(2.f),sqrtf(2.f)), 180.f));
 			charB->getData()->getPlayer()->game->m_gathererDeathEmitter->setParticleRotation(thor::Distributions::uniform(0.f, 360.f));			
 			charB->getData()->getPlayer()->game->m_gathererDeathEmitter->setParticleLifetime(sf::seconds(1.f));
 			charB->getData()->getPlayer()->game->m_gathererDeathSystem->addEmitter(*charB->getData()->getPlayer()->game->m_gathererDeathEmitter, sf::seconds(0.1f));
@@ -96,20 +96,20 @@ void ContactListener::playerContactBegin(UserData* userDataA, UserData* userData
 			}
 			else if (charA->getData()->getPlayer()->getColor() == sf::Color::Red)
 			{
-				charA->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charA->getData()->getPlayer()->game->feather2);
+				charA->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charA->getData()->getPlayer()->game->featherRed);
 			}
 			else if (charA->getData()->getPlayer()->getColor() == sf::Color::Yellow)
 			{
-				charA->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charA->getData()->getPlayer()->game->feather3);
+				charA->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charA->getData()->getPlayer()->game->featherYellow);
 			}
 			else if (charA->getData()->getPlayer()->getColor() == sf::Color(204, 0, 204))
 			{
-				charA->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charA->getData()->getPlayer()->game->feather4);
+				charA->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charA->getData()->getPlayer()->game->featherPurple);
 			}
 
-			charA->getData()->getPlayer()->game->m_gathererDeathEmitter->setEmissionRate(100);
-			charA->getData()->getPlayer()->game->m_gathererDeathEmitter->setParticlePosition(PhysicsHelper::physicsToGameUnits(charA->getData()->getBody()->GetPosition()));
-			charA->getData()->getPlayer()->game->m_gathererDeathEmitter->setParticleVelocity(thor::Distributions::deflect(30.f*sf::Vector2f(sqrtf(2.f), sqrtf(2.f)), 180.f));
+			charA->getData()->getPlayer()->game->m_gathererDeathEmitter->setEmissionRate(200);
+			charA->getData()->getPlayer()->game->m_gathererDeathEmitter->setParticlePosition(thor::Distributions::circle(PhysicsHelper::physicsToGameUnits(charA->getData()->getBody()->GetPosition()), 50.f));
+			charA->getData()->getPlayer()->game->m_gathererDeathEmitter->setParticleVelocity(thor::Distributions::deflect(80.f*sf::Vector2f(sqrtf(2.f), sqrtf(2.f)), 180.f));
 			charA->getData()->getPlayer()->game->m_gathererDeathEmitter->setParticleLifetime(sf::seconds(1.f));
 			charA->getData()->getPlayer()->game->m_gathererDeathSystem->addEmitter(*charA->getData()->getPlayer()->game->m_gathererDeathEmitter,sf::seconds(0.1f));
 			charA->getData()->getPlayer()->game->m_gathererDeathSystem->addAffector(*charA->getData()->getPlayer()->game->m_gathererDeathAffector);

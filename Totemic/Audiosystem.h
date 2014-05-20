@@ -54,6 +54,7 @@ public:
 	void setFilepath(std::string filepath);
 	std::string getFilepath();
 	sf::SoundBuffer &getBuffer();
+	bool isPlaying();
 private:
 	int m_volume;
 	std::string m_filepath;

@@ -42,7 +42,7 @@ Player::Player()
 	m_totemBountyIcon = new sf::Sprite();
 	m_totemBountyIconAnimator = new thor::Animator<sf::Sprite, std::string>;
 	m_totemBountyAmount = new sf::Text();
-
+	mWinScoreText = new sf::Text();
 }
 Player::~Player()
 {
@@ -75,20 +75,23 @@ Player::~Player()
 
 	delete m_totemBountyAnimation;
 	m_totemBountyAnimation = nullptr;
+
+	delete mWinScoreText;
+	mWinScoreText = nullptr;
 }
 
 void Player::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	if (m_dying)
 	{
-		target.draw(*m_gatherer->getDeathSprite());
 		target.draw(*m_defender->getDeathSprite());
+		target.draw(*m_gatherer->getDeathSprite());
 	} else if (!m_dead)
 	{
+		target.draw(*m_defender->getSprite());
 		target.draw(*m_gatherer->getSprite());
 		if (m_shield)
 			target.draw(*m_gatherer->m_shieldOverlay);
-		target.draw(*m_defender->getSprite());
 	}
 }
 void Player::setDevice(unsigned int p_deviceNo)
@@ -172,6 +175,7 @@ void Player::setDefender(Defender* p_defender)
 
 	m_defender->getDeathAnimator()->addAnimation("death", *death_animation, sf::seconds(DEFENDER_DEATH_ANIM_DURATION));
 	m_defender->getAnimatior()->addAnimation("walk", *walk_animation, sf::seconds(DEFENDER_WALK_ANIM_DURATION));
+	m_defender->getAnimatior()->playAnimation("walk");
 }
 void Player::setGatherer(Gatherer* p_gatherer)
 {
@@ -229,6 +233,7 @@ void Player::setGatherer(Gatherer* p_gatherer)
 	m_gatherer->getDeathAnimator()->addAnimation("death", *death_animation, sf::seconds(GATHERER_DEATH_ANIM_DURATION));
 	m_gatherer->getAnimatior()->addAnimation("walk", *walk_animation, sf::seconds(GATHERER_WALK_ANIM_DURATION));
 	m_gatherer->getAnimatior()->addAnimation("stun", *stun_animation, sf::seconds(0.4f));
+	m_gatherer->getAnimatior()->playAnimation("walk");
 }
 void Player::setDead(bool value)
 {
@@ -322,9 +327,18 @@ void Player::processEventualDeath(Level* level)
 		m_bounty = 0;
 		std::vector<PlayerSpawn*> playerSpawns = level->getPlayerSpawns();
 		int randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
+		thor::StopWatch timerSpawnBreak;
+		timerSpawnBreak.restart();
 		while (playerSpawns[randomSpawnIndex]->occupied == true)
 		{
 			randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
+			std::cout << "I am trying to find a player spawn" << std::endl;
+			//if there is no vacant spawnpoints, loop become infinite. This breaks the loop and continues to spawn 
+			//player at a random location.
+			if (timerSpawnBreak.getElapsedTime() >= sf::seconds(.1f))
+			{
+				break;
+			}
 		}
 		std::cout << "Spawn player " << playerSpawns[randomSpawnIndex]->occupied << std::endl;
 		level->setPlayerSpawnOccupied(randomSpawnIndex, true);
@@ -431,7 +445,8 @@ bool Player::isStunned()
 void Player::setShield(bool value)
 {
 	m_shield = value;
-	m_shieldTimer.restart();
+	if (m_shield)
+		m_shieldTimer.restart();
 }
 void Player::addToBounty(int value)
 {

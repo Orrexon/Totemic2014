@@ -150,7 +150,7 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		target.draw(*coinbird->m_sprite);
 	}
 
-	for (auto &playerSpawn : m_playerSpawns)
+	/*for (auto &playerSpawn : m_playerSpawns)
 	{
 		sf::CircleShape shape;
 		shape.setRadius(32);
@@ -165,7 +165,7 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates states) const
 			shape.setFillColor(oldColor);
 		}
 		target.draw(shape);
-	}
+	}*/
 }
 void Level::addObject(LevelObject* obj)
 {

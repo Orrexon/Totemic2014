@@ -7,6 +7,7 @@
 #include "GameState.h"
 #include "LoadingState.h"
 #include "PlayState.h"
+#include "Config.h"
 
 LoadingState::LoadingState()
 {
@@ -21,6 +22,9 @@ void LoadingState::entering()
 {
 	m_exclusive = false;
 	
+	mBackground.setTexture(m_stateAsset->resourceHolder->getTexture("loadingscreen.png"));
+	mTimer.reset(sf::seconds(LOADINGSCREEN_SECONDS));
+	mTimer.start();
 }
 
 void LoadingState::leaving()
@@ -39,16 +43,24 @@ void LoadingState::releaving()
 
 bool LoadingState::update(float dt)
 {
-	m_stateAsset->gameStateManager->changeState(new PlayState());
+	if (m_actionMap->isActive("start"))
+	{
+		m_stateAsset->gameStateManager->changeState(new PlayState());
+		return true;
+	}
+	if (mTimer.isExpired())
+	{
+		m_stateAsset->gameStateManager->changeState(new PlayState());
+	}
 	return true;
 }
 
 void LoadingState::draw()
 {
-	
+	m_stateAsset->windowManager->getWindow()->draw(mBackground);
 }
 
 void LoadingState::setupActions()
 {
-	
+	m_actionMap->operator[]("start") = thor::Action(sf::Keyboard::R);
 }

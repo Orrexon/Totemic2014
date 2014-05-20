@@ -58,22 +58,22 @@ namespace Math
 	}
 
 
-	float Math::sumMagnitude(sf::Vector2f& V1, sf::Vector2f& V2)//overloaded for flexibility, just use any type of vector
+	float sumMagnitude(sf::Vector2f& V1, sf::Vector2f& V2)//overloaded for flexibility, just use any type of vector
 	{
 		return sqrtf(V1.x*V1.x + V1.y*V1.y) + sqrtf(V2.x*V2.x + V2.y*V2.y);
 	}
 
-	float Math::sumMagnitude(const b2Vec2& V1, const b2Vec2& V2)
+	float sumMagnitude(const b2Vec2& V1, const b2Vec2& V2)
 	{
 		return V1.Length() + V2.Length();
 	}
 
-	float Math::sumMagnitude(b2Vec2& V1, sf::Vector2f& V2)
+	float sumMagnitude(b2Vec2& V1, sf::Vector2f& V2)
 	{
 		return V1.Length() + sqrtf(V2.x * V2.x + V2.y * V2.y);
 	}
 
-	float Math::sumMagnitude(sf::Vector2f& V1, b2Vec2& V2)
+	float sumMagnitude(sf::Vector2f& V1, b2Vec2& V2)
 	{
 		return sqrtf(V1.x*V1.x + V1.y*V1.y) + V2.Length();
 	}

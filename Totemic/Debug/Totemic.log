@@ -1,31 +1,10 @@
-﻿Build started 2014-05-20 10:34:17.
+﻿Build started 2014-05-20 14:32:48.
      1>Project "C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Totemic\Totemic.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt PlayState.cpp
-         PlayState.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\config.h(32): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\config.h(45): warning C4305: 'initializing' : truncation from 'double' to 'const float'
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\config.h(46): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(102): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(110): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(111): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(112): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(113): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(115): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(116): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(121): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(366): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(419): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1181): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1212): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1398): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1403): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1449): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1455): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1489): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1490): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1491): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\playstate.cpp(1492): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ContactListener.cpp
+         ContactListener.cpp
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\contactlistener.cpp(140): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\contactlistener.cpp(146): warning C4305: 'argument' : truncation from 'double' to 'float'
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\Totemic.exe" /INCREMENTAL /NOLOGO /LIBPATH:../deps/FTGL/lib/ /LIBPATH:"..\deps\SFML-2.1\lib\\" /LIBPATH:../deps/Thor/lib /LIBPATH:../deps/Box2D/lib/ /LIBPATH:../deps/jsoncpp/lib/ /LIBPATH:../deps/SFGUI/lib/ ftgld.lib "thor-d.lib" "Box2D-d.lib" opengl32.lib glu32.lib jsoncppd.lib "sfml-window-d.lib" "sfml-graphics-d.lib" "sfml-network-d.lib" "sfml-audio-d.lib" "sfml-system-d.lib" "sfgui-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\Totemic.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\Totemic.lib" /MACHINE:X86 "Debug\The Submarine.res"
          Debug\Audiosystem.obj
@@ -73,4 +52,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.45
+Time Elapsed 00:00:01.29
