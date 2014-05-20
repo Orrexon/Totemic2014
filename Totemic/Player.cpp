@@ -175,6 +175,7 @@ void Player::setDefender(Defender* p_defender)
 
 	m_defender->getDeathAnimator()->addAnimation("death", *death_animation, sf::seconds(DEFENDER_DEATH_ANIM_DURATION));
 	m_defender->getAnimatior()->addAnimation("walk", *walk_animation, sf::seconds(DEFENDER_WALK_ANIM_DURATION));
+	m_defender->getAnimatior()->playAnimation("walk");
 }
 void Player::setGatherer(Gatherer* p_gatherer)
 {
@@ -232,6 +233,7 @@ void Player::setGatherer(Gatherer* p_gatherer)
 	m_gatherer->getDeathAnimator()->addAnimation("death", *death_animation, sf::seconds(GATHERER_DEATH_ANIM_DURATION));
 	m_gatherer->getAnimatior()->addAnimation("walk", *walk_animation, sf::seconds(GATHERER_WALK_ANIM_DURATION));
 	m_gatherer->getAnimatior()->addAnimation("stun", *stun_animation, sf::seconds(0.4f));
+	m_gatherer->getAnimatior()->playAnimation("walk");
 }
 void Player::setDead(bool value)
 {

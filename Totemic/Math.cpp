@@ -57,6 +57,27 @@ namespace Math
 		return sf::Vector2f(delta.x / length, delta.y / length);
 	}
 
+
+	float sumMagnitude(sf::Vector2f& V1, sf::Vector2f& V2)//overloaded for flexibility, just use any type of vector
+	{
+		return sqrtf(V1.x*V1.x + V1.y*V1.y) + sqrtf(V2.x*V2.x + V2.y*V2.y);
+	}
+
+	float sumMagnitude(const b2Vec2& V1, const b2Vec2& V2)
+	{
+		return V1.Length() + V2.Length();
+	}
+
+	float sumMagnitude(b2Vec2& V1, sf::Vector2f& V2)
+	{
+		return V1.Length() + sqrtf(V2.x * V2.x + V2.y * V2.y);
+	}
+
+	float sumMagnitude(sf::Vector2f& V1, b2Vec2& V2)
+	{
+		return sqrtf(V1.x*V1.x + V1.y*V1.y) + V2.Length();
+	}
+
 	float RAD2DEG(float rad)
 	{
 		return rad * 180 / b2_pi;
@@ -65,6 +86,9 @@ namespace Math
 	float DEG2RAD(float def)
 	{
 		return def * b2_pi / 180;
+
 	}
 }
+
+
 
