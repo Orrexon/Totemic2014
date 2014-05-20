@@ -5,6 +5,7 @@
 #include "dbtweener.h"
 #include <Thor\Particles.hpp>
 #include <Thor\Animation.hpp>
+#include <Thor\Time\Timer.hpp>
 #include "Math.h"
 
 class Player;
@@ -77,7 +78,6 @@ public:
 
 	// HUD
 	sf::RectangleShape m_timerBarBackground;
-	
 	sf::RectangleShape m_lightningEffect;
 	float m_lightningAlpha;
 
@@ -85,13 +85,15 @@ public:
 	sf::Sprite m_frame;
 	sf::Sprite m_totemHead;
 	sf::Sprite m_123GO;
+	sf::Sprite m_totemFoot;
+
 	thor::Animator<sf::Sprite, std::string> m_123GOAnimator;
 	thor::Animator<sf::Sprite, std::string> m_totemHeadAnimator;
 	thor::FrameAnimation m_totemHeadActiveAnimation;
 	thor::FrameAnimation m_totemHeadIdleAnimation;
 	thor::FrameAnimation m_123GOAnimation;
-	sf::Sprite m_totemFoot;
-
+	thor::Timer m_321GOTimer;
+	
 	CDBTweener m_winGameTweener;
 	CDBTweener m_totemTweener;
 	TotemTweenerListener* m_totemTweenerListener;

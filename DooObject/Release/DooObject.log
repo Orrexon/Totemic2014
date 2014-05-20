@@ -1,5 +1,5 @@
-﻿Build started 2014-05-15 17:56:34.
-     1>Project "C:\git\Totemic2014\DooObject\DooObject.vcxproj" on node 3 (Build target(s)).
+﻿Build started 2014-05-20 07:40:33.
+     1>Project "C:\git\Totemic2014\DooObject\DooObject.vcxproj" on node 3 (Rebuild target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"../deps/SFML-2.1/include/" /I../deps/Thor/include/ /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt FileSystem.cpp main.cpp Math.cpp String.cpp System.cpp WindowManager.cpp
          FileSystem.cpp
@@ -13,8 +13,8 @@
          String.cpp
          System.cpp
          WindowManager.cpp
-     1>Done Building Project "C:\git\Totemic2014\DooObject\DooObject.vcxproj" (Build target(s)) -- FAILED.
+     1>Done Building Project "C:\git\Totemic2014\DooObject\DooObject.vcxproj" (Rebuild target(s)) -- FAILED.
 
 Build FAILED.
 
-Time Elapsed 00:00:10.72
+Time Elapsed 00:00:04.73

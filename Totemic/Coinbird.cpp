@@ -30,17 +30,17 @@ bool Coinbird::isThere()
 
 bool Coinbird::outofBounds()
 {
-	int width = 1920;
-	int height = 1080;
-	int margin = 300;
-	int sprite_pos_x = m_sprite->getPosition().x;
-	int sprite_pos_y = m_sprite->getPosition().y;
+	float width = 1920;
+	float height = 1080;
+	float margin = 300;
+	float sprite_pos_x = m_sprite->getPosition().x;
+	float sprite_pos_y = m_sprite->getPosition().y;
 
 	bool outofX = false;
 	bool outofY = false;
 	
-	if (sprite_pos_x < 0 - margin || sprite_pos_x > width + margin) outofX = true;
-	if (sprite_pos_y < 0 - margin || sprite_pos_y > height + margin) outofY = true;
+	if (sprite_pos_x < 0.f - margin || sprite_pos_x > width + margin) outofX = true;
+	if (sprite_pos_y < 0.f - margin || sprite_pos_y > height + margin) outofY = true;
 
 	if (outofX && outofY)
 	{

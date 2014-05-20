@@ -3,6 +3,7 @@
 #include <SFML\Graphics.hpp>
 #include <Thor\Time\CallbackTimer.hpp>
 #include <Thor\Animation\Animator.hpp>
+#include <Thor\Animation\FrameAnimation.hpp>
 #include <Box2D\Dynamics\b2Body.h>
 
 #include "UserData.h"
@@ -240,6 +241,7 @@ public:
 	thor::StopWatch m_shieldTimer;
 	PlayState* game;
 	sf::Text* m_totemBountyAmount;
+	sf::Text* mWinScoreText;
 	sf::Sprite* m_totemBountyIcon;
 	thor::Animator<sf::Sprite, std::string>* m_totemBountyIconAnimator;
 	thor::FrameAnimation* m_totemBountyAnimation;

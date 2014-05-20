@@ -136,14 +136,10 @@ void PlayState::entering()
 	m_123GOAnimation.addFrame(1.f, sf::IntRect(2508, 0, 836, 372));
 	
 	m_123GOAnimator.addAnimation("idle", m_123GOAnimation, sf::seconds(4));
-	m_stateAsset->audioSystem->playSound("321GO");
-	m_123GOAnimator.playAnimation("idle");
 
-	if (m_stateAsset->audioSystem->getMusic("Bamboozle")->getStatus() != sf::Music::Playing)
-	{
-		m_stateAsset->audioSystem->playMusic("Bamboozle", true);
-	}
-	std::cout << "Entering play state" << std::endl;
+	m_321GOTimer.reset(sf::seconds(PLAYSTATE_SECONDS_BEFORE_COUNTDOWN));
+	m_321GOTimer.start();
+	m_stateAsset->audioSystem->playMusic("Bamboozle", true);
 }
 
 void PlayState::leaving()
@@ -175,7 +171,7 @@ void PlayState::leaving()
 	delete m_contactFilter;
 	m_contactFilter = nullptr;
 
-	std::cout << "Leaving play state" << std::endl;
+	m_stateAsset->audioSystem->getMusic("Bamboozle")->stop();
 }
 
 void PlayState::obscuring()
@@ -654,7 +650,7 @@ bool PlayState::update(float dt)
 		}
 	}
 #pragma endregion
-
+	m_currentLevel->update(dt);
 	m_world.Step(1.f / 60.f, 8, 3);
 
 #pragma region Gatherer_Movement
@@ -1015,8 +1011,15 @@ bool PlayState::update(float dt)
 	m_totemHeadAnimator.update(sf::seconds(dt));
 	m_totemHeadAnimator.animate(m_totemHead);
 	
+	bool expired = m_321GOTimer.isExpired();
+	if (m_starting && expired && !m_stateAsset->audioSystem->getSound("321GO")->isPlaying())
+	{
+		m_stateAsset->audioSystem->playSound("321GO");
+		m_123GOAnimator.playAnimation("idle");
+	}
+
 	// Update 321GO animation
-	if (m_starting)
+	if (m_starting && expired)
 	{
 		if (!m_123GOAnimator.isPlayingAnimation())
 		{
@@ -1049,11 +1052,12 @@ void PlayState::draw()
 		m_stateAsset->windowManager->getWindow()->draw(*player->getTotemSprite());
 	}
 
-	m_currentLevel->drawFlyingCoins(m_stateAsset->windowManager->getWindow());
+	if (!m_gameWon)
+		m_currentLevel->drawFlyingCoins(m_stateAsset->windowManager->getWindow());
 
-	Box2DWorldDraw debugDraw(m_stateAsset->windowManager->getWindow());
-	debugDraw.SetFlags(b2Draw::e_shapeBit);
-	m_world.SetDebugDraw(&debugDraw);
+	//Box2DWorldDraw debugDraw(m_stateAsset->windowManager->getWindow());
+	//debugDraw.SetFlags(b2Draw::e_shapeBit);
+	//m_world.SetDebugDraw(&debugDraw);
 	//m_world.DrawDebugData();
 
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBarBackground);
@@ -1073,13 +1077,15 @@ void PlayState::draw()
 		}
 	}
 
-	for (auto &FST : m_floatingScoreTexts)
+	if (!m_gameWon)
 	{
-		m_stateAsset->windowManager->getWindow()->draw(*FST->getText());
+		for (auto &FST : m_floatingScoreTexts)
+		{
+			m_stateAsset->windowManager->getWindow()->draw(*FST->getText());
+		}
+		m_stateAsset->windowManager->getWindow()->draw(m_lightningEffect);
 	}
-	m_stateAsset->windowManager->getWindow()->draw(m_lightningEffect);
-
-	if (m_starting)
+	if (m_starting && m_321GOTimer.isExpired())
 	{
 		m_stateAsset->windowManager->getWindow()->draw(m_123GO);
 	}
@@ -1180,6 +1186,10 @@ void PlayState::initPlayers()
 		m_players.back()->m_totemBountyIcon->setOrigin(32, 64);
 		m_players.back()->m_totemBountyIcon->setScale(0.3, 0.3);
 		m_players.back()->m_totemBountyIconAnimator->playAnimation("idle", true);
+
+		m_players.back()->mWinScoreText->setFont(m_stateAsset->resourceHolder->getFont(DEFAULT_FONT));
+		m_players.back()->mWinScoreText->setString("");
+		m_players.back()->mWinScoreText->setCharacterSize(28);
 
 
 		if (!m_stateAsset->gameStateManager->m_players[i].m_ready)
@@ -1435,17 +1445,20 @@ void PlayState::createPowerup()
 void PlayState::setupGameWon()
 {
 	m_setupGameWon = true;
-	int middle_y = m_stateAsset->windowManager->getWindow()->getSize().y / 2;
-	int middle_x = m_stateAsset->windowManager->getWindow()->getSize().x / 2;
+	float middle_y = static_cast<float>(m_stateAsset->windowManager->getWindow()->getSize().y / 2);
+	float middle_x = static_cast<float>(m_stateAsset->windowManager->getWindow()->getSize().x / 2);
 	
 	std::vector<Player*> players = m_players;
 	std::sort(players.begin(), players.end(), sortTotemAlgorithm);
 
-	int startY = middle_y - 300;
-	int startXDef = middle_x - 200;
-	int startXGat = middle_x - 150;
+	float startY = middle_y - 300.f;
+	float startXDef = middle_x - 200.f;
+	float startXGat = middle_x - 150.f;
+
 	for (auto &p : players)
 	{
+		p->setDead(false);
+		p->setShield(false);
 		sf::Vector2f def_pos = p->getDefender()->getSprite()->getPosition();
 		sf::Vector2f gat_pos = p->getGatherer()->getSprite()->getPosition();
 		p->getDefender()->m_tweenX = def_pos.x;
@@ -1453,14 +1466,28 @@ void PlayState::setupGameWon()
 		p->getGatherer()->m_tweenX = gat_pos.x;
 		p->getGatherer()->m_tweenY = gat_pos.y;
 
-		CDBTweener::CTween* tween = new CDBTweener::CTween();
-		tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 0.5f);
+	CDBTweener::CTween* tween = new CDBTweener::CTween();
+		tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
 		tween->addValue(&p->getDefender()->m_tweenX, startXDef);
 		tween->addValue(&p->getDefender()->m_tweenY, startY);
 		tween->addValue(&p->getGatherer()->m_tweenX, startXGat);
-		tween->addValue(&p->getGatherer()->m_tweenY, startY);
+		tween->addValue(&p->getGatherer()->m_tweenY, startY + 80);
 		tween->setUserData(p);
 		m_winGameTweener.addTween(tween);
+
+		p->mWinScoreText->setString(std::to_string(p->m_bounty));
+		p->mWinScoreText->setOrigin(p->mWinScoreText->getGlobalBounds().width / 2.f, p->mWinScoreText->getGlobalBounds().height / 2.f);
+		p->mWinScoreText->setPosition(1920 + 400, startY);
+		
+	/*	CDBTweener::CTween* tween = new CDBTweener::CTween();
+		tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
+		tween->addValue(&p->getDefender()->m_tweenX, startXDef);
+		tween->addValue(&p->getDefender()->m_tweenY, startY);
+		tween->addValue(&p->getGatherer()->m_tweenX, startXGat);
+		tween->addValue(&p->getGatherer()->m_tweenY, startY + 80);
+		tween->setUserData(p);
+		m_winGameTweener.addTween(tween);
+		*/
 		startY += 128;
 	}
 }

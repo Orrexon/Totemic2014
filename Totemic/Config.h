@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML\Graphics\Color.hpp>
+#include <string>
 
 const float POINTS_PER_SECOND = 100.f;
 const float POINTS_TO_WIN = 5000.f; // 5000.f
@@ -18,8 +19,8 @@ const float COINS_TIMER_SECONDS = 5.f; // 5.f default
 const int MAX_COINS = 4;
 const int MAX_POWERUP = 2;
 const float POWERUPS_SPAWN_RATE = 5.f; // 10.f default
-const int FLOATING_SCORE_TEXT_MIN_SIZE = 20;
-const int FLOATING_SCORE_TEXT_MAX_SIZE = 50;
+const float FLOATING_SCORE_TEXT_MIN_SIZE = 20;
+const float FLOATING_SCORE_TEXT_MAX_SIZE = 50;
 const float FLOATING_SCORE_TEXT_POINTS_PER_FONTSIZE = 2.f; // 2 points to reach a fontsize of 2, capped at 10
 const float FLOATING_SCORE_HOTSPOT_SUM = 100.f; // Amount of score shown in the floating text in the hotspot
 const float POWERUP_STUN_TIME = 2.f; // Amount of time in seconds players is stunned by the lightning powerup
@@ -28,8 +29,8 @@ const float SPAWNZONE_RADIUS = 250; // Not used..
 const unsigned int SPAWNZONE_POINTCOUNT = 60; // Not used..
 const float SPAWNZONE_STROKE_THICKNESS = 4; // Not used..
 const int TOTEM_ALPHA_WHEN_BLOCK = 140; // The opacity of the totem when a player is behind it
-const float COIN_GATHERED_SPEED = 17.f; // Speed of the coin traveling to the totem
-const float SCORE_PER_COIN = POINTS_TO_WIN * 0.04; // Amount of score given by a coin; 4% of maxium score
+const float COIN_GATHERED_SPEED = 20.f; // Speed of the coin traveling to the totem
+const float SCORE_PER_COIN = POINTS_TO_WIN * 0.04f; // Amount of score given by a coin; 4% of maxium score
 const float RANDOM_PLAYER_SPAWN_TOLERANCE = 500; // How far must a gatherer be from a spawnpoint before it becomes "not occupied"
 const float SHIELD_TIMER = 4.f; // The powerup shield is activated for 5 seconds
 const float SHIELD_RADIUS = 140.f; // Radius of the powerup shield
@@ -40,9 +41,12 @@ const float GATHERER_DEATH_ANIM_DURATION = 1.f;
 const float DEFENDER_DEATH_ANIM_DURATION = 1.f;
 const float GATHERER_WALK_ANIM_DURATION = 0.1f;
 const float DEFENDER_WALK_ANIM_DURATION = 0.5f;
-const float MENU_TIME_READY = 2.f;
+const float MENU_TIME_READY = 10.f;
 const float COINBIRD_SPEED = 10.f;
-const float COINBIRD_ANIM_SPEED = 0.4;
-const float SCORE_PER_KILL = POINTS_TO_WIN * 0.02;
+const float COINBIRD_ANIM_SPEED = 0.4f;
+const float SCORE_PER_KILL = POINTS_TO_WIN * 0.02f;
 const sf::Color TIMER_BG_COLOR(69, 52, 17);
 const float PLAYER_SPAWNPROTECTION_TIME = 2.51f;
+const float LOADINGSCREEN_SECONDS = 5.f;
+const float PLAYSTATE_SECONDS_BEFORE_COUNTDOWN = 1.5f;
+const std::string DEFAULT_FONT = "odin_rounded.otf";

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameState.h"
+#include <Thor\Time.hpp>
 
 class LoadingState : public GameState
 {
@@ -17,5 +18,7 @@ public:
 	void setupActions();
 	
 private:
+	sf::Sprite mBackground;
+	thor::Timer mTimer;
 };
 
