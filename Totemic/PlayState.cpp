@@ -674,6 +674,7 @@ bool PlayState::update(float dt)
 
 	m_defenderParticleSystem->update(sf::seconds(dt));
 	m_gathererDeathSystem->update(sf::seconds(dt));
+	m_currentLevel->update(dt);
 	m_world.Step(1.f / 60.f, 8, 3);
 
 #pragma region Gatherer_Movement
