@@ -103,14 +103,14 @@ public:
 
 	thor::UniversalEmitter* m_defenderEmitter;
 	thor::ParticleSystem* m_defenderParticleSystem;
-	sf::Texture tex;
+	sf::Texture m_defenderParticleTex;
 
 	thor::UniversalEmitter* m_gathererDeathEmitter;
 	thor::ParticleSystem* m_gathererDeathSystem;
 	thor::ForceAffector* m_gathererDeathAffector;
 	thor::TorqueAffector* m_gathererTorqueAffector;
 	sf::Texture feather;
-	sf::Texture feather2;
-	sf::Texture feather3;
-	sf::Texture feather4;
+	sf::Texture featherRed;
+	sf::Texture featherYellow;
+	sf::Texture featherPurple;
 };

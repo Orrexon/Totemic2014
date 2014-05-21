@@ -129,15 +129,18 @@ void PlayState::entering()
 
 	m_defenderEmitter = new thor::UniversalEmitter;
 	m_defenderParticleSystem = new thor::ParticleSystem;
-	tex.loadFromFile("../assets/textures/defender_particle.png", sf::IntRect(0, 0, 8, 8));
-	m_defenderParticleSystem->setTexture(tex);
+	m_defenderParticleTex.loadFromFile("../assets/textures/particles.png", sf::IntRect(0, 0, 47, 15));
+	m_defenderParticleSystem->setTexture(m_defenderParticleTex);
+	m_defenderParticleSystem->addTextureRect(sf::IntRect(1, 1, 13, 13));
+	m_defenderParticleSystem->addTextureRect(sf::IntRect(16, 0, 14, 15));
+	m_defenderParticleSystem->addTextureRect(sf::IntRect(33, 0, 13, 15));
 
 	m_gathererDeathEmitter = new thor::UniversalEmitter;
 	m_gathererDeathSystem = new thor::ParticleSystem;
 	feather.loadFromFile("../assets/textures/death_particle_blue.png", sf::IntRect(0, 0, 16, 16));
-	feather2.loadFromFile("../assets/textures/death_particle_red.png", sf::IntRect(0, 0, 16, 16));
-	feather3.loadFromFile("../assets/textures/death_particle_yellow.png", sf::IntRect(0, 0, 16, 16));
-	feather4.loadFromFile("../assets/textures/death_particle_purple.png", sf::IntRect(0, 0, 16, 16));
+	featherRed.loadFromFile("../assets/textures/death_particle_red.png", sf::IntRect(0, 0, 16, 16));
+	featherYellow.loadFromFile("../assets/textures/death_particle_yellow.png", sf::IntRect(0, 0, 16, 16));
+	featherPurple.loadFromFile("../assets/textures/death_particle_purple.png", sf::IntRect(0, 0, 16, 16));
 	m_gathererDeathSystem->setTexture(feather);
 	m_gathererDeathAffector = new thor::ForceAffector(sf::Vector2f(0.f, 0.f));
 	m_gathererDeathAffector->setAcceleration(sf::Vector2f(0.f, 9.98f));
@@ -209,11 +212,6 @@ void PlayState::releaving()
 
 bool PlayState::update(float dt)
 {
-	if (m_actionMap->isActive("Exit"))
-	{
-		return false;
-	}
-
 	if (m_gameWon)
 	{
 		if (!m_hasStartedToChangeWinBackgroundOpacity)
@@ -701,6 +699,7 @@ bool PlayState::update(float dt)
 	m_currentLevel->update(dt);
 	m_defenderParticleSystem->update(sf::seconds(dt));
 	m_gathererDeathSystem->update(sf::seconds(dt));
+	m_currentLevel->update(dt);
 	m_world.Step(1.f / 60.f, 8, 3);
 
 #pragma region Gatherer_Movement
@@ -1279,11 +1278,6 @@ void PlayState::initPlayers()
 
 void PlayState::setupActions()
 {
-	m_actionMap->operator[]("p3_up") = thor::Action(sf::Keyboard::W, thor::Action::Hold);
-	m_actionMap->operator[]("p3_down") = thor::Action(sf::Keyboard::S, thor::Action::Hold);
-	m_actionMap->operator[]("p3_left") = thor::Action(sf::Keyboard::A, thor::Action::Hold);
-	m_actionMap->operator[]("p3_right") = thor::Action(sf::Keyboard::D, thor::Action::Hold);
-
 	m_actionMap->operator[]("p1_up") = thor::Action(sf::Keyboard::Up, thor::Action::Hold);
 	m_actionMap->operator[]("p1_down") = thor::Action(sf::Keyboard::Down, thor::Action::Hold);
 	m_actionMap->operator[]("p1_left") = thor::Action(sf::Keyboard::Left, thor::Action::Hold);
@@ -1299,8 +1293,10 @@ void PlayState::setupActions()
 	m_actionMap->operator[]("p4_left") = thor::Action(sf::Keyboard::Numpad4, thor::Action::Hold);
 	m_actionMap->operator[]("p4_right") = thor::Action(sf::Keyboard::Numpad6, thor::Action::Hold);
 
-	m_actionMap->operator[]("Exit") = thor::Action(sf::Keyboard::Escape, thor::Action::PressOnce);
-	m_actionMap->operator[]("Restart") = thor::Action(sf::Keyboard::R, thor::Action::PressOnce);
+	m_actionMap->operator[]("p3_up") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
+	m_actionMap->operator[]("p3_down") = thor::Action(sf::Keyboard::Numpad5, thor::Action::Hold);
+	m_actionMap->operator[]("p3_left") = thor::Action(sf::Keyboard::Numpad4, thor::Action::Hold);
+	m_actionMap->operator[]("p3_right") = thor::Action(sf::Keyboard::Numpad6, thor::Action::Hold);
 }
 
 void PlayState::loadNewLevel()

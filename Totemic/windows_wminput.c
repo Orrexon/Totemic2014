@@ -217,7 +217,8 @@ static void queue_event(const ManyMouseEvent *event)
 static void queue_from_rawinput(const RAWINPUT *raw)
 {
     int i;
-    const RAWINPUTHEADER *header = &raw->header;
+    const RAWINPUT
+		ER *header = &raw->header;
     const RAWMOUSE *mouse = &raw->data.mouse;
     ManyMouseEvent event;
 

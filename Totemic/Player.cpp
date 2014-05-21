@@ -334,17 +334,18 @@ void Player::processEventualDeath(Level* level)
 		m_bounty = 0;
 		std::vector<PlayerSpawn*> playerSpawns = level->getPlayerSpawns();
 		int randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
-		loopplaster.restart();
+
+		thor::StopWatch timerSpawnBreak;
+		timerSpawnBreak.restart();
 		while (playerSpawns[randomSpawnIndex]->occupied == true)
 		{
 			randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
-			std::cout << "I am trying to find a player spawn" << std::endl;
-			if (loopplaster.getElapsedTime() >= sf::seconds(0.1f))
+
+			if (timerSpawnBreak.getElapsedTime() >= sf::seconds(.1f))
 			{
 				break;
 			}
 		}
-		std::cout << "Spawn player " << playerSpawns[randomSpawnIndex]->occupied << std::endl;
 		level->setPlayerSpawnOccupied(randomSpawnIndex, true);
 
 		m_gatherer->getBody()->SetActive(false);

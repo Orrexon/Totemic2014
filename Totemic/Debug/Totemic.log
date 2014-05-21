@@ -1,13 +1,8 @@
-﻿Build started 2014-05-20 01:06:47.
+﻿Build started 2014-05-20 14:32:48.
      1>Project "C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Totemic\Totemic.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ContactListener.cpp
          ContactListener.cpp
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(54): warning C4150: deletion of pointer to incomplete type 'thor::FrameAnimation'; no destructor called
-                 c:\users\orre\documents\desktop\github\totemic2014\totemic\player.h(13) : see declaration of 'thor::FrameAnimation'
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\config.h(32): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\config.h(45): warning C4305: 'initializing' : truncation from 'double' to 'const float'
-     1>c:\users\orre\documents\desktop\github\totemic2014\totemic\config.h(46): warning C4244: 'initializing' : conversion from 'double' to 'const float', possible loss of data
      1>c:\users\orre\documents\desktop\github\totemic2014\totemic\contactlistener.cpp(140): warning C4305: 'argument' : truncation from 'double' to 'float'
      1>c:\users\orre\documents\desktop\github\totemic2014\totemic\contactlistener.cpp(146): warning C4305: 'argument' : truncation from 'double' to 'float'
        Link:
@@ -57,4 +52,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.21
+Time Elapsed 00:00:01.29
