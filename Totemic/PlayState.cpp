@@ -37,11 +37,12 @@ PlayState::~PlayState()
 
 void PlayState::entering()
 {
+	m_hasStartedToChangeWinBackgroundOpacity = false;
 	m_exclusive = false;
 	m_gameWon = false;
 	m_setupGameWon = false;
 	m_totemIsBlockingPlayer = false;
-	m_starting = true;
+	m_starting = false;
 
 	m_totemTweenerListener = new TotemTweenerListener();
 
@@ -157,6 +158,13 @@ void PlayState::entering()
 	m_321GOTimer.reset(sf::seconds(PLAYSTATE_SECONDS_BEFORE_COUNTDOWN));
 	m_321GOTimer.start();
 	m_stateAsset->audioSystem->playMusic("Bamboozle", true);
+
+	mWinBackground.setTexture(m_stateAsset->resourceHolder->getTexture("win.png"));
+	m_winBackgroundAlpha = 0.f;
+
+	m_hotSpot->getSprite()->setTexture(m_stateAsset->resourceHolder->getTexture("totem_glitter.png"));
+	m_hotSpot->getSprite()->setOrigin(224, 244);
+	m_hotSpot->getSprite()->setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f, m_stateAsset->windowManager->getWindow()->getSize().y / 2.f);
 }
 
 void PlayState::leaving()
@@ -208,11 +216,18 @@ bool PlayState::update(float dt)
 
 	if (m_gameWon)
 	{
-		if (m_actionMap->isActive("Restart"))
+		if (!m_hasStartedToChangeWinBackgroundOpacity)
 		{
-			m_gameWon = false;
-			loadNewLevel();
+			m_hasStartedToChangeWinBackgroundOpacity = true;
+			CDBTweener::CTween* changeWinBackgroundOpacityTween = new CDBTweener::CTween();
+			changeWinBackgroundOpacityTween->setEquation(&CDBTweener::TWEQ_SINUSOIDAL, CDBTweener::TWEA_OUT, 0.5f);
+			changeWinBackgroundOpacityTween->addValue(&m_winBackgroundAlpha, 255);
+			m_winGameTweener.addTween(changeWinBackgroundOpacityTween);
 		}
+
+		sf::Color oldColor = mWinBackground.getColor();
+		oldColor.a = static_cast<int>(m_winBackgroundAlpha);
+		mWinBackground.setColor(oldColor);
 
 		if (!m_setupGameWon)
 			setupGameWon();
@@ -221,6 +236,16 @@ bool PlayState::update(float dt)
 
 		for (auto &player : m_players)
 		{
+			if (m_setupGameWon && player->m_scoreTextTimer.isExpired() && player->m_addedScoreTextTween == false)
+			{
+				player->m_addedScoreTextTween = true;
+				player->m_tweeningScoreTextX = 1920 + 400;
+				CDBTweener::CTween* winScoreTween = new CDBTweener::CTween();
+				winScoreTween->setEquation(&CDBTweener::TWEQ_ELASTIC, CDBTweener::TWEA_OUT, 1.f);
+				winScoreTween->addValue(&player->m_tweeningScoreTextX, player->m_tweeningScoreTextXTarget);
+				m_winGameTweener.addTween(winScoreTween);
+			}
+
 			sf::Vector2f def_pos;
 			sf::Vector2f gat_pos;
 			def_pos.x = player->getDefender()->m_tweenX;
@@ -229,9 +254,15 @@ bool PlayState::update(float dt)
 			gat_pos.y = player->getGatherer()->m_tweenY;
 			player->getDefender()->getSprite()->setPosition(def_pos);
 			player->getGatherer()->getSprite()->setPosition(gat_pos);
+
+			player->mWinScoreText->setPosition(player->m_tweeningScoreTextX, player->mWinScoreText->getPosition().y);
+			player->m_winNumberSprite->setPosition(player->m_winNumberSprite->getPosition().x, player->mWinNumberSpriteY);
 		}
 		return true;
 	}
+
+	m_hotSpot->getAnimator()->update(sf::seconds(dt));
+	m_hotSpot->getAnimator()->animate(*m_hotSpot->getSprite());
 
 	for (auto &player : m_players)
 	{
@@ -594,7 +625,7 @@ bool PlayState::update(float dt)
 
 		if (player->isStunned() && player->m_stunnedTimer.getElapsedTime().asSeconds() >= POWERUP_STUN_TIME)
 		{
-			player->getGatherer()->getAnimatior()->playAnimation("walk");
+			player->getGatherer()->getAnimatior()->playAnimation("walk", true);
 			player->setStunned(false);
 		}
 
@@ -808,11 +839,11 @@ bool PlayState::update(float dt)
 
 		if (!player->getDefender()->getAnimatior()->isPlayingAnimation())
 		{
-			player->getDefender()->getAnimatior()->playAnimation("walk");
+			player->getDefender()->getAnimatior()->playAnimation("walk", true);
 		}
 		if (!player->getGatherer()->getAnimatior()->isPlayingAnimation())
 		{
-			player->getGatherer()->getAnimatior()->playAnimation("walk");
+			player->getGatherer()->getAnimatior()->playAnimation("walk", true);
 		}
 
 		if (player->isDying())
@@ -1064,14 +1095,14 @@ void PlayState::draw()
 {
 	m_stateAsset->windowManager->getWindow()->draw(*m_currentLevel);
 	m_stateAsset->windowManager->getWindow()->draw(*m_hotSpot->getShape());
-	for (auto &player : m_players)
+	m_stateAsset->windowManager->getWindow()->draw(*m_hotSpot->getSprite());
+	if (!m_gameWon)
 	{
-		if (!player->getDefender()->getAnimatior()->isPlayingAnimation())
+		for (auto &player : m_players)
 		{
-			std::cout << "0";
+			if (player->m_online)
+				m_stateAsset->windowManager->getWindow()->draw(*player);
 		}
-		if (player->m_online)
-			m_stateAsset->windowManager->getWindow()->draw(*player);
 	}
 
 	m_stateAsset->windowManager->getWindow()->draw(m_totemFoot);
@@ -1084,9 +1115,9 @@ void PlayState::draw()
 	if (!m_gameWon)
 		m_currentLevel->drawFlyingCoins(m_stateAsset->windowManager->getWindow());
 
-	//Box2DWorldDraw debugDraw(m_stateAsset->windowManager->getWindow());
-	//debugDraw.SetFlags(b2Draw::e_shapeBit);
-	//m_world.SetDebugDraw(&debugDraw);
+	Box2DWorldDraw debugDraw(m_stateAsset->windowManager->getWindow());
+	debugDraw.SetFlags(b2Draw::e_shapeBit);
+	m_world.SetDebugDraw(&debugDraw);
 	//m_world.DrawDebugData();
 
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBarBackground);
@@ -1119,6 +1150,19 @@ void PlayState::draw()
 	{
 		m_stateAsset->windowManager->getWindow()->draw(m_123GO);
 	}
+
+	if (m_gameWon)
+	{
+		m_stateAsset->windowManager->getWindow()->draw(mWinBackground);
+		for (auto &player : m_players)
+		{
+			if (player->m_online)
+			{
+				m_stateAsset->windowManager->getWindow()->draw(*player);
+				m_stateAsset->windowManager->getWindow()->draw(*player->m_winNumberSprite);
+			}
+		}
+	}
 }
 
 void PlayState::initManyMouse()
@@ -1128,10 +1172,7 @@ void PlayState::initManyMouse()
 	{
 		std::string name = ManyMouse_DeviceName(i);
 		std::string driver = ManyMouse_DriverName();
-		std::cout << "----" << std::endl;
-		std::cout << driver << std::endl;
 		std::cout << name << std::endl;
-		std::cout << "----" << std::endl;
 		if (name.find("Pad") != std::string::npos)
 		{
 			//m_mouseIndicies.push_back(-1);
@@ -1223,8 +1264,11 @@ void PlayState::initPlayers()
 
 		m_players.back()->mWinScoreText->setFont(m_stateAsset->resourceHolder->getFont(DEFAULT_FONT));
 		m_players.back()->mWinScoreText->setString("");
-		m_players.back()->mWinScoreText->setCharacterSize(28);
+		m_players.back()->mWinScoreText->setCharacterSize(60);
 
+		m_players.back()->m_winNumberSprite->setTexture(m_stateAsset->resourceHolder->getTexture("numbers.png"));
+		m_players.back()->m_winNumberSprite->setOrigin(126, 186);
+		m_players.back()->m_winNumberSprite->setScale(sf::Vector2f(0.4, 0.4));
 
 		if (!m_stateAsset->gameStateManager->m_players[i].m_ready)
 		{
@@ -1235,25 +1279,25 @@ void PlayState::initPlayers()
 
 void PlayState::setupActions()
 {
-	m_actionMap->operator[]("p4_up") = thor::Action(sf::Keyboard::W, thor::Action::Hold);
-	m_actionMap->operator[]("p4_down") = thor::Action(sf::Keyboard::S, thor::Action::Hold);
-	m_actionMap->operator[]("p4_left") = thor::Action(sf::Keyboard::A, thor::Action::Hold);
-	m_actionMap->operator[]("p4_right") = thor::Action(sf::Keyboard::D, thor::Action::Hold);
+	m_actionMap->operator[]("p3_up") = thor::Action(sf::Keyboard::W, thor::Action::Hold);
+	m_actionMap->operator[]("p3_down") = thor::Action(sf::Keyboard::S, thor::Action::Hold);
+	m_actionMap->operator[]("p3_left") = thor::Action(sf::Keyboard::A, thor::Action::Hold);
+	m_actionMap->operator[]("p3_right") = thor::Action(sf::Keyboard::D, thor::Action::Hold);
 
-	m_actionMap->operator[]("p2_up") = thor::Action(sf::Keyboard::Up, thor::Action::Hold);
-	m_actionMap->operator[]("p2_down") = thor::Action(sf::Keyboard::Down, thor::Action::Hold);
-	m_actionMap->operator[]("p2_left") = thor::Action(sf::Keyboard::Left, thor::Action::Hold);
-	m_actionMap->operator[]("p2_right") = thor::Action(sf::Keyboard::Right, thor::Action::Hold);
+	m_actionMap->operator[]("p1_up") = thor::Action(sf::Keyboard::Up, thor::Action::Hold);
+	m_actionMap->operator[]("p1_down") = thor::Action(sf::Keyboard::Down, thor::Action::Hold);
+	m_actionMap->operator[]("p1_left") = thor::Action(sf::Keyboard::Left, thor::Action::Hold);
+	m_actionMap->operator[]("p1_right") = thor::Action(sf::Keyboard::Right, thor::Action::Hold);
 
-	m_actionMap->operator[]("p1_up") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
-	m_actionMap->operator[]("p1_down") = thor::Action(sf::Keyboard::H, thor::Action::Hold);
-	m_actionMap->operator[]("p1_left") = thor::Action(sf::Keyboard::G, thor::Action::Hold);
-	m_actionMap->operator[]("p1_right") = thor::Action(sf::Keyboard::J, thor::Action::Hold);
+	m_actionMap->operator[]("p2_up") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
+	m_actionMap->operator[]("p2_down") = thor::Action(sf::Keyboard::H, thor::Action::Hold);
+	m_actionMap->operator[]("p2_left") = thor::Action(sf::Keyboard::G, thor::Action::Hold);
+	m_actionMap->operator[]("p2_right") = thor::Action(sf::Keyboard::J, thor::Action::Hold);
 
-	m_actionMap->operator[]("p3_up") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
-	m_actionMap->operator[]("p3_down") = thor::Action(sf::Keyboard::Numpad5, thor::Action::Hold);
-	m_actionMap->operator[]("p3_left") = thor::Action(sf::Keyboard::Numpad4, thor::Action::Hold);
-	m_actionMap->operator[]("p3_right") = thor::Action(sf::Keyboard::Numpad6, thor::Action::Hold);
+	m_actionMap->operator[]("p4_up") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
+	m_actionMap->operator[]("p4_down") = thor::Action(sf::Keyboard::Numpad5, thor::Action::Hold);
+	m_actionMap->operator[]("p4_left") = thor::Action(sf::Keyboard::Numpad4, thor::Action::Hold);
+	m_actionMap->operator[]("p4_right") = thor::Action(sf::Keyboard::Numpad6, thor::Action::Hold);
 
 	m_actionMap->operator[]("Exit") = thor::Action(sf::Keyboard::Escape, thor::Action::PressOnce);
 	m_actionMap->operator[]("Restart") = thor::Action(sf::Keyboard::R, thor::Action::PressOnce);
@@ -1274,13 +1318,14 @@ void PlayState::loadNewLevel()
 	m_currentLevel->game = this;
 	m_currentLevel->getBackground()->setTexture(m_stateAsset->resourceHolder->getTexture(m_currentLevel->getBackgroundPath(), false));
 
-	m_hotSpot->setRadius(m_currentLevel->getHotspotRadius());
-	m_hotSpot->setPosition(m_currentLevel->getHotspotPosition());
+	m_hotSpot->setRadius(200);
+	m_hotSpot->setPosition(sf::Vector2f(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f, m_stateAsset->windowManager->getWindow()->getSize().y / 2.f));
 
 	float start_y_position = m_hotSpot->getPosition().y - m_players[0]->getTotemSprite()->getGlobalBounds().height / 2.f;
 	for (auto &player : m_players)
 	{
 		if (player == nullptr) continue;
+		player->m_addedScoreTextTween = false;
 		player->getTotemSprite()->setOrigin(player->getTotemSprite()->getGlobalBounds().width / 2.f, player->getTotemSprite()->getGlobalBounds().height / 2.f);
 		player->getTotemSprite()->setPosition(m_hotSpot->getPosition().x, start_y_position);
 		player->m_totemBountyAmount->setPosition(player->getTotemSprite()->getPosition());
@@ -1337,6 +1382,7 @@ void PlayState::loadNewLevel()
 	}
 
 	createPlayerBodies();
+	m_gameWon = false;
 }
 
 void PlayState::createPlayerBodies()
@@ -1392,8 +1438,11 @@ void PlayState::createPlayerBodies()
 
 bool sortTotemAlgorithm(Player* a, Player* b)
 {
-	//return a->getTimer()->getElapsedTime().asSeconds() < b->getTimer()->getElapsedTime().asSeconds();
 	return a->getPoints() < b->getPoints();
+}
+bool sortWinningPlayers(Player* a, Player* b)
+{
+	return a->getPoints() > b->getPoints();
 }
 
 void PlayState::sortTotem()
@@ -1482,12 +1531,24 @@ void PlayState::setupGameWon()
 	float middle_y = static_cast<float>(m_stateAsset->windowManager->getWindow()->getSize().y / 2);
 	float middle_x = static_cast<float>(m_stateAsset->windowManager->getWindow()->getSize().x / 2);
 	std::vector<Player*> players = m_players;
-	std::sort(players.begin(), players.end(), sortTotemAlgorithm);
+	std::sort(players.begin(), players.end(), sortWinningPlayers);
 
-	float startY = middle_y - 300.f;
-	float startXDef = middle_x - 200.f;
-	float startXGat = middle_x - 150.f;
+	float startY = middle_y - 390.f;
+	float startXDef = middle_x;
+	float startXGat = middle_x;
 
+	float startSeconds = 0.5;
+	std::vector<float> dist_secs = { 0, 0, 0, 0 };
+	int a = 0;
+	for (auto &p : players)
+	{
+		dist_secs[a] = startSeconds;
+		a++;
+		startSeconds += 0.8f;
+	}
+	a--;
+
+	int width = 252;
 	for (auto &p : players)
 	{
 		p->setDead(false);
@@ -1499,29 +1560,35 @@ void PlayState::setupGameWon()
 		p->getGatherer()->m_tweenX = gat_pos.x;
 		p->getGatherer()->m_tweenY = gat_pos.y;
 
-	CDBTweener::CTween* tween = new CDBTweener::CTween();
-		tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
+		p->mWinNumberSpriteY = 1080 + 300;
+		p->m_winNumberSprite->setTextureRect(sf::IntRect(width, 0, 252, 372));
+		p->m_winNumberSprite->setPosition(startXDef - 140, p->mWinNumberSpriteY);
+		
+		CDBTweener::CTween* tweenNumberSprite = new CDBTweener::CTween();
+		tweenNumberSprite->setEquation(&CDBTweener::TWEQ_ELASTIC, CDBTweener::TWEA_OUT, 1.f);
+		tweenNumberSprite->addValue(&p->mWinNumberSpriteY, startY + 40);
+		m_winGameTweener.addTween(tweenNumberSprite);
+
+		CDBTweener::CTween* tween = new CDBTweener::CTween();
+		tween->setEquation(&CDBTweener::TWEQ_ELASTIC, CDBTweener::TWEA_OUT, 2.f);
 		tween->addValue(&p->getDefender()->m_tweenX, startXDef);
 		tween->addValue(&p->getDefender()->m_tweenY, startY);
 		tween->addValue(&p->getGatherer()->m_tweenX, startXGat);
 		tween->addValue(&p->getGatherer()->m_tweenY, startY + 80);
-		tween->setUserData(p);
 		m_winGameTweener.addTween(tween);
 
-		p->mWinScoreText->setString(std::to_string(p->m_bounty));
+		p->mWinScoreText->setString(std::to_string(static_cast<int>(p->getPoints())));
 		p->mWinScoreText->setOrigin(p->mWinScoreText->getGlobalBounds().width / 2.f, p->mWinScoreText->getGlobalBounds().height / 2.f);
-		p->mWinScoreText->setPosition(1920 + 400, startY);
+		p->mWinScoreText->setPosition(1920 + 400, startY + 40);
+
+		p->m_tweeningScoreTextX = 1920 + 400;
+		p->m_tweeningScoreTextXTarget = startXGat + 170;
+		std::cout << dist_secs[a] << std::endl;
+		p->m_scoreTextTimer.restart(sf::seconds(dist_secs[a]));
 		
-	/*	CDBTweener::CTween* tween = new CDBTweener::CTween();
-		tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
-		tween->addValue(&p->getDefender()->m_tweenX, startXDef);
-		tween->addValue(&p->getDefender()->m_tweenY, startY);
-		tween->addValue(&p->getGatherer()->m_tweenX, startXGat);
-		tween->addValue(&p->getGatherer()->m_tweenY, startY + 80);
-		tween->setUserData(p);
-		m_winGameTweener.addTween(tween);
-		*/
-		startY += 128;
+		startY += 250;
+		width += 252;
+		a--;
 	}
 }
 

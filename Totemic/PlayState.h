@@ -63,6 +63,7 @@ public:
 	bool m_gameWon;
 	bool m_starting;
 	bool m_totemIsBlockingPlayer;
+	bool m_hasStartedToChangeWinBackgroundOpacity;
 
 	b2World m_world;
 	ContactListener* m_contactListener;
@@ -80,12 +81,14 @@ public:
 	sf::RectangleShape m_timerBarBackground;
 	sf::RectangleShape m_lightningEffect;
 	float m_lightningAlpha;
+	float m_winBackgroundAlpha;
 
 	sf::Sprite m_timerBar;
 	sf::Sprite m_frame;
 	sf::Sprite m_totemHead;
 	sf::Sprite m_123GO;
 	sf::Sprite m_totemFoot;
+	sf::Sprite mWinBackground;
 
 	thor::Animator<sf::Sprite, std::string> m_123GOAnimator;
 	thor::Animator<sf::Sprite, std::string> m_totemHeadAnimator;

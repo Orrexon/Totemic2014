@@ -233,7 +233,11 @@ public:
 public:
 	float m_tweeningValue;
 	float m_hotspotScoreSum;
+	float m_tweeningScoreTextX;
+	float m_tweeningScoreTextXTarget;
+	thor::Timer m_scoreTextTimer;
 	int m_bounty;
+	bool m_addedScoreTextTween;
 	bool m_holdingTotem;
 	bool m_online;
 	thor::StopWatch m_hotspotFloatingTextTimer;
@@ -243,8 +247,12 @@ public:
 	sf::Text* m_totemBountyAmount;
 	sf::Text* mWinScoreText;
 	sf::Sprite* m_totemBountyIcon;
+	sf::Sprite* m_winNumberSprite;
+	float mWinNumberSpriteY;
 	thor::Animator<sf::Sprite, std::string>* m_totemBountyIconAnimator;
 	thor::FrameAnimation* m_totemBountyAnimation;
+
+	thor::StopWatch loopplaster;
 
 private:
 	bool m_respawnProtection;

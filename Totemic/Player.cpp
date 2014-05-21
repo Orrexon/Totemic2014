@@ -28,6 +28,7 @@ Player::Player()
 	m_dead = false;
 	m_stunned = false;
 	m_respawnProtection = false;
+	m_addedScoreTextTween = false;
 	m_stunnedTimer.reset();
 	m_shieldTimer.reset();
 	m_postCheckDead = false;
@@ -43,6 +44,7 @@ Player::Player()
 	m_totemBountyIconAnimator = new thor::Animator<sf::Sprite, std::string>;
 	m_totemBountyAmount = new sf::Text();
 	mWinScoreText = new sf::Text();
+	m_winNumberSprite = new sf::Sprite();
 }
 Player::~Player()
 {
@@ -78,6 +80,9 @@ Player::~Player()
 
 	delete mWinScoreText;
 	mWinScoreText = nullptr;
+
+	delete m_winNumberSprite;
+	m_winNumberSprite = nullptr;
 }
 
 void Player::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -93,6 +98,8 @@ void Player::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		if (m_shield)
 			target.draw(*m_gatherer->m_shieldOverlay);
 	}
+
+	target.draw(*mWinScoreText);
 }
 void Player::setDevice(unsigned int p_deviceNo)
 {
@@ -327,10 +334,15 @@ void Player::processEventualDeath(Level* level)
 		m_bounty = 0;
 		std::vector<PlayerSpawn*> playerSpawns = level->getPlayerSpawns();
 		int randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
+		loopplaster.restart();
 		while (playerSpawns[randomSpawnIndex]->occupied == true)
 		{
 			randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
 			std::cout << "I am trying to find a player spawn" << std::endl;
+			if (loopplaster.getElapsedTime() >= sf::seconds(0.1f))
+			{
+				break;
+			}
 		}
 		std::cout << "Spawn player " << playerSpawns[randomSpawnIndex]->occupied << std::endl;
 		level->setPlayerSpawnOccupied(randomSpawnIndex, true);
