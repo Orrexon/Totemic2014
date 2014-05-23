@@ -110,4 +110,14 @@ public:
 	sf::Texture featherRed;
 	sf::Texture featherYellow;
 	sf::Texture featherPurple;
+
+	//the "arrowparticles"
+
+	thor::UniversalEmitter* m_scoreIndicatorEmitter;
+	thor::ParticleSystem* m_scoreIndicatorSystem;
+	thor::ForceAffector* m_scoreIndicatorAffector;
+	thor::StopWatch m_glowUpdate;
+	sf::Texture m_glow1;
+
+	sf::Vector2f m_leaderPoint;
 };

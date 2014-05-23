@@ -146,6 +146,18 @@ void PlayState::entering()
 	m_gathererTorqueAffector = new thor::TorqueAffector(0.f);
 	m_gathererTorqueAffector->setAngularAcceleration(90.f);
 
+	m_scoreIndicatorEmitter = new thor::UniversalEmitter;
+	m_scoreIndicatorSystem = new thor::ParticleSystem;
+	m_scoreIndicatorAffector = new thor::ForceAffector(sf::Vector2f(0.f, 20.f));
+	m_glow1.loadFromFile("../assets/textures/sparcle_particles.png", sf::IntRect(0, 0, 80, 16));
+	m_scoreIndicatorSystem->setTexture(m_glow1);
+	m_scoreIndicatorSystem->addTextureRect(sf::IntRect(0, 0, 15, 16));
+	m_scoreIndicatorSystem->addTextureRect(sf::IntRect(16, 0, 15, 16));
+	m_scoreIndicatorSystem->addTextureRect(sf::IntRect(64, 0, 15, 16));
+	m_leaderPoint = { 0.f, 0.f };
+	//m_glowUpdate.restart();
+
+
 	m_123GO.setTexture(m_stateAsset->resourceHolder->getTexture("321go.png"));
 	m_123GO.setOrigin(418, 186);
 	m_123GO.setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f, m_stateAsset->windowManager->getWindow()->getSize().y / 2.f);
@@ -159,7 +171,7 @@ void PlayState::entering()
 
 	m_321GOTimer.reset(sf::seconds(PLAYSTATE_SECONDS_BEFORE_COUNTDOWN));
 	m_321GOTimer.start();
-	m_stateAsset->audioSystem->playMusic("Bamboozle", true);
+	//m_stateAsset->audioSystem->playMusic("Bamboozle", true);
 }
 
 void PlayState::leaving()
@@ -673,9 +685,39 @@ bool PlayState::update(float dt)
 	m_currentLevel->update(dt);
 	m_defenderParticleSystem->update(sf::seconds(dt));
 	m_gathererDeathSystem->update(sf::seconds(dt));
+
 	m_currentLevel->update(dt);
 	m_world.Step(1.f / 60.f, 8, 3);
 
+
+#pragma region GLOW_PARTICLES
+	sf::Sprite temp[4];
+	sf::Vector2f tempV = m_leaderPoint;
+	int index = 0;
+	for (auto& it : m_players)
+	{
+		temp[index] = *it->getPointsIndicator();
+		index++;
+	}
+	for (int j = 0; j < m_players.size(); j++)
+	{
+
+		if (temp[j].getPosition().x >= m_leaderPoint.x)
+		{
+			m_leaderPoint = temp[j].getPosition();
+		}
+	}
+	m_scoreIndicatorEmitter->setEmissionRate(2.f);
+	m_scoreIndicatorEmitter->setParticleLifetime(thor::Distributions::uniform(sf::seconds(.3f), sf::seconds(.4f)));
+	m_scoreIndicatorEmitter->setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0.f, -100.f), 180.f));
+	m_scoreIndicatorEmitter->setParticlePosition(m_leaderPoint + sf::Vector2f(10.f, 0.f));
+	
+	m_scoreIndicatorSystem->addAffector(*m_scoreIndicatorAffector, sf::seconds(1.f));
+	m_scoreIndicatorSystem->addEmitter(*m_scoreIndicatorEmitter, sf::milliseconds(1000));
+	m_scoreIndicatorSystem->update(sf::seconds(dt + 0.025));
+	
+
+#pragma endregion
 #pragma region Gatherer_Movement
 	b2Vec2 up_impulse(0.f, -15.f);
 	b2Vec2 down_impulse(0.f, 15.f);
@@ -1059,7 +1101,7 @@ bool PlayState::update(float dt)
 			m_123GOAnimator.animate(m_123GO);
 		}
 	}
-	m_currentLevel->update(dt);
+	//m_currentLevel->update(dt);
 	return true;
 }
 
@@ -1098,6 +1140,7 @@ void PlayState::draw()
 	m_stateAsset->windowManager->getWindow()->draw(m_frame);
 	m_stateAsset->windowManager->getWindow()->draw(*m_defenderParticleSystem);
 	m_stateAsset->windowManager->getWindow()->draw(*m_gathererDeathSystem);
+	m_stateAsset->windowManager->getWindow()->draw(*m_scoreIndicatorSystem);
 	for (auto &player : m_players)
 	{
 		if (player->m_online)
@@ -1244,15 +1287,15 @@ void PlayState::setupActions()
 	m_actionMap->operator[]("p4_left") = thor::Action(sf::Keyboard::A, thor::Action::Hold);
 	m_actionMap->operator[]("p4_right") = thor::Action(sf::Keyboard::D, thor::Action::Hold);
 
-	m_actionMap->operator[]("p1_up") = thor::Action(sf::Keyboard::Up, thor::Action::Hold);
-	m_actionMap->operator[]("p1_down") = thor::Action(sf::Keyboard::Down, thor::Action::Hold);
-	m_actionMap->operator[]("p1_left") = thor::Action(sf::Keyboard::Left, thor::Action::Hold);
-	m_actionMap->operator[]("p1_right") = thor::Action(sf::Keyboard::Right, thor::Action::Hold);
+	m_actionMap->operator[]("p2_up") = thor::Action(sf::Keyboard::Up, thor::Action::Hold);
+	m_actionMap->operator[]("p2_down") = thor::Action(sf::Keyboard::Down, thor::Action::Hold);
+	m_actionMap->operator[]("p2_left") = thor::Action(sf::Keyboard::Left, thor::Action::Hold);
+	m_actionMap->operator[]("p2_right") = thor::Action(sf::Keyboard::Right, thor::Action::Hold);
 
-	m_actionMap->operator[]("p2_up") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
-	m_actionMap->operator[]("p2_down") = thor::Action(sf::Keyboard::H, thor::Action::Hold);
-	m_actionMap->operator[]("p2_left") = thor::Action(sf::Keyboard::G, thor::Action::Hold);
-	m_actionMap->operator[]("p2_right") = thor::Action(sf::Keyboard::J, thor::Action::Hold);
+	m_actionMap->operator[]("p1_up") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
+	m_actionMap->operator[]("p1_down") = thor::Action(sf::Keyboard::H, thor::Action::Hold);
+	m_actionMap->operator[]("p1_left") = thor::Action(sf::Keyboard::G, thor::Action::Hold);
+	m_actionMap->operator[]("p1_right") = thor::Action(sf::Keyboard::J, thor::Action::Hold);
 
 	m_actionMap->operator[]("p3_up") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
 	m_actionMap->operator[]("p3_down") = thor::Action(sf::Keyboard::Numpad5, thor::Action::Hold);
@@ -1503,7 +1546,7 @@ void PlayState::setupGameWon()
 		p->getGatherer()->m_tweenX = gat_pos.x;
 		p->getGatherer()->m_tweenY = gat_pos.y;
 
-	CDBTweener::CTween* tween = new CDBTweener::CTween();
+		CDBTweener::CTween* tween = new CDBTweener::CTween();
 		tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
 		tween->addValue(&p->getDefender()->m_tweenX, startXDef);
 		tween->addValue(&p->getDefender()->m_tweenY, startY);
@@ -1515,16 +1558,16 @@ void PlayState::setupGameWon()
 		p->mWinScoreText->setString(std::to_string(p->m_bounty));
 		p->mWinScoreText->setOrigin(p->mWinScoreText->getGlobalBounds().width / 2.f, p->mWinScoreText->getGlobalBounds().height / 2.f);
 		p->mWinScoreText->setPosition(1920 + 400, startY);
-		
-	/*	CDBTweener::CTween* tween = new CDBTweener::CTween();
-		tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
-		tween->addValue(&p->getDefender()->m_tweenX, startXDef);
-		tween->addValue(&p->getDefender()->m_tweenY, startY);
-		tween->addValue(&p->getGatherer()->m_tweenX, startXGat);
-		tween->addValue(&p->getGatherer()->m_tweenY, startY + 80);
-		tween->setUserData(p);
-		m_winGameTweener.addTween(tween);
-		*/
+
+		/*	CDBTweener::CTween* tween = new CDBTweener::CTween();
+			tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
+			tween->addValue(&p->getDefender()->m_tweenX, startXDef);
+			tween->addValue(&p->getDefender()->m_tweenY, startY);
+			tween->addValue(&p->getGatherer()->m_tweenX, startXGat);
+			tween->addValue(&p->getGatherer()->m_tweenY, startY + 80);
+			tween->setUserData(p);
+			m_winGameTweener.addTween(tween);
+			*/
 		startY += 128;
 	}
 }
