@@ -30,13 +30,18 @@ public:
 
 	sf::Sprite* getSprite();
 	thor::Animator<sf::Sprite, std::string>* getAnimator();
+	sf::Color mIdleColor;
+
 private:
 	float m_radius;
 	sf::Vector2f m_position;
 	sf::Sprite* m_sprite;
-	sf::Color mIdleColor;
 	thor::Animator<sf::Sprite, std::string>* m_animator;
-	thor::FrameAnimation m_animation;
+	thor::FrameAnimation m_idleAnim;
+	thor::FrameAnimation m_blueAnim;
+	thor::FrameAnimation m_redAnim;
+	thor::FrameAnimation m_yellowAnim;
+	thor::FrameAnimation m_purpleAnim;
 	sf::CircleShape* m_shape; // Just for visual debug information
 };
 

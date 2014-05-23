@@ -14,6 +14,7 @@
 #include "Math.h"
 #include "FloatingScoreText.h"
 #include "Level.h"
+#include "PlayState.h"
 
 Player::Player()
 {
@@ -23,6 +24,8 @@ Player::Player()
 	m_online = true;
 	m_dying = false;
 	m_shield = false;
+	m_isTweeningTotem = false;
+	m_currentTotemTween = nullptr;
 	m_holdingTotem = false;
 	m_won = false;
 	m_dead = false;
@@ -97,6 +100,10 @@ void Player::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		target.draw(*m_gatherer->getSprite());
 		if (m_shield)
 			target.draw(*m_gatherer->m_shieldOverlay);
+		if (m_stunned)
+		{
+			target.draw(*m_defender->m_stunBirds);
+		}
 	}
 
 	target.draw(*mWinScoreText);
@@ -135,6 +142,8 @@ void Player::setDefender(Defender* p_defender)
 
 	m_defender->getDeathSprite()->setPosition(m_defender->getSpawnPosition());
 	m_defender->getDeathSprite()->setOrigin(128, 128);
+
+	m_defender->m_stunBirds->setOrigin(128, 128);
 	
 	thor::FrameAnimation* walk_animation = new thor::FrameAnimation();
 	walk_animation->addFrame(1.f, sf::IntRect(0,   0, 256, 256));
@@ -182,7 +191,7 @@ void Player::setDefender(Defender* p_defender)
 
 	m_defender->getDeathAnimator()->addAnimation("death", *death_animation, sf::seconds(DEFENDER_DEATH_ANIM_DURATION));
 	m_defender->getAnimatior()->addAnimation("walk", *walk_animation, sf::seconds(DEFENDER_WALK_ANIM_DURATION));
-	m_defender->getAnimatior()->playAnimation("walk");
+	m_defender->getAnimatior()->playAnimation("walk", true);
 }
 void Player::setGatherer(Gatherer* p_gatherer)
 {
@@ -207,11 +216,11 @@ void Player::setGatherer(Gatherer* p_gatherer)
 	walk_animation->addFrame(1.f, sf::IntRect(512, 0, 128, 128));
 
 	thor::FrameAnimation* stun_animation = new thor::FrameAnimation();
-	stun_animation->addFrame(1.f, sf::IntRect(0, 128, 128, 128));
-	stun_animation->addFrame(1.f, sf::IntRect(128, 128, 128, 128));
-	stun_animation->addFrame(1.f, sf::IntRect(256, 128, 128, 128));
-	walk_animation->addFrame(1.f, sf::IntRect(385, 128, 128, 128));
-	walk_animation->addFrame(1.f, sf::IntRect(512, 128, 128, 128));
+	stun_animation->addFrame(1.f, sf::IntRect(0, 129, 128, 128));
+	stun_animation->addFrame(1.f, sf::IntRect(128, 129, 128, 128));
+	stun_animation->addFrame(1.f, sf::IntRect(256, 129, 128, 128));
+	stun_animation->addFrame(1.f, sf::IntRect(385, 129, 128, 128));
+	stun_animation->addFrame(1.f, sf::IntRect(512, 129, 128, 128));
 
 	int width = 272;
 	thor::FrameAnimation* death_animation = new thor::FrameAnimation();
@@ -233,14 +242,33 @@ void Player::setGatherer(Gatherer* p_gatherer)
 	death_animation->addFrame(1.f, sf::IntRect(width * 15, 0, width, width));
 	death_animation->addFrame(1.f, sf::IntRect(width * 16, 0, width, width));
 
+	int size = 128;
+	thor::FrameAnimation* walkGlowAnim = new thor::FrameAnimation();
+	walkGlowAnim->addFrame(1.f, sf::IntRect(size * 0, 258, size, size));
+	walkGlowAnim->addFrame(1.f, sf::IntRect(size * 1, 258, size, size));
+	walkGlowAnim->addFrame(1.f, sf::IntRect(size * 2, 258, size, size));
+	walkGlowAnim->addFrame(1.f, sf::IntRect(size * 3, 258, size, size));
+	walkGlowAnim->addFrame(1.f, sf::IntRect(size * 4, 258, size, size));
+
+	thor::FrameAnimation* stunGlowAnim = new thor::FrameAnimation();
+	stunGlowAnim->addFrame(1.f, sf::IntRect(size * 0, 387, size, size));
+	stunGlowAnim->addFrame(1.f, sf::IntRect(size * 1, 387, size, size));
+	stunGlowAnim->addFrame(1.f, sf::IntRect(size * 2, 387, size, size));
+	stunGlowAnim->addFrame(1.f, sf::IntRect(size * 3, 387, size, size));
+	stunGlowAnim->addFrame(1.f, sf::IntRect(size * 4, 387, size, size));
+
 	m_gatherer->addAnimation("Death_Animation", death_animation);
 	m_gatherer->addAnimation("Walk_Animation", walk_animation);
 	m_gatherer->addAnimation("Stun_Animation", stun_animation);
+	m_gatherer->addAnimation("Walk_Glow_Animation", walkGlowAnim);
+	m_gatherer->addAnimation("Stun_Glow_Animation", stunGlowAnim);
 
 	m_gatherer->getDeathAnimator()->addAnimation("death", *death_animation, sf::seconds(GATHERER_DEATH_ANIM_DURATION));
 	m_gatherer->getAnimatior()->addAnimation("walk", *walk_animation, sf::seconds(GATHERER_WALK_ANIM_DURATION));
-	m_gatherer->getAnimatior()->addAnimation("stun", *stun_animation, sf::seconds(0.4f));
-	m_gatherer->getAnimatior()->playAnimation("walk");
+	m_gatherer->getAnimatior()->addAnimation("stun", *stun_animation, sf::seconds(0.6f));
+	m_gatherer->getAnimatior()->addAnimation("walk_glow", *walkGlowAnim, sf::seconds(GATHERER_WALK_ANIM_DURATION));
+	m_gatherer->getAnimatior()->addAnimation("stun_glow", *stunGlowAnim, sf::seconds(0.6f));
+	m_gatherer->getAnimatior()->playAnimation("walk", true);
 }
 void Player::setDead(bool value)
 {
@@ -258,6 +286,7 @@ void Player::setDying(bool value)
 		m_defender->getDeathSprite()->setPosition(m_defender->getSprite()->getPosition());
 		m_defender->getDeathAnimator()->playAnimation("death", false);
 		m_postCheckDead = true;
+		game->addDeathcloud(m_gatherer->getSprite()->getPosition(), m_deathCloudTextureRect);
 	}
 }
 void Player::setColor(sf::Color color)
@@ -332,34 +361,28 @@ void Player::processEventualDeath(Level* level)
 	if (m_dying)
 	{
 		m_bounty = 0;
+		
+		m_gatherer->getBody()->SetActive(false);
+		m_defender->getBody()->SetActive(false);
+	}
+	if (m_dead)
+	{
 		std::vector<PlayerSpawn*> playerSpawns = level->getPlayerSpawns();
 		int randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
 
-		thor::StopWatch timerSpawnBreak;
-		timerSpawnBreak.restart();
 		while (playerSpawns[randomSpawnIndex]->occupied == true)
 		{
 			randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
-
-			if (timerSpawnBreak.getElapsedTime() >= sf::seconds(.1f))
-			{
-				break;
-			}
 		}
 		level->setPlayerSpawnOccupied(randomSpawnIndex, true);
-
-		m_gatherer->getBody()->SetActive(false);
 		m_gatherer->getBody()->SetTransform(PhysicsHelper::gameToPhysicsUnits(playerSpawns[randomSpawnIndex]->gat_spawn), m_gatherer->getBody()->GetAngle());
 		m_gatherer->getBody()->SetLinearVelocity(b2Vec2(0.f, 0.f));
 		m_gatherer->getBody()->SetAngularVelocity(0.f);
 
-		m_defender->getBody()->SetActive(false);
 		m_defender->getBody()->SetTransform(PhysicsHelper::gameToPhysicsUnits(playerSpawns[randomSpawnIndex]->def_spawn), m_defender->getBody()->GetAngle());
 		m_defender->getBody()->SetLinearVelocity(b2Vec2(0.f, 0.f));
 		m_defender->getBody()->SetAngularVelocity(0.f);
-	}
-	if (m_dead)
-	{
+
 		m_deathTimer->restart(sf::seconds(4.f));
 	}
 	m_postCheckDead = false;

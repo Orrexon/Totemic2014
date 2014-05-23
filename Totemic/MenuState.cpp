@@ -311,8 +311,8 @@ void MenuState::draw()
 
 void MenuState::setupActions()
 {
-	m_actionMap->operator[]("up_p3") = thor::Action(sf::Keyboard::W, thor::Action::Hold);
-	m_actionMap->operator[]("up_p1") = thor::Action(sf::Keyboard::Up, thor::Action::Hold);
-	m_actionMap->operator[]("up_p2") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
-	m_actionMap->operator[]("up_p4") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
+	m_actionMap->operator[]("up_p2") = thor::Action(sf::Keyboard::W, thor::Action::Hold);
+	m_actionMap->operator[]("up_p4") = thor::Action(sf::Keyboard::Up, thor::Action::Hold);
+	m_actionMap->operator[]("up_p1") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
+	m_actionMap->operator[]("up_p3") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
 }

@@ -5,6 +5,7 @@
 #include <Thor\Animation\Animator.hpp>
 #include <Thor\Animation\FrameAnimation.hpp>
 #include <Box2D\Dynamics\b2Body.h>
+#include "dbtweener.h"
 
 #include "UserData.h"
 
@@ -240,6 +241,8 @@ public:
 	bool m_addedScoreTextTween;
 	bool m_holdingTotem;
 	bool m_online;
+	bool m_isTweeningTotem;
+	CDBTweener::CTween* m_currentTotemTween;
 	thor::StopWatch m_hotspotFloatingTextTimer;
 	thor::StopWatch m_stunnedTimer;
 	thor::StopWatch m_shieldTimer;
@@ -251,8 +254,9 @@ public:
 	float mWinNumberSpriteY;
 	thor::Animator<sf::Sprite, std::string>* m_totemBountyIconAnimator;
 	thor::FrameAnimation* m_totemBountyAnimation;
-
+	std::string mHotSpotGlitterAnimation;
 	thor::StopWatch loopplaster;
+	sf::IntRect m_deathCloudTextureRect;
 
 private:
 	bool m_respawnProtection;

@@ -46,6 +46,7 @@ bool Engine::init(std::string p_title)
 	m_audioSystem->createSound("Player_Ready", "../assets/sounds/player_ready.wav");
 	m_audioSystem->createSound("Coinbird", "../assets/sounds/coinbird.wav");
 	m_audioSystem->createSound("321GO", "../assets/sounds/321go.wav");
+	m_audioSystem->createSound("NewLeader", "../assets/sounds/new_leader2.ogg");
 	m_audioSystem->createMusic("Bamboozle", "../assets/music/bamboozle.wav");
 	m_audioSystem->getMusic("Bamboozle")->setVolume(10);
 

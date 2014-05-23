@@ -81,7 +81,7 @@ void Level::update(float dt)
 		for (auto &player : game->m_players)
 		{
 			if (!player->m_online) continue;
-			if (!player->isDead() && Math::euclideanDistance(playerSpawn->gat_spawn, player->getDefender()->getSprite()->getPosition()) < RANDOM_PLAYER_SPAWN_TOLERANCE)
+			if ((!player->isDead() || !player->isDying()) && Math::euclideanDistance(playerSpawn->gat_spawn, player->getDefender()->getSprite()->getPosition()) < RANDOM_PLAYER_SPAWN_TOLERANCE)
 			{
 				isOccupied = true;
 			}
@@ -153,8 +153,8 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates states) const
 	for (auto &playerSpawn : m_playerSpawns)
 	{
 		sf::CircleShape shape;
-		shape.setRadius(32);
-		shape.setOrigin(32, 32);
+		shape.setRadius(64);
+		shape.setOrigin(64, 64);
 		shape.setPosition(playerSpawn->def_spawn);
 		shape.setFillColor(sf::Color::Red);
 

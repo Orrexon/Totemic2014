@@ -51,6 +51,7 @@ void GameStateManager::pushState(GameState* gameState)
 	notifyObscuredStates();
 
 	gameState->entering();
+	gameState->update(0.01666667f);
 }
 
 void GameStateManager::notifyRevealedStates()
