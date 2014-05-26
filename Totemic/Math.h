@@ -35,6 +35,5 @@ namespace Math
 
 	float RAD2DEG(float rad);
 	float DEG2RAD(float def);
-
 }
 

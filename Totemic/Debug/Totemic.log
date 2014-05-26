@@ -1,55 +1,30 @@
-﻿Build started 2014-05-23 14:35:08.
+﻿Build started 2014-05-25 12:13:17.
      1>Project "C:\git\Totemic2014\Totemic\Totemic.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Coinbird.cpp ContactListener.cpp DeathcloudTweenListener.cpp Defender.cpp Engine.cpp FloatingScoreText.cpp Level.cpp LoadingState.cpp MenuState.cpp PlayState.cpp Player.cpp Trap.cpp
-         Coinbird.cpp
-         Generating Code...
-         Compiling...
-         Trap.cpp
-         Player.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt PlayState.cpp
          PlayState.cpp
      1>c:\git\totemic2014\totemic\deathcloud.h(7): warning C4099: 'DeathCloud' : type name first seen using 'class' now seen using 'struct'
-                 c:\git\totemic2014\totemic\playstate.h(24) : see declaration of 'DeathCloud'
-     1>c:\git\totemic2014\totemic\playstate.cpp(119): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\git\totemic2014\totemic\playstate.cpp(120): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\git\totemic2014\totemic\playstate.cpp(127): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\git\totemic2014\totemic\playstate.cpp(128): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\git\totemic2014\totemic\playstate.cpp(129): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+                 c:\git\totemic2014\totemic\playstate.h(25) : see declaration of 'DeathCloud'
+     1>c:\git\totemic2014\totemic\playstate.cpp(122): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\git\totemic2014\totemic\playstate.cpp(123): warning C4305: 'argument' : truncation from 'double' to 'float'
      1>c:\git\totemic2014\totemic\playstate.cpp(130): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\git\totemic2014\totemic\playstate.cpp(131): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
      1>c:\git\totemic2014\totemic\playstate.cpp(132): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
      1>c:\git\totemic2014\totemic\playstate.cpp(133): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\git\totemic2014\totemic\playstate.cpp(138): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\git\totemic2014\totemic\playstate.cpp(267): warning C4244: '=' : conversion from 'float' to 'sf::Uint8', possible loss of data
-     1>c:\git\totemic2014\totemic\playstate.cpp(485): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\git\totemic2014\totemic\playstate.cpp(538): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\git\totemic2014\totemic\playstate.cpp(1386): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>c:\git\totemic2014\totemic\playstate.cpp(1417): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\git\totemic2014\totemic\playstate.cpp(1426): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\git\totemic2014\totemic\playstate.cpp(1614): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>c:\git\totemic2014\totemic\playstate.cpp(1619): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\git\totemic2014\totemic\playstate.cpp(1674): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>c:\git\totemic2014\totemic\playstate.cpp(1680): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-         MenuState.cpp
-     1>c:\git\totemic2014\totemic\menustate.cpp(31): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>c:\git\totemic2014\totemic\menustate.cpp(32): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>c:\git\totemic2014\totemic\menustate.cpp(85): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>c:\git\totemic2014\totemic\menustate.cpp(97): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\git\totemic2014\totemic\menustate.cpp(106): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\git\totemic2014\totemic\menustate.cpp(125): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\git\totemic2014\totemic\menustate.cpp(132): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\git\totemic2014\totemic\menustate.cpp(136): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\git\totemic2014\totemic\menustate.cpp(141): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\git\totemic2014\totemic\menustate.cpp(143): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-         LoadingState.cpp
-         Level.cpp
-         FloatingScoreText.cpp
-         Engine.cpp
-         Defender.cpp
-         DeathcloudTweenListener.cpp
-         ContactListener.cpp
-     1>c:\git\totemic2014\totemic\contactlistener.cpp(140): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\git\totemic2014\totemic\contactlistener.cpp(146): warning C4305: 'argument' : truncation from 'double' to 'float'
-         Generating Code...
+     1>c:\git\totemic2014\totemic\playstate.cpp(135): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\git\totemic2014\totemic\playstate.cpp(136): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\git\totemic2014\totemic\playstate.cpp(141): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\git\totemic2014\totemic\playstate.cpp(301): warning C4244: '=' : conversion from 'float' to 'sf::Uint8', possible loss of data
+     1>c:\git\totemic2014\totemic\playstate.cpp(338): warning C4244: '=' : conversion from 'float' to 'sf::Uint8', possible loss of data
+     1>c:\git\totemic2014\totemic\playstate.cpp(558): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\git\totemic2014\totemic\playstate.cpp(611): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\git\totemic2014\totemic\playstate.cpp(1487): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\git\totemic2014\totemic\playstate.cpp(1518): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\git\totemic2014\totemic\playstate.cpp(1527): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\git\totemic2014\totemic\playstate.cpp(1715): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>c:\git\totemic2014\totemic\playstate.cpp(1720): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\git\totemic2014\totemic\playstate.cpp(1775): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\git\totemic2014\totemic\playstate.cpp(1781): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\git\Totemic2014\Debug\Totemic.exe" /INCREMENTAL /NOLOGO /LIBPATH:../deps/FTGL/lib/ /LIBPATH:"..\deps\SFML-2.1\lib\\" /LIBPATH:../deps/Thor/lib /LIBPATH:../deps/Box2D/lib/ /LIBPATH:../deps/jsoncpp/lib/ /LIBPATH:../deps/SFGUI/lib/ ftgld.lib "thor-d.lib" "Box2D-d.lib" opengl32.lib glu32.lib jsoncppd.lib "sfml-window-d.lib" "sfml-graphics-d.lib" "sfml-network-d.lib" "sfml-audio-d.lib" "sfml-system-d.lib" "sfgui-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\git\Totemic2014\Debug\Totemic.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\git\Totemic2014\Debug\Totemic.lib" /MACHINE:X86 "Debug\The Submarine.res"
          Debug\Audiosystem.obj
@@ -89,6 +64,7 @@
          Debug\String.obj
          Debug\System.obj
          Debug\TotemParticle.obj
+         Debug\TotemParticleListener.obj
          Debug\TotemTweenerListener.obj
          Debug\Trap.obj
          Debug\UserData.obj
@@ -100,4 +76,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:13.13
+Time Elapsed 00:00:02.40

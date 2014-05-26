@@ -1,18 +1,15 @@
-﻿Build started 2014-05-23 14:44:41.
+﻿Build started 2014-05-25 18:14:30.
      1>Project "C:\git\Totemic2014\Totemic\Totemic.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Coinbird.cpp ContactListener.cpp Deathcloud.cpp DeathcloudTweenListener.cpp Defender.cpp Engine.cpp FloatingScoreText.cpp Gatherer.cpp HotSpot.cpp Level.cpp LoadingState.cpp MenuState.cpp Player.cpp PlayState.cpp TotemParticle.cpp TotemTweenerListener.cpp Trap.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Coinbird.cpp ContactListener.cpp DeathcloudTweenListener.cpp Defender.cpp Engine.cpp FloatingScoreText.cpp Level.cpp LoadingState.cpp MenuState.cpp PlayState.cpp Player.cpp TotemParticleListener.cpp Trap.cpp
          Coinbird.cpp
          ContactListener.cpp
      1>ContactListener.cpp(140): warning C4305: 'argument' : truncation from 'double' to 'float'
      1>ContactListener.cpp(146): warning C4305: 'argument' : truncation from 'double' to 'float'
-         Deathcloud.cpp
          DeathcloudTweenListener.cpp
          Defender.cpp
          Engine.cpp
          FloatingScoreText.cpp
-         Gatherer.cpp
-         HotSpot.cpp
          Level.cpp
          LoadingState.cpp
          MenuState.cpp
@@ -26,31 +23,31 @@
      1>MenuState.cpp(136): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
      1>MenuState.cpp(141): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
      1>MenuState.cpp(143): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-         Player.cpp
          PlayState.cpp
      1>c:\git\totemic2014\totemic\Deathcloud.h(7): warning C4099: 'DeathCloud' : type name first seen using 'class' now seen using 'struct'
-                 c:\git\totemic2014\totemic\PlayState.h(24) : see declaration of 'DeathCloud'
-     1>PlayState.cpp(119): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>PlayState.cpp(120): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>PlayState.cpp(127): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(128): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(129): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(130): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+                 c:\git\totemic2014\totemic\PlayState.h(25) : see declaration of 'DeathCloud'
+     1>PlayState.cpp(123): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>PlayState.cpp(124): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>PlayState.cpp(131): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
      1>PlayState.cpp(132): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
      1>PlayState.cpp(133): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(138): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(267): warning C4244: '=' : conversion from 'float' to 'sf::Uint8', possible loss of data
-     1>PlayState.cpp(485): warning C4018: '<' : signed/unsigned mismatch
-     1>PlayState.cpp(538): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>PlayState.cpp(1386): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
-     1>PlayState.cpp(1417): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>PlayState.cpp(1426): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>PlayState.cpp(1614): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
-     1>PlayState.cpp(1619): warning C4018: '<' : signed/unsigned mismatch
-     1>PlayState.cpp(1674): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>PlayState.cpp(1680): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-         TotemParticle.cpp
-         TotemTweenerListener.cpp
+     1>PlayState.cpp(134): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>PlayState.cpp(136): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>PlayState.cpp(137): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>PlayState.cpp(142): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>PlayState.cpp(302): warning C4244: '=' : conversion from 'float' to 'sf::Uint8', possible loss of data
+     1>PlayState.cpp(339): warning C4244: '=' : conversion from 'float' to 'sf::Uint8', possible loss of data
+     1>PlayState.cpp(559): warning C4018: '<' : signed/unsigned mismatch
+     1>PlayState.cpp(612): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>PlayState.cpp(1489): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>PlayState.cpp(1520): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>PlayState.cpp(1529): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>PlayState.cpp(1717): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>PlayState.cpp(1722): warning C4018: '<' : signed/unsigned mismatch
+     1>PlayState.cpp(1777): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>PlayState.cpp(1783): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+         Player.cpp
+         TotemParticleListener.cpp
          Trap.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\git\Totemic2014\Release\Totemic.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:../deps/FTGL/lib/ /LIBPATH:"..\deps\SFML-2.1\lib\\" /LIBPATH:../deps/Thor/lib /LIBPATH:../deps/Box2D/lib/ /LIBPATH:../deps/jsoncpp/lib/ /LIBPATH:../deps/SFGUI/lib/ ftgl.lib "sfml-window.lib" "sfml-graphics.lib" "sfml-network.lib" "sfml-audio.lib" "sfml-system.lib" thor.lib Box2D.lib opengl32.lib glu32.lib jsoncpp.lib sfgui.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\git\Totemic2014\Release\Totemic.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\git\Totemic2014\Release\Totemic.lib" /MACHINE:X86 /SAFESEH "Release\The Submarine.res"
@@ -91,6 +88,7 @@
          Release\String.obj
          Release\System.obj
          Release\TotemParticle.obj
+         Release\TotemParticleListener.obj
          Release\TotemTweenerListener.obj
          Release\Trap.obj
          Release\UserData.obj
@@ -107,4 +105,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:20.08
+Time Elapsed 00:00:18.08

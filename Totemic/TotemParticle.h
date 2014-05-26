@@ -1,8 +1,7 @@
 #pragma once
 
-#include <Thor\Animation\FrameAnimation.hpp>
-#include <Thor\Animation\Animator.hpp>
 #include <SFML\Graphics\Sprite.hpp>
+#include <Thor\Time\Timer.hpp>
 
 class TotemParticle
 {
@@ -11,7 +10,8 @@ public:
 	~TotemParticle();
 
 	sf::Sprite *m_sprite;
-	thor::Animator<sf::Sprite, std::string> *m_animator;
-	thor::FrameAnimation m_animation;
+	float fadeInAlpha;
+	thor::Timer deathTimer;
+	bool borned;
 };
 
