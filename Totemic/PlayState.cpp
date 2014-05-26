@@ -204,16 +204,11 @@ void PlayState::entering()
 
 	mToMenuTimerText.setFont(m_stateAsset->resourceHolder->getFont(DEFAULT_FONT));
 	mToMenuTimerText.setCharacterSize(48);
-<<<<<<< HEAD
 	mToMenuTimerText.setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f + 400, 1080 + 100);
 	m_toMenuTimerTextY = mToMenuTimerText.getPosition().y;
 
 	m_totemParticleListener = new TotemParticleListener();
 	m_totemParticleTimer.restart(sf::seconds(TOTEM_PARTICLE_RATE));
-=======
-	mToMenuTimerText.setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f, m_stateAsset->windowManager->getWindow()->getSize().y / 2.f);
-
->>>>>>> 9373246a0bf3decf94efc0464a16375835d24085
 }
 
 void PlayState::leaving()
@@ -2022,7 +2017,6 @@ void PlayState::addDeathcloud(sf::Vector2f position, sf::IntRect textureRect)
 void PlayState::addTotemParticle(sf::IntRect textureRect)
 {
 	// get random position
-<<<<<<< HEAD
 	sf::Vector2f random_pos = m_hotSpot->getPosition();
 	
 	float q = thor::random(0.f, 1.f) * (b2_pi * 2);
@@ -2047,17 +2041,4 @@ void PlayState::addTotemParticle(sf::IntRect textureRect)
 	m_totemTweener.addTween(tween);
 
 	m_totemParticles.push_back(particle);
-
-	/*
-		q = Rnd() * (PI * 2)
-r = Sqrt(Rnd())
-x = (radius * r) * Cos(q)
-y = (radius * r) * Sin(q)
-	*/
 }
-=======
-	/*float angle = thor::random(0, 360)
-		dist = rand(0, circle_radius)
-		random_pos = pos(sin(angle) * dist, cos(angle) * dist)*/
-}
->>>>>>> 9373246a0bf3decf94efc0464a16375835d24085
