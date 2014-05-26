@@ -5,6 +5,7 @@
 #include "PlayState.h"
 #include "MenuState.h"
 
+#include "Deathcloud.h"
 #include "GameStateAssets.h"
 #include "Powerup.h"
 #include "Config.h"
@@ -26,6 +27,7 @@
 #include "ContactFilter.h"
 #include "Coinbird.h"
 #include "TotemTweenerListener.h"
+#include "DeathcloudTweenListener.h"
 
 PlayState::PlayState() : m_world(b2Vec2(0.f, 0.f))
 {
@@ -37,13 +39,17 @@ PlayState::~PlayState()
 
 void PlayState::entering()
 {
+	m_leadingPlayer = nullptr;
+	m_hasStartedToChangeWinBackgroundOpacity = false;
 	m_exclusive = false;
 	m_gameWon = false;
 	m_setupGameWon = false;
 	m_totemIsBlockingPlayer = false;
 	m_starting = true;
+	m_321GO_timerExpired = false;
 
 	m_totemTweenerListener = new TotemTweenerListener();
+	m_deathcloudTweenListener = new DeathcloudTweenListener();
 
 	m_contactListener = new ContactListener();
 	m_contactFilter = new ContactFilter();
@@ -83,24 +89,35 @@ void PlayState::entering()
 
 	body->CreateFixture(&fixtureDef);
 
-	m_totemHead.setTexture(m_stateAsset->resourceHolder->getTexture("totemhead.png"));
+	m_totemHead.setTexture(m_stateAsset->resourceHolder->getTexture("totem_head.png"));
 	m_totemHead.setOrigin(129, 157);
-	m_totemHead.setPosition(m_players.back()->getTotemSprite()->getPosition().x, m_players.back()->getTotemSprite()->getPosition().y + m_players.back()->getTotemSprite()->getGlobalBounds().height / 2.f);
+	m_totemHead.setPosition(m_players.back()->getTotemSprite()->getPosition().x, m_players.back()->getTotemSprite()->getPosition().y + m_players.back()->getTotemSprite()->getGlobalBounds().height / 2.f + 8);
 
 	int width = 263;
-	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 0, 0, 263, 157));
-	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 1, 0, 263, 157));
-	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 2, 0, 263, 157));
-	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 3, 0, 263, 157));
-	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 4, 0, 263, 157));
-	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 5, 0, 263, 157));
-	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 6, 0, 263, 157));
+	int height = 157;
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 0, height, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 1, height, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 2, height, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 3, height, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 4, height, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 5, height, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 6, height, 263, 157));
+	m_totemHeadActiveAnimation.addFrame(1.f, sf::IntRect(width * 7, height, 263, 157));
 
-
-	m_totemHeadIdleAnimation.addFrame(1.f, sf::IntRect(0, 0, 263, 157));
+	m_totemHeadIdleAnimation.addFrame(1.f, sf::IntRect(width * 0, 0, 263, 157));
+	m_totemHeadIdleAnimation.addFrame(1.f, sf::IntRect(width * 1, 0, 263, 157));
+	m_totemHeadIdleAnimation.addFrame(1.f, sf::IntRect(width * 2, 0, 263, 157));
+	m_totemHeadIdleAnimation.addFrame(1.f, sf::IntRect(width * 3, 0, 263, 157));
+	m_totemHeadIdleAnimation.addFrame(1.f, sf::IntRect(width * 4, 0, 263, 157));
+	m_totemHeadIdleAnimation.addFrame(1.f, sf::IntRect(width * 5, 0, 263, 157));
+	m_totemHeadIdleAnimation.addFrame(1.f, sf::IntRect(width * 6, 0, 263, 157));
+	m_totemHeadIdleAnimation.addFrame(1.f, sf::IntRect(width * 7, 0, 263, 157));
+	m_totemHeadIdleAnimation.addFrame(1.f, sf::IntRect(width * 8, 0, 263, 157));
+	m_totemHeadIdleAnimation.addFrame(1.f, sf::IntRect(width * 9, 0, 263, 157));
+	m_totemHeadIdleAnimation.addFrame(1.f, sf::IntRect(width * 10, 0, 263, 157));
 
 	m_totemHeadAnimator.addAnimation("active", m_totemHeadActiveAnimation, sf::seconds(0.6));
-	m_totemHeadAnimator.addAnimation("idle", m_totemHeadIdleAnimation, sf::seconds(64));
+	m_totemHeadAnimator.addAnimation("idle", m_totemHeadIdleAnimation, sf::seconds(0.6));
 	m_totemHeadAnimator.playAnimation("idle", true);
 
 	m_totemFoot.setTexture(m_stateAsset->resourceHolder->getTexture("totemfoot.png"));
@@ -171,7 +188,20 @@ void PlayState::entering()
 
 	m_321GOTimer.reset(sf::seconds(PLAYSTATE_SECONDS_BEFORE_COUNTDOWN));
 	m_321GOTimer.start();
-	//m_stateAsset->audioSystem->playMusic("Bamboozle", true);
+
+	m_stateAsset->audioSystem->playMusic("Bamboozle", true);
+
+	mWinBackground.setTexture(m_stateAsset->resourceHolder->getTexture("win.png"));
+	m_winBackgroundAlpha = 0.f;
+
+	m_hotSpot->getSprite()->setTexture(m_stateAsset->resourceHolder->getTexture("totem_glitter_anim.png"));
+	m_hotSpot->getSprite()->setOrigin(224, 224);
+	m_hotSpot->getSprite()->setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f, m_stateAsset->windowManager->getWindow()->getSize().y / 2.f);
+
+	mToMenuTimerText.setFont(m_stateAsset->resourceHolder->getFont(DEFAULT_FONT));
+	mToMenuTimerText.setCharacterSize(48);
+	mToMenuTimerText.setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f, m_stateAsset->windowManager->getWindow()->getSize().y / 2.f);
+
 }
 
 void PlayState::leaving()
@@ -203,6 +233,30 @@ void PlayState::leaving()
 	delete m_contactFilter;
 	m_contactFilter = nullptr;
 
+	delete m_deathcloudTweenListener;
+	m_deathcloudTweenListener = nullptr;
+
+	delete m_gathererDeathEmitter;
+	m_gathererDeathEmitter = nullptr;
+
+	delete m_gathererTorqueAffector;
+	m_gathererTorqueAffector = nullptr;
+
+	delete m_gathererDeathAffector;
+	m_gathererDeathAffector = nullptr;
+
+	delete m_gathererDeathSystem;
+	m_gathererDeathSystem = nullptr;
+
+	delete m_defenderParticleSystem;
+	m_defenderParticleSystem = nullptr;
+
+	delete m_defenderEmitter;
+	m_defenderEmitter = nullptr;
+
+	delete m_levelLoader;
+	m_levelLoader = nullptr;
+
 	m_stateAsset->audioSystem->getMusic("Bamboozle")->stop();
 }
 
@@ -216,18 +270,59 @@ void PlayState::releaving()
 
 bool PlayState::update(float dt)
 {
-	if (m_actionMap->isActive("Exit"))
+	m_deathcloudTweener.step(dt);
+
+	// Update deathclouds
+	auto deathCloudIterator = m_deathClouds.begin();
+	while (deathCloudIterator != m_deathClouds.end())
 	{
-		return false;
+		(*deathCloudIterator)->sprite.rotate(DEATHCLOUD_ROTATION_SPEED);
+		sf::Color oldColor = (*deathCloudIterator)->sprite.getColor();
+		oldColor.a = (*deathCloudIterator)->alphaTween;
+		sf::Color newColor = oldColor;
+		(*deathCloudIterator)->sprite.setColor(newColor);
+
+		if ((*deathCloudIterator)->borned)
+		{
+			if ((*deathCloudIterator)->timer.isExpired() && !(*deathCloudIterator)->isDying)
+			{
+				CDBTweener::CTween* tween = new CDBTweener::CTween();
+				tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::EEasing::TWEA_OUT, DEATH_CLOUD_FADE_OUT_TIME);
+				tween->addValue(&(*deathCloudIterator)->alphaTween, 0);
+				tween->addListener(m_deathcloudTweenListener);
+				tween->setUserData((*deathCloudIterator));
+				m_deathcloudTweener.addTween(tween);
+				(*deathCloudIterator)->isDying = true;
+			}
+		}
+
+		if ((*deathCloudIterator)->dead)
+		{
+			delete *deathCloudIterator;
+			*deathCloudIterator = nullptr;
+			deathCloudIterator = m_deathClouds.erase(deathCloudIterator);
+		}
+		else
+		{
+			++deathCloudIterator;
+		}
 	}
+
 
 	if (m_gameWon)
 	{
-		if (m_actionMap->isActive("Restart"))
+		if (!m_hasStartedToChangeWinBackgroundOpacity)
 		{
-			m_gameWon = false;
-			loadNewLevel();
+			m_hasStartedToChangeWinBackgroundOpacity = true;
+			CDBTweener::CTween* changeWinBackgroundOpacityTween = new CDBTweener::CTween();
+			changeWinBackgroundOpacityTween->setEquation(&CDBTweener::TWEQ_SINUSOIDAL, CDBTweener::TWEA_OUT, 0.5f);
+			changeWinBackgroundOpacityTween->addValue(&m_winBackgroundAlpha, 255);
+			m_winGameTweener.addTween(changeWinBackgroundOpacityTween);
 		}
+
+		sf::Color oldColor = mWinBackground.getColor();
+		oldColor.a = static_cast<int>(m_winBackgroundAlpha);
+		mWinBackground.setColor(oldColor);
 
 		if (!m_setupGameWon)
 			setupGameWon();
@@ -236,6 +331,22 @@ bool PlayState::update(float dt)
 
 		for (auto &player : m_players)
 		{
+			player->getDefender()->getAnimatior()->update(sf::seconds(dt));
+			player->getGatherer()->getAnimatior()->update(sf::seconds(dt));
+
+			player->getDefender()->getAnimatior()->animate(*player->getDefender()->getSprite());
+			player->getGatherer()->getAnimatior()->animate(*player->getGatherer()->getSprite());
+
+			if (m_setupGameWon && player->m_scoreTextTimer.isExpired() && player->m_addedScoreTextTween == false)
+			{
+				player->m_addedScoreTextTween = true;
+				player->m_tweeningScoreTextX = 1920 + 400;
+				CDBTweener::CTween* winScoreTween = new CDBTweener::CTween();
+				winScoreTween->setEquation(&CDBTweener::TWEQ_ELASTIC, CDBTweener::TWEA_OUT, 1.f);
+				winScoreTween->addValue(&player->m_tweeningScoreTextX, player->m_tweeningScoreTextXTarget);
+				m_winGameTweener.addTween(winScoreTween);
+			}
+
 			sf::Vector2f def_pos;
 			sf::Vector2f gat_pos;
 			def_pos.x = player->getDefender()->m_tweenX;
@@ -244,13 +355,24 @@ bool PlayState::update(float dt)
 			gat_pos.y = player->getGatherer()->m_tweenY;
 			player->getDefender()->getSprite()->setPosition(def_pos);
 			player->getGatherer()->getSprite()->setPosition(gat_pos);
+
+			player->mWinScoreText->setPosition(player->m_tweeningScoreTextX, player->mWinScoreText->getPosition().y);
+			player->m_winNumberSprite->setPosition(player->m_winNumberSprite->getPosition().x, player->mWinNumberSpriteY);
+		}
+
+		if (m_toMenuTimer.isExpired())
+		{
+			m_stateAsset->gameStateManager->m_players.clear();
+			m_stateAsset->gameStateManager->changeState(new MenuState());
 		}
 		return true;
 	}
 
+	m_hotSpot->getAnimator()->update(sf::seconds(dt));
+	m_hotSpot->getAnimator()->animate(*m_hotSpot->getSprite());
+
 	for (auto &player : m_players)
 	{
-		if (player == nullptr) continue;
 		if (player->hasWon())
 		{
 			m_gameWon = true;
@@ -609,7 +731,6 @@ bool PlayState::update(float dt)
 
 		if (player->isStunned() && player->m_stunnedTimer.getElapsedTime().asSeconds() >= POWERUP_STUN_TIME)
 		{
-			player->getGatherer()->getAnimatior()->playAnimation("walk");
 			player->setStunned(false);
 		}
 
@@ -682,7 +803,7 @@ bool PlayState::update(float dt)
 		}
 	}
 #pragma endregion
-	m_currentLevel->update(dt);
+
 	m_defenderParticleSystem->update(sf::seconds(dt));
 	m_gathererDeathSystem->update(sf::seconds(dt));
 
@@ -811,22 +932,10 @@ bool PlayState::update(float dt)
 #pragma endregion
 
 #pragma region PLAYER_POST_UPDATE
-	/*
-	This loop does:
-	- Gatherer velocity capping
-	- Moves the defender and gatherer sprites from the Box2D bodies
-	- Responsible for playing animations
-	- Checks if gatherer picks up coins and powerups
-	- Handle powerup
-	- Changes the point indicator in the HUD
-	- Processes eventual death
-	- Make sure that the totem is transparent when blocking any player
-	*/
 
 	bool hasChangedTotemBlockedState = false;
 	for (auto &player : m_players)
 	{
-		if (player == nullptr) continue;
 		b2Vec2 MAX_VELOCITY_GATHERER(8.f, 8.f);
 		if (player->getGatherer()->getBody()->GetLinearVelocity().x >= MAX_VELOCITY_GATHERER.x)
 		{
@@ -848,18 +957,61 @@ bool PlayState::update(float dt)
 		player->processEventualDeath(m_currentLevel);
 		player->getDeathTimer()->update();
 		player->getDefender()->getSprite()->setPosition(PhysicsHelper::physicsToGameUnits(player->getDefender()->getBody()->GetPosition()) - sf::Vector2f(0, 64));
+		player->getDefender()->m_stunBirds->setPosition(player->getDefender()->getSprite()->getPosition());
 		player->getGatherer()->getSprite()->setPosition(PhysicsHelper::physicsToGameUnits(player->getGatherer()->getBody()->GetPosition()) - sf::Vector2f(0, 15));
 		player->getGatherer()->m_shieldOverlay->setPosition(player->getGatherer()->getSprite()->getPosition());
 
 
+		if (player->m_holdingTotem)
+		{
+			if (player->isStunned())
+			{
+				if (player->getGatherer()->getAnimatior()->isPlayingAnimation() &&
+					player->getGatherer()->getAnimatior()->getPlayingAnimation() != "stun_glow")
+				{
+					player->getGatherer()->getAnimatior()->playAnimation("stun_glow", true);
+				}
+			}
+			else if (
+				player->getGatherer()->getAnimatior()->isPlayingAnimation() &&
+				player->getGatherer()->getAnimatior()->getPlayingAnimation() != "walk_glow")
+			{
+				player->getGatherer()->getAnimatior()->playAnimation("walk_glow", true);
+			}
+		}
+		else
+		{
+			if (player->isStunned())
+			{
+				if (player->getGatherer()->getAnimatior()->isPlayingAnimation() &&
+					player->getGatherer()->getAnimatior()->getPlayingAnimation() != "stun")
+				{
+					player->getGatherer()->getAnimatior()->playAnimation("stun", true);
+				}
+			}
+			else if (
+				player->getGatherer()->getAnimatior()->isPlayingAnimation() &&
+				player->getGatherer()->getAnimatior()->getPlayingAnimation() != "walk")
+			{
+				player->getGatherer()->getAnimatior()->playAnimation("walk", true);
+			}
+		}
+
 		if (!player->getDefender()->getAnimatior()->isPlayingAnimation())
 		{
-			player->getDefender()->getAnimatior()->playAnimation("walk");
+			player->getDefender()->getAnimatior()->playAnimation("walk", true);
 		}
-		if (!player->getGatherer()->getAnimatior()->isPlayingAnimation())
-		{
-			player->getGatherer()->getAnimatior()->playAnimation("walk");
-		}
+
+		player->getDefender()->getAnimatior()->update(sf::seconds(dt));
+		player->getDefender()->m_stunBirdsAnimator->update(sf::seconds(dt));
+		player->getGatherer()->getAnimatior()->update(sf::seconds(dt));
+		player->getGatherer()->m_shieldOverlayAnimatior->update(sf::seconds(dt));
+
+		player->getDefender()->getAnimatior()->animate(*player->getDefender()->getSprite());
+		player->getDefender()->m_stunBirdsAnimator->animate(*player->getDefender()->m_stunBirds);
+		player->getGatherer()->getAnimatior()->animate(*player->getGatherer()->getSprite());
+		player->getGatherer()->m_shieldOverlayAnimatior->animate(*player->getGatherer()->m_shieldOverlay);
+		
 
 		if (player->isDying())
 		{
@@ -875,14 +1027,6 @@ bool PlayState::update(float dt)
 				player->setDead(true);
 			}
 		}
-		player->getDefender()->getAnimatior()->update(sf::seconds(dt));
-		player->getGatherer()->getAnimatior()->update(sf::seconds(dt));
-		player->getGatherer()->m_shieldOverlayAnimatior->update(sf::seconds(dt));
-
-		player->getDefender()->getAnimatior()->animate(*player->getDefender()->getSprite());
-		player->getGatherer()->getAnimatior()->animate(*player->getGatherer()->getSprite());
-		player->getGatherer()->m_shieldOverlayAnimatior->animate(*player->getGatherer()->m_shieldOverlay);
-
 		/*
 		*********************
 		COIN PICKUP
@@ -920,30 +1064,25 @@ bool PlayState::update(float dt)
 				{
 				case LIGHTNING:
 				{
+					for (std::size_t i = 0; i < m_players.size(); i++)
+					{
+						if (m_players[i] == nullptr) continue;
+						if (m_players[i] != player)
+						{
+							m_players[i]->setStunned(true);
+						}
+					}
 
+					m_lightningAlpha = 255.f;
 
+					CDBTweener::CTween* tween = new CDBTweener::CTween();
+					tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
+					tween->addValue(&m_lightningAlpha, 0.f);
+					m_totemTweener.addTween(tween);
 
-								  for (std::size_t i = 0; i < m_players.size(); i++)
-								  {
-									  if (m_players[i] == nullptr) continue;
-									  if (m_players[i] != player)
-									  {
-										  m_players[i]->setStunned(true);
-										  m_players[i]->getGatherer()->getAnimatior()->playAnimation("stun", true);
-									  }
-								  }
+					m_stateAsset->audioSystem->playSound("Lightning");
 
-
-								  m_lightningAlpha = 255.f;
-
-								  CDBTweener::CTween* tween = new CDBTweener::CTween();
-								  tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
-								  tween->addValue(&m_lightningAlpha, 0.f);
-								  m_totemTweener.addTween(tween);
-
-								  m_stateAsset->audioSystem->playSound("Lightning");
-
-								  break;
+					break;
 				}
 				case SHIELD:
 					player->setShield(true);
@@ -1052,11 +1191,37 @@ bool PlayState::update(float dt)
 			activePlayers.back()->resetBounty();
 		}
 		updateHoldingTotem(activePlayers.back());
+
+		if (m_leadingPlayer == nullptr)
+		{
+			m_stateAsset->audioSystem->playSound("NewLeader");
+			m_leadingPlayer = activePlayers.back();
+		}
+		else
+		{
+			Player* maxScorePlayer = nullptr;
+			for (auto &player : m_players)
+			{
+				if (player != m_leadingPlayer)
+				{
+					if (player->getPoints() > m_leadingPlayer->getPoints())
+					{
+						maxScorePlayer = player;
+					}
+				}
+			}
+			if (maxScorePlayer != nullptr)
+			{
+				m_leadingPlayer = maxScorePlayer;
+				m_stateAsset->audioSystem->playSound("NewLeader");
+			}
+		}
 	}
 	else
 	{
 		if (m_totemHeadAnimator.getPlayingAnimation() != "idle")
 			m_totemHeadAnimator.playAnimation("idle", true);
+		
 		updateHoldingTotem(nullptr); // Set all to false
 	}
 
@@ -1080,16 +1245,16 @@ bool PlayState::update(float dt)
 	// Update totemhead animations
 	m_totemHeadAnimator.update(sf::seconds(dt));
 	m_totemHeadAnimator.animate(m_totemHead);
-
-	bool expired = m_321GOTimer.isExpired();
-	if (m_starting && expired && !m_stateAsset->audioSystem->getSound("321GO")->isPlaying())
+	
+	m_321GO_timerExpired = m_321GOTimer.isExpired();
+	if (m_starting && m_321GO_timerExpired && !m_stateAsset->audioSystem->getSound("321GO")->isPlaying())
 	{
 		m_stateAsset->audioSystem->playSound("321GO");
 		m_123GOAnimator.playAnimation("idle");
 	}
 
 	// Update 321GO animation
-	if (m_starting && expired)
+	if (m_starting && m_321GO_timerExpired)
 	{
 		if (!m_123GOAnimator.isPlayingAnimation())
 		{
@@ -1110,14 +1275,19 @@ void PlayState::draw()
 {
 	m_stateAsset->windowManager->getWindow()->draw(*m_currentLevel);
 	m_stateAsset->windowManager->getWindow()->draw(*m_hotSpot->getShape());
-	for (auto &player : m_players)
+	m_stateAsset->windowManager->getWindow()->draw(*m_hotSpot->getSprite());
+	if (!m_gameWon)
 	{
-		if (!player->getDefender()->getAnimatior()->isPlayingAnimation())
+		for (auto &player : m_players)
 		{
-			std::cout << "0";
+			if (player->m_online)
+				m_stateAsset->windowManager->getWindow()->draw(*player);
 		}
-		if (player->m_online)
-			m_stateAsset->windowManager->getWindow()->draw(*player);
+
+		for (auto &deathCloud : m_deathClouds)
+		{
+			m_stateAsset->windowManager->getWindow()->draw(deathCloud->sprite);
+		}
 	}
 
 	m_stateAsset->windowManager->getWindow()->draw(m_totemFoot);
@@ -1130,9 +1300,9 @@ void PlayState::draw()
 	if (!m_gameWon)
 		m_currentLevel->drawFlyingCoins(m_stateAsset->windowManager->getWindow());
 
-	//Box2DWorldDraw debugDraw(m_stateAsset->windowManager->getWindow());
-	//debugDraw.SetFlags(b2Draw::e_shapeBit);
-	//m_world.SetDebugDraw(&debugDraw);
+	Box2DWorldDraw debugDraw(m_stateAsset->windowManager->getWindow());
+	debugDraw.SetFlags(b2Draw::e_shapeBit);
+	m_world.SetDebugDraw(&debugDraw);
 	//m_world.DrawDebugData();
 
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBarBackground);
@@ -1162,9 +1332,22 @@ void PlayState::draw()
 		}
 		m_stateAsset->windowManager->getWindow()->draw(m_lightningEffect);
 	}
-	if (m_starting && m_321GOTimer.isExpired())
+	if (m_starting && m_321GO_timerExpired)
 	{
 		m_stateAsset->windowManager->getWindow()->draw(m_123GO);
+	}
+
+	if (m_gameWon)
+	{
+		m_stateAsset->windowManager->getWindow()->draw(mWinBackground);
+		for (auto &player : m_players)
+		{
+			if (player->m_online)
+			{
+				m_stateAsset->windowManager->getWindow()->draw(*player);
+				m_stateAsset->windowManager->getWindow()->draw(*player->m_winNumberSprite);
+			}
+		}
 	}
 }
 
@@ -1175,10 +1358,7 @@ void PlayState::initManyMouse()
 	{
 		std::string name = ManyMouse_DeviceName(i);
 		std::string driver = ManyMouse_DriverName();
-		std::cout << "----" << std::endl;
-		std::cout << driver << std::endl;
 		std::cout << name << std::endl;
-		std::cout << "----" << std::endl;
 		if (name.find("Pad") != std::string::npos)
 		{
 			//m_mouseIndicies.push_back(-1);
@@ -1215,21 +1395,35 @@ void PlayState::initPlayers()
 	playerPointIndicatorImages.push_back("arrowpurple.png");
 
 	std::vector<sf::Color> playerColors;
-	playerColors.push_back(sf::Color::Blue);
-	playerColors.push_back(sf::Color::Red);
-	playerColors.push_back(sf::Color::Yellow);
-	playerColors.push_back(sf::Color(204, 0, 204));
+	playerColors.push_back(sf::Color(99, 152, 211, 94));
+	playerColors.push_back(sf::Color(244, 86, 86, 94));
+	playerColors.push_back(sf::Color(248, 248, 83, 94));
+	playerColors.push_back(sf::Color(209, 105, 225, 94));
+
+	std::string glitterAnims[4];
+	glitterAnims[0] = "blue";
+	glitterAnims[1] = "red";
+	glitterAnims[2] = "yellow";
+	glitterAnims[3] = "purple";
+
+	sf::IntRect deathCloudTextureRects[4];
+	deathCloudTextureRects[0] = sf::IntRect(0, 0, 56, 56);
+	deathCloudTextureRects[1] = sf::IntRect(112, 0, 56, 56);
+	deathCloudTextureRects[2] = sf::IntRect(168, 0, 56, 56);
+	deathCloudTextureRects[3] = sf::IntRect(56, 0, 56, 56);
 
 	for (std::size_t i = 0; i < 4; i++)
 	{
 		m_players.push_back(new Player());
 		m_players.back()->game = this;
+		m_players.back()->m_deathCloudTextureRect = deathCloudTextureRects[i];
 		m_players.back()->setResourceHolder(m_stateAsset->resourceHolder);
 		m_players.back()->setFSTRef(m_floatingScoreTexts);
 		m_players.back()->setColor(playerColors[i]);
 		m_players.back()->getTotemSprite()->setTexture(m_stateAsset->resourceHolder->getTexture(playerTotemImages[i]));
 		m_players.back()->setOrder(i);
 		m_players.back()->setPointsBarImage(playerBarImages[i]);
+		m_players.back()->mHotSpotGlitterAnimation = glitterAnims[i];
 
 		sf::Sprite* sprite = new sf::Sprite();
 		sprite->setTexture(m_stateAsset->resourceHolder->getTexture(playerPointIndicatorImages[i]));
@@ -1270,8 +1464,11 @@ void PlayState::initPlayers()
 
 		m_players.back()->mWinScoreText->setFont(m_stateAsset->resourceHolder->getFont(DEFAULT_FONT));
 		m_players.back()->mWinScoreText->setString("");
-		m_players.back()->mWinScoreText->setCharacterSize(28);
+		m_players.back()->mWinScoreText->setCharacterSize(60);
 
+		m_players.back()->m_winNumberSprite->setTexture(m_stateAsset->resourceHolder->getTexture("numbers.png"));
+		m_players.back()->m_winNumberSprite->setOrigin(126, 186);
+		m_players.back()->m_winNumberSprite->setScale(sf::Vector2f(0.4, 0.4));
 
 		if (!m_stateAsset->gameStateManager->m_players[i].m_ready)
 		{
@@ -1282,15 +1479,15 @@ void PlayState::initPlayers()
 
 void PlayState::setupActions()
 {
-	m_actionMap->operator[]("p4_up") = thor::Action(sf::Keyboard::W, thor::Action::Hold);
-	m_actionMap->operator[]("p4_down") = thor::Action(sf::Keyboard::S, thor::Action::Hold);
-	m_actionMap->operator[]("p4_left") = thor::Action(sf::Keyboard::A, thor::Action::Hold);
-	m_actionMap->operator[]("p4_right") = thor::Action(sf::Keyboard::D, thor::Action::Hold);
+	m_actionMap->operator[]("p2_up") = thor::Action(sf::Keyboard::W, thor::Action::Hold);
+	m_actionMap->operator[]("p2_down") = thor::Action(sf::Keyboard::S, thor::Action::Hold);
+	m_actionMap->operator[]("p2_left") = thor::Action(sf::Keyboard::A, thor::Action::Hold);
+	m_actionMap->operator[]("p2_right") = thor::Action(sf::Keyboard::D, thor::Action::Hold);
 
-	m_actionMap->operator[]("p2_up") = thor::Action(sf::Keyboard::Up, thor::Action::Hold);
-	m_actionMap->operator[]("p2_down") = thor::Action(sf::Keyboard::Down, thor::Action::Hold);
-	m_actionMap->operator[]("p2_left") = thor::Action(sf::Keyboard::Left, thor::Action::Hold);
-	m_actionMap->operator[]("p2_right") = thor::Action(sf::Keyboard::Right, thor::Action::Hold);
+	m_actionMap->operator[]("p4_up") = thor::Action(sf::Keyboard::Up, thor::Action::Hold);
+	m_actionMap->operator[]("p4_down") = thor::Action(sf::Keyboard::Down, thor::Action::Hold);
+	m_actionMap->operator[]("p4_left") = thor::Action(sf::Keyboard::Left, thor::Action::Hold);
+	m_actionMap->operator[]("p4_right") = thor::Action(sf::Keyboard::Right, thor::Action::Hold);
 
 	m_actionMap->operator[]("p1_up") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
 	m_actionMap->operator[]("p1_down") = thor::Action(sf::Keyboard::H, thor::Action::Hold);
@@ -1301,9 +1498,6 @@ void PlayState::setupActions()
 	m_actionMap->operator[]("p3_down") = thor::Action(sf::Keyboard::Numpad5, thor::Action::Hold);
 	m_actionMap->operator[]("p3_left") = thor::Action(sf::Keyboard::Numpad4, thor::Action::Hold);
 	m_actionMap->operator[]("p3_right") = thor::Action(sf::Keyboard::Numpad6, thor::Action::Hold);
-
-	m_actionMap->operator[]("Exit") = thor::Action(sf::Keyboard::Escape, thor::Action::PressOnce);
-	m_actionMap->operator[]("Restart") = thor::Action(sf::Keyboard::R, thor::Action::PressOnce);
 }
 
 void PlayState::loadNewLevel()
@@ -1321,18 +1515,20 @@ void PlayState::loadNewLevel()
 	m_currentLevel->game = this;
 	m_currentLevel->getBackground()->setTexture(m_stateAsset->resourceHolder->getTexture(m_currentLevel->getBackgroundPath(), false));
 
-	m_hotSpot->setRadius(m_currentLevel->getHotspotRadius());
-	m_hotSpot->setPosition(m_currentLevel->getHotspotPosition());
+	m_hotSpot->setRadius(200);
+	m_hotSpot->setPosition(sf::Vector2f(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f, m_stateAsset->windowManager->getWindow()->getSize().y / 2.f));
 
 	float start_y_position = m_hotSpot->getPosition().y - m_players[0]->getTotemSprite()->getGlobalBounds().height / 2.f;
 	for (auto &player : m_players)
 	{
 		if (player == nullptr) continue;
+		player->m_addedScoreTextTween = false;
 		player->getTotemSprite()->setOrigin(player->getTotemSprite()->getGlobalBounds().width / 2.f, player->getTotemSprite()->getGlobalBounds().height / 2.f);
 		player->getTotemSprite()->setPosition(m_hotSpot->getPosition().x, start_y_position);
 		player->m_totemBountyAmount->setPosition(player->getTotemSprite()->getPosition());
 		start_y_position -= player->getTotemSprite()->getGlobalBounds().height - 2;
 	}
+	m_players.back()->getTotemSprite()->setPosition(m_players.back()->getTotemSprite()->getPosition().x, m_players.back()->getTotemSprite()->getPosition().y - 8);
 
 	// Create defenders and gatherers
 	std::vector<std::string> defender_textures;
@@ -1380,10 +1576,12 @@ void PlayState::loadNewLevel()
 
 		m_players[i]->setDefender(defender);
 		m_players[i]->setGatherer(gatherer);
+		defender->m_stunBirds->setTexture(m_stateAsset->resourceHolder->getTexture("bird_spin.png"));
 		gatherer->m_shieldOverlay->setTexture(m_stateAsset->resourceHolder->getTexture("shield_animation.png"));
 	}
 
 	createPlayerBodies();
+	m_gameWon = false;
 }
 
 void PlayState::createPlayerBodies()
@@ -1439,8 +1637,11 @@ void PlayState::createPlayerBodies()
 
 bool sortTotemAlgorithm(Player* a, Player* b)
 {
-	//return a->getTimer()->getElapsedTime().asSeconds() < b->getTimer()->getElapsedTime().asSeconds();
 	return a->getPoints() < b->getPoints();
+}
+bool sortWinningPlayers(Player* a, Player* b)
+{
+	return a->getPoints() > b->getPoints();
 }
 
 void PlayState::sortTotem()
@@ -1468,16 +1669,25 @@ void PlayState::sortTotem()
 
 		float oldPositionY = sortedPlayerVector[i]->getTotemSprite()->getPosition().y;
 
-		if (newPositionY != oldPositionY)
+		if (static_cast<int>(newPositionY) != static_cast<int>(oldPositionY))
 		{
 			sortedPlayerVector[i]->m_tweeningValue = oldPositionY;
 
-			CDBTweener::CTween* tween = new CDBTweener::CTween();
-			tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 0.5f);
-			tween->addValue(&sortedPlayerVector[i]->m_tweeningValue, newPositionY);
-			tween->setUserData(sortedPlayerVector[i]);
-			tween->addListener(m_totemTweenerListener);
-			m_totemTweener.addTween(tween);
+			if (!sortedPlayerVector[i]->m_isTweeningTotem || sortedPlayerVector[i]->m_currentTotemTween->getValues()[0]->m_fTarget != newPositionY)
+			{
+				if (sortedPlayerVector[i]->m_currentTotemTween != nullptr)
+				{
+					m_totemTweener.removeTween(sortedPlayerVector[i]->m_currentTotemTween);
+				}
+				CDBTweener::CTween* tween = new CDBTweener::CTween();
+				tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 0.3f);
+				tween->addValue(&sortedPlayerVector[i]->m_tweeningValue, newPositionY);
+				tween->setUserData(sortedPlayerVector[i]);
+				tween->addListener(m_totemTweenerListener);
+				sortedPlayerVector[i]->m_isTweeningTotem = true;
+				sortedPlayerVector[i]->m_currentTotemTween = tween;
+				m_totemTweener.addTween(tween);
+			}
 			sortedPlayerVector[i]->setChangingOrder(true);
 		}
 
@@ -1525,20 +1735,43 @@ void PlayState::createPowerup()
 
 void PlayState::setupGameWon()
 {
+	m_toMenuTimer.restart(sf::seconds(SECONDS_IN_WINNING_SCREEN));
 	m_setupGameWon = true;
 	float middle_y = static_cast<float>(m_stateAsset->windowManager->getWindow()->getSize().y / 2);
 	float middle_x = static_cast<float>(m_stateAsset->windowManager->getWindow()->getSize().x / 2);
 	std::vector<Player*> players = m_players;
-	std::sort(players.begin(), players.end(), sortTotemAlgorithm);
+	std::sort(players.begin(), players.end(), sortWinningPlayers);
 
-	float startY = middle_y - 300.f;
-	float startXDef = middle_x - 200.f;
-	float startXGat = middle_x - 150.f;
+	float startY = middle_y - 390.f;
+	float startXDef = middle_x;
+	float startXGat = middle_x;
 
+	float startSeconds = 0.5;
+	std::vector<float> dist_secs = { 0, 0, 0, 0 };
+	int a = 0;
 	for (auto &p : players)
 	{
+		dist_secs[a] = startSeconds;
+		a++;
+		startSeconds += 0.8f;
+	}
+	a--;
+
+	int width = 252;
+	for (auto &p : players)
+	{
+		if (p->isStunned())
+		{
+			p->getGatherer()->getAnimatior()->playAnimation("stun", true);
+		}
+		else
+		{
+			p->getGatherer()->getAnimatior()->playAnimation("walk", true);
+		}
 		p->setDead(false);
 		p->setShield(false);
+		p->processEventualDeath(m_currentLevel);
+		p->getDefender()->getAnimatior()->playAnimation("walk", true);
 		sf::Vector2f def_pos = p->getDefender()->getSprite()->getPosition();
 		sf::Vector2f gat_pos = p->getGatherer()->getSprite()->getPosition();
 		p->getDefender()->m_tweenX = def_pos.x;
@@ -1546,18 +1779,30 @@ void PlayState::setupGameWon()
 		p->getGatherer()->m_tweenX = gat_pos.x;
 		p->getGatherer()->m_tweenY = gat_pos.y;
 
+		/*CDBTweener::CTween* tween = new CDBTweener::CTween();
+		tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);*/
+
+		p->mWinNumberSpriteY = 1080 + 300;
+		p->m_winNumberSprite->setTextureRect(sf::IntRect(width, 0, 252, 372));
+		p->m_winNumberSprite->setPosition(startXDef - 140, p->mWinNumberSpriteY);
+		
+		CDBTweener::CTween* tweenNumberSprite = new CDBTweener::CTween();
+		tweenNumberSprite->setEquation(&CDBTweener::TWEQ_ELASTIC, CDBTweener::TWEA_OUT, 1.f);
+		tweenNumberSprite->addValue(&p->mWinNumberSpriteY, startY + 40);
+		m_winGameTweener.addTween(tweenNumberSprite);
+
 		CDBTweener::CTween* tween = new CDBTweener::CTween();
-		tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
+		tween->setEquation(&CDBTweener::TWEQ_ELASTIC, CDBTweener::TWEA_OUT, 2.f);
+
 		tween->addValue(&p->getDefender()->m_tweenX, startXDef);
 		tween->addValue(&p->getDefender()->m_tweenY, startY);
 		tween->addValue(&p->getGatherer()->m_tweenX, startXGat);
 		tween->addValue(&p->getGatherer()->m_tweenY, startY + 80);
-		tween->setUserData(p);
 		m_winGameTweener.addTween(tween);
 
-		p->mWinScoreText->setString(std::to_string(p->m_bounty));
+		p->mWinScoreText->setString(std::to_string(static_cast<int>(p->getPoints())));
 		p->mWinScoreText->setOrigin(p->mWinScoreText->getGlobalBounds().width / 2.f, p->mWinScoreText->getGlobalBounds().height / 2.f);
-		p->mWinScoreText->setPosition(1920 + 400, startY);
+		//p->mWinScoreText->setPosition(1920 + 400, startY);
 
 		/*	CDBTweener::CTween* tween = new CDBTweener::CTween();
 			tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
@@ -1568,7 +1813,16 @@ void PlayState::setupGameWon()
 			tween->setUserData(p);
 			m_winGameTweener.addTween(tween);
 			*/
-		startY += 128;
+		//startY += 128;
+		p->mWinScoreText->setPosition(1920 + 400, startY + 40);
+
+		p->m_tweeningScoreTextX = 1920 + 400;
+		p->m_tweeningScoreTextXTarget = startXGat + 170;
+		p->m_scoreTextTimer.restart(sf::seconds(dist_secs[a]));
+		
+		startY += 250;
+		width += 252;
+		a--;
 	}
 }
 
@@ -1611,6 +1865,8 @@ b2Body* PlayState::createWall(sf::Vector2f v1, sf::Vector2f v2)
 
 void PlayState::onEnterTotem(Player* player)
 {
+	m_hotSpot->getAnimator()->playAnimation(player->mHotSpotGlitterAnimation, true);
+	m_hotSpot->getShape()->setFillColor(player->getColor());
 	//m_timerEmitter->setEmissionRate(40);
 	//m_timerEmitter->setParticlePosition(player->getPointsIndicator()->getPosition());
 	//m_timerEmitter->setParticleVelocity(thor::Distribution::deflect());
@@ -1619,12 +1875,47 @@ void PlayState::onEnterTotem(Player* player)
 
 void PlayState::updateHoldingTotem(Player* player)
 {
+	if (player == nullptr)
+	{
+		if (m_hotSpot->getAnimator()->getPlayingAnimation() != "idle")
+		{
+			m_hotSpot->getAnimator()->playAnimation("idle", true);
+		}
+		m_hotSpot->getShape()->setFillColor(m_hotSpot->mIdleColor);
+	}
 	for (auto &p : m_players)
 	{
-		if (p == nullptr) continue;
 		if (p != player)
 		{
 			p->m_holdingTotem = false;
 		}
 	}
+}
+
+
+void PlayState::addDeathcloud(sf::Vector2f position, sf::IntRect textureRect)
+{
+	DeathCloud* dc = new DeathCloud();
+	dc->alphaTween = 0;
+	dc->sprite.setTexture(m_stateAsset->resourceHolder->getTexture("deathcloud.png"));
+	dc->sprite.setTextureRect(textureRect);
+	dc->sprite.setPosition(position);
+	dc->sprite.setOrigin(sf::Vector2f(28, 28));
+
+	CDBTweener::CTween* tween = new CDBTweener::CTween();
+	tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::EEasing::TWEA_OUT, DEATH_CLOUD_FADE_IN_TIME);
+	tween->addValue(&dc->alphaTween, 255);
+	tween->addListener(m_deathcloudTweenListener);
+	tween->setUserData(dc);
+	m_deathcloudTweener.addTween(tween);
+
+	m_deathClouds.push_back(dc);
+}
+
+void PlayState::addTotemParticle(sf::IntRect textureRect)
+{
+	// get random position
+	/*float angle = thor::random(0, 360)
+		dist = rand(0, circle_radius)
+		random_pos = pos(sin(angle) * dist, cos(angle) * dist)*/
 }

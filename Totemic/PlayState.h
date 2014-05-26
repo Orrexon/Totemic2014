@@ -6,6 +6,7 @@
 #include <Thor\Particles.hpp>
 #include <Thor\Animation.hpp>
 #include <Thor\Time\Timer.hpp>
+#include <SFML\Graphics\Sprite.hpp>
 #include "Math.h"
 
 class Player;
@@ -15,10 +16,12 @@ class Level;
 class ContactListener;
 class ContactFilter;
 class TotemTweenerListener;
+class DeathcloudTweenListener;
 class Trap;
 class FloatingScoreText;
 class Powerup;
 class VCollection;
+class DeathCloud;
 
 namespace thor
 {
@@ -30,7 +33,6 @@ namespace sf
 {
 	class RectangleShape;
 }
-
 
 class PlayState : public GameState
 {
@@ -54,8 +56,9 @@ public:
 	void createPowerup();
 	void setupGameWon();
 	void onEnterTotem(Player* player);
+	void addDeathcloud(sf::Vector2f position, sf::IntRect textureRect);
 	void updateHoldingTotem(Player* player); // Sets m_holdingTotem = false except player
-
+	void addTotemParticle(sf::IntRect textureRect);
 	b2Body* createWall(sf::Vector2f v1, sf::Vector2f v2);
 
 public:
@@ -63,6 +66,8 @@ public:
 	bool m_gameWon;
 	bool m_starting;
 	bool m_totemIsBlockingPlayer;
+	bool m_hasStartedToChangeWinBackgroundOpacity;
+	bool m_321GO_timerExpired;
 
 	b2World m_world;
 	ContactListener* m_contactListener;
@@ -70,7 +75,9 @@ public:
 	
 	std::vector<unsigned int> m_mouseIndicies;
 	std::vector<Player*> m_players;
+	Player* m_leadingPlayer;
 	std::vector<b2Body*> m_walls;
+	std::vector<DeathCloud*> m_deathClouds;
 	std::vector<FloatingScoreText*> m_floatingScoreTexts;
 	HotSpot* m_hotSpot;
 	Level* m_currentLevel;
@@ -80,12 +87,14 @@ public:
 	sf::RectangleShape m_timerBarBackground;
 	sf::RectangleShape m_lightningEffect;
 	float m_lightningAlpha;
+	float m_winBackgroundAlpha;
 
 	sf::Sprite m_timerBar;
 	sf::Sprite m_frame;
 	sf::Sprite m_totemHead;
 	sf::Sprite m_123GO;
 	sf::Sprite m_totemFoot;
+	sf::Sprite mWinBackground;
 
 	thor::Animator<sf::Sprite, std::string> m_123GOAnimator;
 	thor::Animator<sf::Sprite, std::string> m_totemHeadAnimator;
@@ -93,10 +102,13 @@ public:
 	thor::FrameAnimation m_totemHeadIdleAnimation;
 	thor::FrameAnimation m_123GOAnimation;
 	thor::Timer m_321GOTimer;
+	thor::Timer m_toMenuTimer;
 	
 	CDBTweener m_winGameTweener;
 	CDBTweener m_totemTweener;
+	CDBTweener m_deathcloudTweener;
 	TotemTweenerListener* m_totemTweenerListener;
+	DeathcloudTweenListener* m_deathcloudTweenListener;
 
 	thor::UniversalEmitter* m_defenderEmitter;
 	thor::ParticleSystem* m_defenderParticleSystem;
@@ -120,4 +132,7 @@ public:
 	sf::Texture m_glow1;
 
 	sf::Vector2f m_leaderPoint;
+
+	sf::Text mToMenuTimerText;
+
 };

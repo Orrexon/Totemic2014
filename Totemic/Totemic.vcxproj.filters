@@ -47,6 +47,9 @@
     <ClCompile Include="Powerup.cpp" />
     <ClCompile Include="Coinbird.cpp" />
     <ClCompile Include="LoadingState.cpp" />
+    <ClCompile Include="DeathcloudTweenListener.cpp" />
+    <ClCompile Include="Deathcloud.cpp" />
+    <ClCompile Include="TotemParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box2DWorldDraw.h" />
@@ -86,6 +89,9 @@
     <ClInclude Include="Powerup.h" />
     <ClInclude Include="Coinbird.h" />
     <ClInclude Include="LoadingState.h" />
+    <ClInclude Include="DeathcloudTweenListener.h" />
+    <ClInclude Include="Deathcloud.h" />
+    <ClInclude Include="TotemParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="System.inl" />
