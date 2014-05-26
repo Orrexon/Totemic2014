@@ -287,6 +287,7 @@ void Player::setDying(bool value)
 		m_defender->getDeathAnimator()->playAnimation("death", false);
 		m_postCheckDead = true;
 		game->addDeathcloud(m_gatherer->getSprite()->getPosition(), m_deathCloudTextureRect);
+		
 	}
 }
 void Player::setColor(sf::Color color)

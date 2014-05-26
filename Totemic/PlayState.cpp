@@ -167,6 +167,18 @@ void PlayState::entering()
 	m_gathererTorqueAffector = new thor::TorqueAffector(0.f);
 	m_gathererTorqueAffector->setAngularAcceleration(90.f);
 
+	m_scoreIndicatorEmitter = new thor::UniversalEmitter;
+	m_scoreIndicatorSystem = new thor::ParticleSystem;
+	m_scoreIndicatorAffector = new thor::ForceAffector(sf::Vector2f(0.f, 20.f));
+	m_glow1.loadFromFile("../assets/textures/sparcle_particles.png", sf::IntRect(0, 0, 80, 16));
+	m_scoreIndicatorSystem->setTexture(m_glow1);
+	m_scoreIndicatorSystem->addTextureRect(sf::IntRect(0, 0, 15, 16));
+	m_scoreIndicatorSystem->addTextureRect(sf::IntRect(16, 0, 15, 16));
+	m_scoreIndicatorSystem->addTextureRect(sf::IntRect(64, 0, 15, 16));
+	m_leaderPoint = { 0.f, 0.f };
+	//m_glowUpdate.restart();
+
+
 	m_123GO.setTexture(m_stateAsset->resourceHolder->getTexture("321go.png"));
 	m_123GO.setOrigin(418, 186);
 	m_123GO.setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f, m_stateAsset->windowManager->getWindow()->getSize().y / 2.f);
@@ -180,6 +192,7 @@ void PlayState::entering()
 
 	m_321GOTimer.reset(sf::seconds(PLAYSTATE_SECONDS_BEFORE_COUNTDOWN));
 	m_321GOTimer.start();
+
 	m_stateAsset->audioSystem->playMusic("Bamboozle", true);
 
 	mWinBackground.setTexture(m_stateAsset->resourceHolder->getTexture("win.png"));
@@ -191,11 +204,16 @@ void PlayState::entering()
 
 	mToMenuTimerText.setFont(m_stateAsset->resourceHolder->getFont(DEFAULT_FONT));
 	mToMenuTimerText.setCharacterSize(48);
+<<<<<<< HEAD
 	mToMenuTimerText.setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f + 400, 1080 + 100);
 	m_toMenuTimerTextY = mToMenuTimerText.getPosition().y;
 
 	m_totemParticleListener = new TotemParticleListener();
 	m_totemParticleTimer.restart(sf::seconds(TOTEM_PARTICLE_RATE));
+=======
+	mToMenuTimerText.setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f, m_stateAsset->windowManager->getWindow()->getSize().y / 2.f);
+
+>>>>>>> 9373246a0bf3decf94efc0464a16375835d24085
 }
 
 void PlayState::leaving()
@@ -866,9 +884,39 @@ bool PlayState::update(float dt)
 
 	m_defenderParticleSystem->update(sf::seconds(dt));
 	m_gathererDeathSystem->update(sf::seconds(dt));
+
 	m_currentLevel->update(dt);
 	m_world.Step(1.f / 60.f, 8, 3);
 
+
+#pragma region GLOW_PARTICLES
+	sf::Sprite temp[4];
+	sf::Vector2f tempV = m_leaderPoint;
+	int index = 0;
+	for (auto& it : m_players)
+	{
+		temp[index] = *it->getPointsIndicator();
+		index++;
+	}
+	for (int j = 0; j < m_players.size(); j++)
+	{
+
+		if (temp[j].getPosition().x >= m_leaderPoint.x)
+		{
+			m_leaderPoint = temp[j].getPosition();
+		}
+	}
+	m_scoreIndicatorEmitter->setEmissionRate(2.f);
+	m_scoreIndicatorEmitter->setParticleLifetime(thor::Distributions::uniform(sf::seconds(.3f), sf::seconds(.4f)));
+	m_scoreIndicatorEmitter->setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0.f, -100.f), 180.f));
+	m_scoreIndicatorEmitter->setParticlePosition(m_leaderPoint + sf::Vector2f(10.f, 0.f));
+	
+	m_scoreIndicatorSystem->addAffector(*m_scoreIndicatorAffector, sf::seconds(1.f));
+	m_scoreIndicatorSystem->addEmitter(*m_scoreIndicatorEmitter, sf::milliseconds(1000));
+	m_scoreIndicatorSystem->update(sf::seconds(dt + 0.025));
+	
+
+#pragma endregion
 #pragma region Gatherer_Movement
 	b2Vec2 up_impulse(0.f, -15.f);
 	b2Vec2 down_impulse(0.f, 15.f);
@@ -1310,7 +1358,7 @@ bool PlayState::update(float dt)
 			m_123GOAnimator.animate(m_123GO);
 		}
 	}
-	m_currentLevel->update(dt);
+	//m_currentLevel->update(dt);
 	return true;
 }
 
@@ -1360,6 +1408,7 @@ void PlayState::draw()
 	m_stateAsset->windowManager->getWindow()->draw(m_frame);
 	m_stateAsset->windowManager->getWindow()->draw(*m_defenderParticleSystem);
 	m_stateAsset->windowManager->getWindow()->draw(*m_gathererDeathSystem);
+	m_stateAsset->windowManager->getWindow()->draw(*m_scoreIndicatorSystem);
 	for (auto &player : m_players)
 	{
 		if (player->m_online)
@@ -1837,6 +1886,9 @@ void PlayState::setupGameWon()
 		p->getGatherer()->m_tweenX = gat_pos.x;
 		p->getGatherer()->m_tweenY = gat_pos.y;
 
+		/*CDBTweener::CTween* tween = new CDBTweener::CTween();
+		tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);*/
+
 		p->mWinNumberSpriteY = 1080 + 300;
 		p->m_winNumberSprite->setTextureRect(sf::IntRect(width, 0, 252, 372));
 		p->m_winNumberSprite->setPosition(startXDef - 140, p->mWinNumberSpriteY);
@@ -1848,6 +1900,7 @@ void PlayState::setupGameWon()
 
 		CDBTweener::CTween* tween = new CDBTweener::CTween();
 		tween->setEquation(&CDBTweener::TWEQ_ELASTIC, CDBTweener::TWEA_OUT, 2.f);
+
 		tween->addValue(&p->getDefender()->m_tweenX, startXDef);
 		tween->addValue(&p->getDefender()->m_tweenY, startY);
 		tween->addValue(&p->getGatherer()->m_tweenX, startXGat);
@@ -1856,6 +1909,18 @@ void PlayState::setupGameWon()
 
 		p->mWinScoreText->setString(std::to_string(static_cast<int>(p->getPoints())));
 		p->mWinScoreText->setOrigin(p->mWinScoreText->getGlobalBounds().width / 2.f, p->mWinScoreText->getGlobalBounds().height / 2.f);
+		//p->mWinScoreText->setPosition(1920 + 400, startY);
+
+		/*	CDBTweener::CTween* tween = new CDBTweener::CTween();
+			tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
+			tween->addValue(&p->getDefender()->m_tweenX, startXDef);
+			tween->addValue(&p->getDefender()->m_tweenY, startY);
+			tween->addValue(&p->getGatherer()->m_tweenX, startXGat);
+			tween->addValue(&p->getGatherer()->m_tweenY, startY + 80);
+			tween->setUserData(p);
+			m_winGameTweener.addTween(tween);
+			*/
+		//startY += 128;
 		p->mWinScoreText->setPosition(1920 + 400, startY + 40);
 
 		p->m_tweeningScoreTextX = 1920 + 400;
@@ -1957,6 +2022,7 @@ void PlayState::addDeathcloud(sf::Vector2f position, sf::IntRect textureRect)
 void PlayState::addTotemParticle(sf::IntRect textureRect)
 {
 	// get random position
+<<<<<<< HEAD
 	sf::Vector2f random_pos = m_hotSpot->getPosition();
 	
 	float q = thor::random(0.f, 1.f) * (b2_pi * 2);
@@ -1989,3 +2055,9 @@ x = (radius * r) * Cos(q)
 y = (radius * r) * Sin(q)
 	*/
 }
+=======
+	/*float angle = thor::random(0, 360)
+		dist = rand(0, circle_radius)
+		random_pos = pos(sin(angle) * dist, cos(angle) * dist)*/
+}
+>>>>>>> 9373246a0bf3decf94efc0464a16375835d24085

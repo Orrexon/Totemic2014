@@ -77,13 +77,13 @@ void Level::update(float dt)
 {
 	for (auto &playerSpawn : m_playerSpawns)
 	{
-		bool isOccupied = false;
+		bool isOccupied = true;
 		for (auto &player : game->m_players)
 		{
 			if (!player->m_online) continue;
-			if ((!player->isDead() || !player->isDying()) && Math::euclideanDistance(playerSpawn->gat_spawn, player->getDefender()->getSprite()->getPosition()) < RANDOM_PLAYER_SPAWN_TOLERANCE)
+			if ((player->isDead() || player->isDying()) && Math::euclideanDistance(playerSpawn->gat_spawn, player->getDefender()->getSprite()->getPosition()) < RANDOM_PLAYER_SPAWN_TOLERANCE)
 			{
-				isOccupied = true;
+				isOccupied = false;
 			}
 		}
 		playerSpawn->occupied = isOccupied;
