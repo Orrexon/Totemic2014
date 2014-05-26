@@ -370,10 +370,14 @@ void Player::processEventualDeath(Level* level)
 	{
 		std::vector<PlayerSpawn*> playerSpawns = level->getPlayerSpawns();
 		int randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
-
+		thor::StopWatch bandAid; bandAid.restart();
 		while (playerSpawns[randomSpawnIndex]->occupied == true)
 		{
 			randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
+			if (bandAid.getElapsedTime() > sf::seconds(0.1f))
+			{
+				break;
+			}
 		}
 		level->setPlayerSpawnOccupied(randomSpawnIndex, true);
 		m_gatherer->getBody()->SetTransform(PhysicsHelper::gameToPhysicsUnits(playerSpawns[randomSpawnIndex]->gat_spawn), m_gatherer->getBody()->GetAngle());

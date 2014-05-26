@@ -1,26 +1,8 @@
-﻿Build started 2014-05-26 13:15:05.
+﻿Build started 2014-05-26 16:17:12.
      1>Project "C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Totemic\Totemic.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Audiosystem.cpp Box2DWorldDraw.cpp Config.cpp Deathcloud.cpp FileSystem.cpp GameState.cpp GameStateManager.cpp Level.cpp LevelLoader.cpp PhysicsHelper.cpp Powerup.cpp ResourceHolder.cpp String.cpp System.cpp WindowManager.cpp dbtweener.cpp main.cpp
-         Level.cpp
-         Generating Code...
-         Skipping... (no relevant changes detected)
-         main.cpp
-         dbtweener.cpp
-         WindowManager.cpp
-         System.cpp
-         String.cpp
-         ResourceHolder.cpp
-         Powerup.cpp
-         PhysicsHelper.cpp
-         LevelLoader.cpp
-         GameStateManager.cpp
-         GameState.cpp
-         FileSystem.cpp
-         Deathcloud.cpp
-         Config.cpp
-         Box2DWorldDraw.cpp
-         Audiosystem.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../deps/FTGL/include/ /I"../deps/SFML-2.1/include" /I../deps/Thor/include /I../deps/Aurora /I../deps/Box2D /I../deps/jsoncpp/include /I../deps/SFGUI/include/ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Player.cpp
+         Player.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\Totemic.exe" /INCREMENTAL /NOLOGO /LIBPATH:../deps/FTGL/lib/ /LIBPATH:"..\deps\SFML-2.1\lib\\" /LIBPATH:../deps/Thor/lib /LIBPATH:../deps/Box2D/lib/ /LIBPATH:../deps/jsoncpp/lib/ /LIBPATH:../deps/SFGUI/lib/ ftgld.lib "thor-d.lib" "Box2D-d.lib" opengl32.lib glu32.lib jsoncppd.lib "sfml-window-d.lib" "sfml-graphics-d.lib" "sfml-network-d.lib" "sfml-audio-d.lib" "sfml-system-d.lib" "sfgui-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\Totemic.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Orre\Documents\Desktop\GitHub\Totemic2014\Debug\Totemic.lib" /MACHINE:X86 "Debug\The Submarine.res"
          Debug\Audiosystem.obj
@@ -72,4 +54,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.50
+Time Elapsed 00:00:01.47
