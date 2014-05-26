@@ -53,19 +53,19 @@ void ContactListener::playerContactBegin(UserData* userDataA, UserData* userData
 			sf::Vector2f oldScale = charA->getData()->getPlayer()->getDefender()->getSprite()->getScale();
 			charB->getData()->getPlayer()->getGatherer()->getDeathSprite()->setScale(sf::Vector2f(oldScale.x * -1, oldScale.y));
 
-			if (charB->getData()->getPlayer()->getColor() == sf::Color::Blue)
+			if (charB->getData()->getPlayer()->getColor() == sf::Color(99, 152, 211, 94))
 			{
 				charB->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charB->getData()->getPlayer()->game->feather);
 			}
-			else if (charB->getData()->getPlayer()->getColor() == sf::Color::Red)
+			else if (charB->getData()->getPlayer()->getColor() == sf::Color(244, 86, 86, 94))
 			{
 				charB->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charB->getData()->getPlayer()->game->featherRed);
 			}
-			else if (charB->getData()->getPlayer()->getColor() == sf::Color::Yellow)
+			else if (charB->getData()->getPlayer()->getColor() == sf::Color(248, 248, 83, 94))
 			{
 				charB->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charB->getData()->getPlayer()->game->featherYellow);
 			}
-			else if (charB->getData()->getPlayer()->getColor() == sf::Color(204, 0, 204))
+			else if (charB->getData()->getPlayer()->getColor() == sf::Color(209, 105, 225, 94))
 			{
 				charB->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charB->getData()->getPlayer()->game->featherPurple);
 			}
@@ -90,19 +90,19 @@ void ContactListener::playerContactBegin(UserData* userDataA, UserData* userData
 			sf::Vector2f oldScale = charB->getData()->getPlayer()->getDefender()->getSprite()->getScale();
 			charA->getData()->getPlayer()->getGatherer()->getDeathSprite()->setScale(sf::Vector2f(oldScale.x * -1, oldScale.y));
 
-			if (charA->getData()->getPlayer()->getColor() == sf::Color::Blue)
+			if (charA->getData()->getPlayer()->getColor() == sf::Color(99, 152, 211, 94))
 			{
 				charA->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charA->getData()->getPlayer()->game->feather);
 			}
-			else if (charA->getData()->getPlayer()->getColor() == sf::Color::Red)
+			else if (charA->getData()->getPlayer()->getColor() == sf::Color(244, 86, 86, 94))
 			{
 				charA->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charA->getData()->getPlayer()->game->featherRed);
 			}
-			else if (charA->getData()->getPlayer()->getColor() == sf::Color::Yellow)
+			else if (charA->getData()->getPlayer()->getColor() == sf::Color(248, 248, 83, 94))
 			{
 				charA->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charA->getData()->getPlayer()->game->featherYellow);
 			}
-			else if (charA->getData()->getPlayer()->getColor() == sf::Color(204, 0, 204))
+			else if (charA->getData()->getPlayer()->getColor() == sf::Color(209, 105, 225, 94))
 			{
 				charA->getData()->getPlayer()->game->m_gathererDeathSystem->setTexture(charA->getData()->getPlayer()->game->featherPurple);
 			}
