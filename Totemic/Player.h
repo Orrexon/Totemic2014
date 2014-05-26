@@ -257,6 +257,7 @@ public:
 	std::string mHotSpotGlitterAnimation;
 	thor::StopWatch loopplaster;
 	sf::IntRect m_deathCloudTextureRect;
+	sf::IntRect m_totemParticleTextureRect;
 
 private:
 	bool m_respawnProtection;

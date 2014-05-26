@@ -28,6 +28,8 @@
 #include "Coinbird.h"
 #include "TotemTweenerListener.h"
 #include "DeathcloudTweenListener.h"
+#include "TotemParticle.h"
+#include "TotemParticleListener.h"
 
 PlayState::PlayState() : m_world(b2Vec2(0.f, 0.f))
 {
@@ -43,7 +45,9 @@ void PlayState::entering()
 	m_hasStartedToChangeWinBackgroundOpacity = false;
 	m_exclusive = false;
 	m_gameWon = false;
+	m_hasStarted321GOTimer = false;
 	m_setupGameWon = false;
+	m_isShowingTimerText = false;
 	m_totemIsBlockingPlayer = false;
 	m_starting = true;
 	m_321GO_timerExpired = false;
@@ -200,14 +204,20 @@ void PlayState::entering()
 
 	mToMenuTimerText.setFont(m_stateAsset->resourceHolder->getFont(DEFAULT_FONT));
 	mToMenuTimerText.setCharacterSize(48);
-	mToMenuTimerText.setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f, m_stateAsset->windowManager->getWindow()->getSize().y / 2.f);
+	mToMenuTimerText.setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f + 400, 1080 + 100);
+	m_toMenuTimerTextY = mToMenuTimerText.getPosition().y;
 
+	m_totemParticleListener = new TotemParticleListener();
+	m_totemParticleTimer.restart(sf::seconds(TOTEM_PARTICLE_RATE));
 }
 
 void PlayState::leaving()
 {
 	delete m_totemTweenerListener;
 	m_totemTweenerListener = nullptr;
+
+	delete m_totemParticleListener;
+	m_totemParticleListener = nullptr;
 
 	auto it_players = m_players.begin();
 	while (it_players != m_players.end())
@@ -220,6 +230,30 @@ void PlayState::leaving()
 		++it_players;
 	}
 	m_players.clear();
+
+	auto it_deathclouds = m_deathClouds.begin();
+	while (it_deathclouds != m_deathClouds.end())
+	{
+		if (*it_players != nullptr)
+		{
+			delete *it_deathclouds;
+			*it_deathclouds = nullptr;
+		}
+		++it_deathclouds;
+	}
+	m_deathClouds.clear();
+
+	auto it_totemParticle = m_totemParticles.begin();
+	while (it_totemParticle != m_totemParticles.end())
+	{
+		if (*it_totemParticle != nullptr)
+		{
+			delete *it_totemParticle;
+			*it_totemParticle = nullptr;
+		}
+		++it_totemParticle;
+	}
+	m_totemParticles.clear();
 
 	delete m_hotSpot;
 	m_hotSpot = nullptr;
@@ -308,6 +342,34 @@ bool PlayState::update(float dt)
 		}
 	}
 
+	// Update totem particles
+	auto itTotemParticle = m_totemParticles.begin();
+	while (itTotemParticle != m_totemParticles.end())
+	{
+		TotemParticle* totemParticle = (*itTotemParticle);
+		
+		sf::Color oldColor = totemParticle->m_sprite->getColor();
+		oldColor.a = totemParticle->fadeInAlpha;
+		totemParticle->m_sprite->setColor(oldColor);
+
+		if (totemParticle->borned)
+		{
+			if (totemParticle->deathTimer.isExpired())
+			{
+				delete totemParticle;
+				totemParticle = nullptr;
+				itTotemParticle = m_totemParticles.erase(itTotemParticle);
+			}
+			else
+			{
+				++itTotemParticle;
+			}
+		}
+		else
+		{
+			++itTotemParticle;
+		}
+	}
 
 	if (m_gameWon)
 	{
@@ -365,6 +427,17 @@ bool PlayState::update(float dt)
 			m_stateAsset->gameStateManager->m_players.clear();
 			m_stateAsset->gameStateManager->changeState(new MenuState());
 		}
+
+		if (!m_isShowingTimerText && m_toMenuTimer.getRemainingTime().asSeconds() <= SECONDS_WHEN_TEXT_SHOWS)
+		{
+			m_isShowingTimerText = true;
+			CDBTweener::CTween* tween = new CDBTweener::CTween();
+			tween->setEquation(&CDBTweener::TWEQ_ELASTIC, CDBTweener::TWEA_OUT, 1.f);
+			tween->addValue(&m_toMenuTimerTextY, m_stateAsset->windowManager->getWindow()->getSize().y / 2.f);
+			m_winGameTweener.addTween(tween);
+		}
+		mToMenuTimerText.setPosition(mToMenuTimerText.getPosition().x, m_toMenuTimerTextY);
+		mToMenuTimerText.setString(std::to_string(m_toMenuTimer.getRemainingTime().asSeconds()).substr(0, 4));
 		return true;
 	}
 
@@ -524,7 +597,7 @@ bool PlayState::update(float dt)
 
 						// Get random spawn position for the songbird
 						//x
-						int margin = -300;
+						int margin = 300;
 						int x, y = 0;
 						int side = thor::random(0, 3); // top, left, right, bottom
 						switch (side)
@@ -1176,6 +1249,11 @@ bool PlayState::update(float dt)
 	std::vector<Player*> activePlayers = m_hotSpot->getActivePlayers(m_players);
 	if (activePlayers.size() == 1)
 	{
+		if (m_totemParticleTimer.isExpired())
+		{
+			m_totemParticleTimer.restart(sf::seconds(TOTEM_PARTICLE_RATE));
+			addTotemParticle(activePlayers.back()->m_totemParticleTextureRect);
+		}
 		if (m_totemHeadAnimator.getPlayingAnimation() != "active")
 			m_totemHeadAnimator.playAnimation("active", true);
 		if (!activePlayers.back()->m_holdingTotem)
@@ -1219,6 +1297,13 @@ bool PlayState::update(float dt)
 	}
 	else
 	{
+		auto it_totemParticle = m_totemParticles.begin();
+		while (it_totemParticle != m_totemParticles.end())
+		{
+			(*it_totemParticle)->m_sprite->setTextureRect(sf::IntRect(0, 0, 16, 16));
+			++it_totemParticle;
+		}
+
 		if (m_totemHeadAnimator.getPlayingAnimation() != "idle")
 			m_totemHeadAnimator.playAnimation("idle", true);
 		
@@ -1247,8 +1332,10 @@ bool PlayState::update(float dt)
 	m_totemHeadAnimator.animate(m_totemHead);
 	
 	m_321GO_timerExpired = m_321GOTimer.isExpired();
-	if (m_starting && m_321GO_timerExpired && !m_stateAsset->audioSystem->getSound("321GO")->isPlaying())
+
+	if (!m_hasStarted321GOTimer && m_starting && m_321GO_timerExpired && !m_stateAsset->audioSystem->getSound("321GO")->isPlaying())
 	{
+		m_hasStarted321GOTimer = true;
 		m_stateAsset->audioSystem->playSound("321GO");
 		m_123GOAnimator.playAnimation("idle");
 	}
@@ -1291,6 +1378,12 @@ void PlayState::draw()
 	}
 
 	m_stateAsset->windowManager->getWindow()->draw(m_totemFoot);
+
+	for (auto &totemParticle : m_totemParticles)
+	{
+		m_stateAsset->windowManager->getWindow()->draw(*totemParticle->m_sprite);
+	}
+
 	m_stateAsset->windowManager->getWindow()->draw(m_totemHead);
 	for (auto &player : m_players)
 	{
@@ -1348,6 +1441,8 @@ void PlayState::draw()
 				m_stateAsset->windowManager->getWindow()->draw(*player->m_winNumberSprite);
 			}
 		}
+
+		m_stateAsset->windowManager->getWindow()->draw(mToMenuTimerText);
 	}
 }
 
@@ -1412,11 +1507,18 @@ void PlayState::initPlayers()
 	deathCloudTextureRects[2] = sf::IntRect(168, 0, 56, 56);
 	deathCloudTextureRects[3] = sf::IntRect(56, 0, 56, 56);
 
+	sf::IntRect totemParticleTextureRects[4];
+	totemParticleTextureRects[0] = sf::IntRect(32, 0, 16, 16);
+	totemParticleTextureRects[1] = sf::IntRect(64, 0, 16, 16);
+	totemParticleTextureRects[2] = sf::IntRect(16, 0, 16, 16);
+	totemParticleTextureRects[3] = sf::IntRect(48, 0, 16, 16);
+
 	for (std::size_t i = 0; i < 4; i++)
 	{
 		m_players.push_back(new Player());
 		m_players.back()->game = this;
 		m_players.back()->m_deathCloudTextureRect = deathCloudTextureRects[i];
+		m_players.back()->m_totemParticleTextureRect = totemParticleTextureRects[i];
 		m_players.back()->setResourceHolder(m_stateAsset->resourceHolder);
 		m_players.back()->setFSTRef(m_floatingScoreTexts);
 		m_players.back()->setColor(playerColors[i]);
@@ -1915,7 +2017,28 @@ void PlayState::addDeathcloud(sf::Vector2f position, sf::IntRect textureRect)
 void PlayState::addTotemParticle(sf::IntRect textureRect)
 {
 	// get random position
-	/*float angle = thor::random(0, 360)
-		dist = rand(0, circle_radius)
-		random_pos = pos(sin(angle) * dist, cos(angle) * dist)*/
+	sf::Vector2f random_pos = m_hotSpot->getPosition();
+	
+	float q = thor::random(0.f, 1.f) * (b2_pi * 2);
+	float r = std::sqrtf(thor::random(0.f, 1.f));
+	float x = (m_hotSpot->getRadius() * r) * std::cosf(q);
+	float y = (m_hotSpot->getRadius() * r) * std::sinf(q);
+	random_pos.x += x;
+	random_pos.y += y;
+
+	TotemParticle* particle = new TotemParticle();
+	particle->m_sprite->setTextureRect(textureRect);
+	particle->m_sprite->setTexture(m_stateAsset->resourceHolder->getTexture("sparcle_particles.png"));
+	particle->m_sprite->setOrigin(8, 8);
+	particle->m_sprite->setPosition(random_pos);
+	particle->m_sprite->setColor(sf::Color(255, 255, 255, 0));
+
+	CDBTweener::CTween *tween = new CDBTweener::CTween();
+	tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::EEasing::TWEA_OUT, TOTEM_PARTICLE_FADEIN_TIME);
+	tween->addValue(&particle->fadeInAlpha, 255.f);
+	tween->setUserData(particle);
+	tween->addListener(m_totemParticleListener);
+	m_totemTweener.addTween(tween);
+
+	m_totemParticles.push_back(particle);
 }

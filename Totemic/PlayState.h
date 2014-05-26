@@ -17,10 +17,11 @@ class ContactListener;
 class ContactFilter;
 class TotemTweenerListener;
 class DeathcloudTweenListener;
+class TotemParticleListener;
 class Trap;
 class FloatingScoreText;
 class Powerup;
-class VCollection;
+class TotemParticle;
 class DeathCloud;
 
 namespace thor
@@ -67,7 +68,9 @@ public:
 	bool m_starting;
 	bool m_totemIsBlockingPlayer;
 	bool m_hasStartedToChangeWinBackgroundOpacity;
+	bool m_hasStarted321GOTimer;
 	bool m_321GO_timerExpired;
+	bool m_isShowingTimerText;
 
 	b2World m_world;
 	ContactListener* m_contactListener;
@@ -78,6 +81,7 @@ public:
 	Player* m_leadingPlayer;
 	std::vector<b2Body*> m_walls;
 	std::vector<DeathCloud*> m_deathClouds;
+	std::vector<TotemParticle*> m_totemParticles;
 	std::vector<FloatingScoreText*> m_floatingScoreTexts;
 	HotSpot* m_hotSpot;
 	Level* m_currentLevel;
@@ -88,6 +92,7 @@ public:
 	sf::RectangleShape m_lightningEffect;
 	float m_lightningAlpha;
 	float m_winBackgroundAlpha;
+	float m_toMenuTimerTextY;
 
 	sf::Sprite m_timerBar;
 	sf::Sprite m_frame;
@@ -103,12 +108,14 @@ public:
 	thor::FrameAnimation m_123GOAnimation;
 	thor::Timer m_321GOTimer;
 	thor::Timer m_toMenuTimer;
+	thor::Timer m_totemParticleTimer;
 	
 	CDBTweener m_winGameTweener;
 	CDBTweener m_totemTweener;
 	CDBTweener m_deathcloudTweener;
 	TotemTweenerListener* m_totemTweenerListener;
 	DeathcloudTweenListener* m_deathcloudTweenListener;
+	TotemParticleListener* m_totemParticleListener;
 
 	thor::UniversalEmitter* m_defenderEmitter;
 	thor::ParticleSystem* m_defenderParticleSystem;

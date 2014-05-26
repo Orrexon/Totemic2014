@@ -50,6 +50,7 @@
     <ClCompile Include="DeathcloudTweenListener.cpp" />
     <ClCompile Include="Deathcloud.cpp" />
     <ClCompile Include="TotemParticle.cpp" />
+    <ClCompile Include="TotemParticleListener.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box2DWorldDraw.h" />
@@ -92,6 +93,7 @@
     <ClInclude Include="DeathcloudTweenListener.h" />
     <ClInclude Include="Deathcloud.h" />
     <ClInclude Include="TotemParticle.h" />
+    <ClInclude Include="TotemParticleListener.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="System.inl" />
