@@ -222,9 +222,10 @@ void MenuState::releaving()
 
 bool MenuState::update(float dt)
 {
-	if (getActionMap()->isActive("Move_Down"))
+	if (getActionMap()->isActive("level_editor"))
 	{
 		m_stateAsset->gameStateManager->changeState(new LevelEditorState());
+		return true;
 	}
 
 	m_defenderAnimator.update(sf::seconds(dt));
@@ -315,4 +316,5 @@ void MenuState::setupActions()
 	m_actionMap->operator[]("up_p4") = thor::Action(sf::Keyboard::Up, thor::Action::Hold);
 	m_actionMap->operator[]("up_p1") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
 	m_actionMap->operator[]("up_p3") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
+	m_actionMap->operator[]("level_editor") = thor::Action(sf::Keyboard::S, thor::Action::Hold);
 }

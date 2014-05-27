@@ -232,6 +232,7 @@ public:
 	thor::StopWatch getRespawnProtectionTimer();
 
 public:
+	std::string m_mouseID;
 	float m_tweeningValue;
 	float m_hotspotScoreSum;
 	float m_tweeningScoreTextX;

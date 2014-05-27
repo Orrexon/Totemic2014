@@ -21,7 +21,7 @@ WindowManager::WindowManager(std::string p_title)
 	m_window->setVerticalSyncEnabled(true);
 	m_window->setKeyRepeatEnabled(false);
 	m_window->setActive(true);
-	m_window->setMouseCursorVisible(false);
+	m_window->setMouseCursorVisible(true);
 }
 
 WindowManager::~WindowManager()

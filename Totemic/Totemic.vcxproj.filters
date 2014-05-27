@@ -36,7 +36,6 @@
     <ClCompile Include="linux_evdev.c" />
     <ClCompile Include="macosx_hidmanager.c" />
     <ClCompile Include="macosx_hidutilities.c" />
-    <ClCompile Include="manymouse.c" />
     <ClCompile Include="windows_wminput.c" />
     <ClCompile Include="x11_xinput2.c" />
     <ClCompile Include="Audiosystem.cpp" />
@@ -51,6 +50,7 @@
     <ClCompile Include="Deathcloud.cpp" />
     <ClCompile Include="TotemParticle.cpp" />
     <ClCompile Include="TotemParticleListener.cpp" />
+    <ClCompile Include="manymouse.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box2DWorldDraw.h" />

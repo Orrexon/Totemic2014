@@ -62,6 +62,7 @@ void PlayState::entering()
 	m_world.SetContactListener(m_contactListener);
 	m_world.SetContactFilter(m_contactFilter);
 
+	m_mouseIndicies.resize(4);
 	initManyMouse();
 	initPlayers();
 
@@ -1448,21 +1449,26 @@ void PlayState::draw()
 
 void PlayState::initManyMouse()
 {
+	std::vector<std::string> acceptableMouseIDS;
+	acceptableMouseIDS.push_back("dcd89f3"); // Blue
+	acceptableMouseIDS.push_back("36aea35"); // Red
+	acceptableMouseIDS.push_back("3340eb3"); // Yellow
+	acceptableMouseIDS.push_back("20873a9"); // Purple
+
 	int numDevices = ManyMouse_Init();
+	int index = 0;
 	for (int i = 0; i < numDevices; i++)
 	{
 		std::string name = ManyMouse_DeviceName(i);
-		std::string driver = ManyMouse_DriverName();
-		std::cout << name << std::endl;
-		if (name.find("Pad") != std::string::npos)
+		std::string buffer = ManyMouse_ID(i);
+		std::string id = buffer.substr(28, 7);
+		std::transform(id.begin(), id.end(), id.begin(), ::tolower);
+
+		auto pos = std::find(acceptableMouseIDS.begin(), acceptableMouseIDS.end(), id);
+		if (pos != acceptableMouseIDS.end())
 		{
-			//m_mouseIndicies.push_back(-1);
-			m_mouseIndicies.push_back(i);
-			continue;
-		}
-		else
-		{
-			m_mouseIndicies.push_back(i);
+			m_mouseIndicies[index] = id;
+			index++;
 		}
 	}
 }
@@ -1513,10 +1519,19 @@ void PlayState::initPlayers()
 	totemParticleTextureRects[2] = sf::IntRect(16, 0, 16, 16);
 	totemParticleTextureRects[3] = sf::IntRect(48, 0, 16, 16);
 
+	std::vector<std::string> acceptableMouseIDS;
+	acceptableMouseIDS.push_back("dcd89f3"); // Blue
+	acceptableMouseIDS.push_back("36aea35"); // Red
+	acceptableMouseIDS.push_back("3340eb3"); // Yellow
+	acceptableMouseIDS.push_back("20873a9"); // Purple
+	
+
+	// Här skapar jag spelarna, i manuell ordning
 	for (std::size_t i = 0; i < 4; i++)
 	{
 		m_players.push_back(new Player());
 		m_players.back()->game = this;
+		m_players.back()->m_mouseID = acceptableMouseIDS[i]; // här ger jag varje player in rätta mouseID
 		m_players.back()->m_deathCloudTextureRect = deathCloudTextureRects[i];
 		m_players.back()->m_totemParticleTextureRect = totemParticleTextureRects[i];
 		m_players.back()->setResourceHolder(m_stateAsset->resourceHolder);
@@ -1577,6 +1592,80 @@ void PlayState::initPlayers()
 			m_players.back()->m_online = false;
 		}
 	}
+	/*
+	for (auto &string : m_mouseIndicies)
+	{
+		std::cout << string << std::endl;
+	}
+
+	std::cout << "Before" << std::endl;
+	for (auto &player : m_players)
+	{
+		if (player->m_online)
+		{
+			std::cout << player->m_mouseID << std::endl;
+		}
+		else
+		{
+			std::cout << "Not online " << player->m_mouseID << std::endl;
+		}
+	}
+
+	// Nu vill jag sortera m_players emot m_mouseIndicies
+	std::vector<Player*> newPlayerVector(4, nullptr);
+	std::vector<int> usedIndices;
+	for (int i = 0; i < 4; i++)
+	{
+		int index = -1;
+		for (int j = 0; j < 4; j++)
+		{
+			if (m_players[i]->m_mouseID == m_mouseIndicies[j])
+			{
+				index = j;
+			}
+		}
+		if (index != -1)
+		{
+			usedIndices.push_back(index);
+			newPlayerVector[index] = m_players[i];
+		}
+		else
+		{
+			// Find an index that has not been used
+			bool found = false;
+			int randomIndex = thor::random(0, 3);
+
+			while (!found)
+			{
+				if (std::find(usedIndices.begin(), usedIndices.end(), randomIndex) != usedIndices.end()) 
+				{
+					randomIndex = thor::random(0, 3);
+				}
+				else 
+				{
+					found = true;
+				}
+			}
+			newPlayerVector[randomIndex] = m_players[i];
+			usedIndices.push_back(randomIndex);
+		}
+	}
+	m_players.clear();
+	m_players = newPlayerVector;
+
+	std::cout << "After:" << std::endl;
+	for (auto &player : m_players)
+	{
+		if (player->m_online)
+		{
+			std::cout << player->m_mouseID << std::endl;
+		}
+		else
+		{
+			std::cout << "Not online " << player->m_mouseID << std::endl;
+		}
+	}
+	*/
 }
 
 void PlayState::setupActions()

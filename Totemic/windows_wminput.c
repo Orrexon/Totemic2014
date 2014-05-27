@@ -7,6 +7,9 @@
  */
 
 #include "manymouse.hpp"
+#include <tchar.h>
+//#include <cstring>
+//#include <string>
 
 #if (defined(_WIN32) || defined(_WINDOWS) || defined(__CYGWIN__))
 
@@ -50,6 +53,7 @@ typedef struct
 {
     HANDLE handle;
     char name[256];
+	char buffer[512];
 } MouseStruct;
 static MouseStruct mice[MAX_MICE];
 
@@ -472,7 +476,7 @@ static void get_device_product_name(char *name, size_t namesize, char *devname)
 
     /* in case we can't stumble upon something better... */
     CopyMemory(name, default_device_name, sizeof (default_device_name));
-
+	
     /* okay, we're got the device instance. Now find the data for it. */
     get_dev_name_by_instance(devname, name, namesize);
 } /* get_device_product_name */
@@ -481,7 +485,7 @@ static void get_device_product_name(char *name, size_t namesize, char *devname)
 static void init_mouse(const RAWINPUTDEVICELIST *dev)
 {
     const char rdp_ident[] = "ROOT\\RDP_MOU\\";
-    MouseStruct *mouse = &mice[available_mice];
+	MouseStruct *mouse = &mice[available_mice];
     char *buf = NULL;
     char *ptr = NULL;
     UINT ct = 0;
@@ -499,6 +503,8 @@ static void init_mouse(const RAWINPUTDEVICELIST *dev)
 
     if (pGetRawInputDeviceInfoA(dev->hDevice, RIDI_DEVICENAME, buf, &ct) < 0)
         return;
+
+	char *copyBuffer = buf;
 
     buf[ct] = '\0';  /* make sure it's null-terminated. */
 
@@ -547,6 +553,12 @@ static void init_mouse(const RAWINPUTDEVICELIST *dev)
                 break;
         } /* for */
 
+		//std::wstring id = tBuffer;
+		//std::string sid(id.begin(), id.end());
+		//std::cout << sid << std::endl;
+		//std::string pid = sid.substr(28, 7);
+		//std::cout << pid << std::endl;
+		
         if (i == sizeof (rdp_ident) - 1)
             return;  /* this is an RDP thing. Skip this device. */
     } /* if */
@@ -554,8 +566,11 @@ static void init_mouse(const RAWINPUTDEVICELIST *dev)
     /* accept this mouse! */
     ZeroMemory(mouse, sizeof (MouseStruct));
     get_device_product_name(mouse->name, sizeof (mouse->name), buf);
-    mouse->handle = dev->hDevice;
-    available_mice++;
+	mouse->handle = dev->hDevice;
+
+	RtlCopyMemory(&mouse->buffer, copyBuffer, sizeof (mouse->buffer));
+    
+	available_mice++;
 } /* init_mouse */
 
 
@@ -608,6 +623,11 @@ static const char *windows_wminput_name(unsigned int index)
 {
     return (index < (unsigned int)available_mice) ? mice[index].name : NULL;
 } /* windows_wminput_name */
+
+static const char *windows_wminput_buffer(unsigned int index)
+{
+	return (index < (unsigned int)available_mice) ? mice[index].buffer : NULL;
+} /* windows_wminput_buffer */
 
 
 /*
@@ -700,6 +720,7 @@ static const ManyMouseDriver ManyMouseDriver_interface =
     windows_wminput_init,
     windows_wminput_quit,
     windows_wminput_name,
+	windows_wminput_buffer,
     windows_wminput_poll
 };
 

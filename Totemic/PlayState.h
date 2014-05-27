@@ -76,7 +76,7 @@ public:
 	ContactListener* m_contactListener;
 	ContactFilter* m_contactFilter;
 	
-	std::vector<unsigned int> m_mouseIndicies;
+	std::vector<std::string> m_mouseIndicies;
 	std::vector<Player*> m_players;
 	Player* m_leadingPlayer;
 	std::vector<b2Body*> m_walls;
