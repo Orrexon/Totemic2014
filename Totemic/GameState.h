@@ -27,8 +27,9 @@ public:
 	thor::ActionMap<std::string>* getActionMap();
 	StateAsset* getAssets();
 	bool isExclusive();
-protected:
+
 	StateAsset* m_stateAsset;
+protected:
 	bool m_exclusive;
 	thor::ActionMap<std::string>* m_actionMap;
 };

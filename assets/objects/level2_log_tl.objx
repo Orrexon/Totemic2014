@@ -1,0 +1,39 @@
+{
+   "circle" : {
+      "position" : {
+         "x" : -144,
+         "y" : -31
+      },
+      "radius" : 20
+   },
+   "image" : {
+      "path" : "../assets/textures/level 2/lvl2_log_tl.png"
+   },
+   "points" : [
+      {
+         "x" : 200,
+         "y" : 346
+      },
+      {
+         "x" : 141,
+         "y" : 386
+      },
+      {
+         "x" : 103,
+         "y" : 298
+      },
+      {
+         "x" : 351,
+         "y" : 184
+      },
+      {
+         "x" : 378,
+         "y" : 255
+      },
+      {
+         "x" : 200,
+         "y" : 346
+      }
+   ],
+   "use_circle" : false
+}

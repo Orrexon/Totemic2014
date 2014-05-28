@@ -62,6 +62,7 @@ void PlayState::entering()
 	m_world.SetContactListener(m_contactListener);
 	m_world.SetContactFilter(m_contactFilter);
 
+	m_mouseIndicies.resize(4);
 	initManyMouse();
 	initPlayers();
 
@@ -204,7 +205,7 @@ void PlayState::entering()
 	m_hotSpot->getSprite()->setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f, m_stateAsset->windowManager->getWindow()->getSize().y / 2.f);
 
 	mToMenuTimerText.setFont(m_stateAsset->resourceHolder->getFont(DEFAULT_FONT));
-	mToMenuTimerText.setCharacterSize(48);
+	mToMenuTimerText.setCharacterSize(44);
 	mToMenuTimerText.setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f + 400, 1080 + 100);
 	m_toMenuTimerTextY = mToMenuTimerText.getPosition().y;
 
@@ -428,6 +429,7 @@ bool PlayState::update(float dt)
 		{
 			m_stateAsset->gameStateManager->m_players.clear();
 			m_stateAsset->gameStateManager->changeState(new MenuState());
+			return true;
 		}
 
 		if (!m_isShowingTimerText && m_toMenuTimer.getRemainingTime().asSeconds() <= SECONDS_WHEN_TEXT_SHOWS)
@@ -439,7 +441,11 @@ bool PlayState::update(float dt)
 			m_winGameTweener.addTween(tween);
 		}
 		mToMenuTimerText.setPosition(mToMenuTimerText.getPosition().x, m_toMenuTimerTextY);
-		mToMenuTimerText.setString(std::to_string(m_toMenuTimer.getRemainingTime().asSeconds()).substr(0, 4));
+
+		if (!m_toMenuTimer.isExpired())
+		{
+			mToMenuTimerText.setString("Entering menu in " + std::to_string(m_toMenuTimer.getRemainingTime().asSeconds()).substr(0, 1));
+		}
 		return true;
 	}
 
@@ -1473,21 +1479,26 @@ void PlayState::draw()
 
 void PlayState::initManyMouse()
 {
+	std::vector<std::string> acceptableMouseIDS;
+	acceptableMouseIDS.push_back("dcd89f3"); // Blue
+	acceptableMouseIDS.push_back("36aea35"); // Red
+	acceptableMouseIDS.push_back("3340eb3"); // Yellow
+	acceptableMouseIDS.push_back("20873a9"); // Purple
+
 	int numDevices = ManyMouse_Init();
+	int index = 0;
 	for (int i = 0; i < numDevices; i++)
 	{
 		std::string name = ManyMouse_DeviceName(i);
-		std::string driver = ManyMouse_DriverName();
-		std::cout << name << std::endl;
-		if (name.find("Pad") != std::string::npos)
+		std::string buffer = ManyMouse_ID(i);
+		std::string id = buffer.substr(28, 7);
+		std::transform(id.begin(), id.end(), id.begin(), ::tolower);
+
+		auto pos = std::find(acceptableMouseIDS.begin(), acceptableMouseIDS.end(), id);
+		if (pos != acceptableMouseIDS.end())
 		{
-			//m_mouseIndicies.push_back(-1);
-			m_mouseIndicies.push_back(i);
-			continue;
-		}
-		else
-		{
-			m_mouseIndicies.push_back(i);
+			m_mouseIndicies[index] = id;
+			index++;
 		}
 	}
 }
@@ -1538,10 +1549,19 @@ void PlayState::initPlayers()
 	totemParticleTextureRects[2] = sf::IntRect(16, 0, 16, 16);
 	totemParticleTextureRects[3] = sf::IntRect(48, 0, 16, 16);
 
+	std::vector<std::string> acceptableMouseIDS;
+	acceptableMouseIDS.push_back("dcd89f3"); // Blue
+	acceptableMouseIDS.push_back("36aea35"); // Red
+	acceptableMouseIDS.push_back("3340eb3"); // Yellow
+	acceptableMouseIDS.push_back("20873a9"); // Purple
+	
+
+	// Här skapar jag spelarna, i manuell ordning
 	for (std::size_t i = 0; i < 4; i++)
 	{
 		m_players.push_back(new Player());
 		m_players.back()->game = this;
+		m_players.back()->m_mouseID = acceptableMouseIDS[i]; // här ger jag varje player in rätta mouseID
 		m_players.back()->m_deathCloudTextureRect = deathCloudTextureRects[i];
 		m_players.back()->m_totemParticleTextureRect = totemParticleTextureRects[i];
 		m_players.back()->setResourceHolder(m_stateAsset->resourceHolder);
@@ -1600,31 +1620,106 @@ void PlayState::initPlayers()
 		if (!m_stateAsset->gameStateManager->m_players[i].m_ready)
 		{
 			m_players.back()->m_online = false;
+			m_players.back()->setPoints(-1);
 		}
 	}
+	/*
+	for (auto &string : m_mouseIndicies)
+	{
+		std::cout << string << std::endl;
+	}
+
+	std::cout << "Before" << std::endl;
+	for (auto &player : m_players)
+	{
+		if (player->m_online)
+		{
+			std::cout << player->m_mouseID << std::endl;
+		}
+		else
+		{
+			std::cout << "Not online " << player->m_mouseID << std::endl;
+		}
+	}
+
+	// Nu vill jag sortera m_players emot m_mouseIndicies
+	std::vector<Player*> newPlayerVector(4, nullptr);
+	std::vector<int> usedIndices;
+	for (int i = 0; i < 4; i++)
+	{
+		int index = -1;
+		for (int j = 0; j < 4; j++)
+		{
+			if (m_players[i]->m_mouseID == m_mouseIndicies[j])
+			{
+				index = j;
+			}
+		}
+		if (index != -1)
+		{
+			usedIndices.push_back(index);
+			newPlayerVector[index] = m_players[i];
+		}
+		else
+		{
+			// Find an index that has not been used
+			bool found = false;
+			int randomIndex = thor::random(0, 3);
+
+			while (!found)
+			{
+				if (std::find(usedIndices.begin(), usedIndices.end(), randomIndex) != usedIndices.end()) 
+				{
+					randomIndex = thor::random(0, 3);
+				}
+				else 
+				{
+					found = true;
+				}
+			}
+			newPlayerVector[randomIndex] = m_players[i];
+			usedIndices.push_back(randomIndex);
+		}
+	}
+	m_players.clear();
+	m_players = newPlayerVector;
+
+	std::cout << "After:" << std::endl;
+	for (auto &player : m_players)
+	{
+		if (player->m_online)
+		{
+			std::cout << player->m_mouseID << std::endl;
+		}
+		else
+		{
+			std::cout << "Not online " << player->m_mouseID << std::endl;
+		}
+	}
+	*/
 }
 
 void PlayState::setupActions()
 {
-	m_actionMap->operator[]("p2_up") = thor::Action(sf::Keyboard::W, thor::Action::Hold);
-	m_actionMap->operator[]("p2_down") = thor::Action(sf::Keyboard::S, thor::Action::Hold);
-	m_actionMap->operator[]("p2_left") = thor::Action(sf::Keyboard::A, thor::Action::Hold);
-	m_actionMap->operator[]("p2_right") = thor::Action(sf::Keyboard::D, thor::Action::Hold);
+	m_actionMap->operator[]("p3_up") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
+	m_actionMap->operator[]("p3_down") = thor::Action(sf::Keyboard::H, thor::Action::Hold);
+	m_actionMap->operator[]("p3_left") = thor::Action(sf::Keyboard::G, thor::Action::Hold);
+	m_actionMap->operator[]("p3_right") = thor::Action(sf::Keyboard::J, thor::Action::Hold);
 
 	m_actionMap->operator[]("p4_up") = thor::Action(sf::Keyboard::Up, thor::Action::Hold);
 	m_actionMap->operator[]("p4_down") = thor::Action(sf::Keyboard::Down, thor::Action::Hold);
 	m_actionMap->operator[]("p4_left") = thor::Action(sf::Keyboard::Left, thor::Action::Hold);
 	m_actionMap->operator[]("p4_right") = thor::Action(sf::Keyboard::Right, thor::Action::Hold);
 
-	m_actionMap->operator[]("p1_up") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
-	m_actionMap->operator[]("p1_down") = thor::Action(sf::Keyboard::H, thor::Action::Hold);
-	m_actionMap->operator[]("p1_left") = thor::Action(sf::Keyboard::G, thor::Action::Hold);
-	m_actionMap->operator[]("p1_right") = thor::Action(sf::Keyboard::J, thor::Action::Hold);
+	m_actionMap->operator[]("p1_up") = thor::Action(sf::Keyboard::W, thor::Action::Hold);
+	m_actionMap->operator[]("p1_down") = thor::Action(sf::Keyboard::S, thor::Action::Hold);
+	m_actionMap->operator[]("p1_left") = thor::Action(sf::Keyboard::A, thor::Action::Hold);
+	m_actionMap->operator[]("p1_right") = thor::Action(sf::Keyboard::D, thor::Action::Hold);
 
-	m_actionMap->operator[]("p3_up") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
-	m_actionMap->operator[]("p3_down") = thor::Action(sf::Keyboard::Numpad5, thor::Action::Hold);
-	m_actionMap->operator[]("p3_left") = thor::Action(sf::Keyboard::Numpad4, thor::Action::Hold);
-	m_actionMap->operator[]("p3_right") = thor::Action(sf::Keyboard::Numpad6, thor::Action::Hold);
+	m_actionMap->operator[]("p2_up") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
+	m_actionMap->operator[]("p2_down") = thor::Action(sf::Keyboard::Numpad5, thor::Action::Hold);
+	m_actionMap->operator[]("p2_left") = thor::Action(sf::Keyboard::Numpad4, thor::Action::Hold);
+	m_actionMap->operator[]("p2_right") = thor::Action(sf::Keyboard::Numpad6, thor::Action::Hold);
 }
 
 void PlayState::loadNewLevel()
@@ -1867,6 +1962,13 @@ void PlayState::setupGameWon()
 	float middle_y = static_cast<float>(m_stateAsset->windowManager->getWindow()->getSize().y / 2);
 	float middle_x = static_cast<float>(m_stateAsset->windowManager->getWindow()->getSize().x / 2);
 	std::vector<Player*> players = m_players;
+	for (auto &player : players)
+	{
+		if (!player->m_online)
+		{
+			player->setPoints(-1);
+		}
+	}
 	std::sort(players.begin(), players.end(), sortWinningPlayers);
 
 	float startY = middle_y - 390.f;

@@ -11,6 +11,7 @@
 #include <Thor\Vectors.hpp>
 #include "Math.h"
 #include "Config.h"
+#include "GameStateAssets.h"
 
 void ContactListener::BeginContact(b2Contact* p_contact)
 {
@@ -119,7 +120,10 @@ void ContactListener::playerContactBegin(UserData* userDataA, UserData* userData
 	}
 	else if (charA->getData()->isType(DEFENDER) && charB->getData()->isType(DEFENDER))
 	{
-
+		if (!charA->getData()->getPlayer()->game->m_stateAsset->audioSystem->getSound("Defender_Hit")->isPlaying())
+		{
+			charA->getData()->getPlayer()->game->m_stateAsset->audioSystem->playSound("Defender_Hit");
+		}
 		// Get direction between the bodies
 		sf::Vector2f direction = Math::direction(
 			charA->getData()->getPlayer()->getDefender()->getSprite()->getPosition(),

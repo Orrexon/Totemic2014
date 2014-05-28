@@ -99,7 +99,7 @@ std::vector<Player*> HotSpot::getActivePlayers(std::vector<Player*> &players)
 	for (auto &player : players)
 	{
 		if (player == nullptr) continue;
-		if (Math::pointInCircle(player->getGatherer()->getSprite()->getPosition(), m_position, m_radius))
+		if (Math::pointInCircle(player->getGatherer()->getSprite()->getPosition(), m_position, m_radius) && !player->isDead() && !player->isDying())
 		{
 			newVector.push_back(player);
 		}

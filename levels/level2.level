@@ -1,0 +1,166 @@
+{
+   "background" : {
+      "path" : "..\\assets\\textures\\level 2\\level_2.png"
+   },
+   "coins" : [
+      {
+         "x" : 449,
+         "y" : 798
+      },
+      {
+         "x" : 1455,
+         "y" : 323
+      },
+      {
+         "x" : 1478,
+         "y" : 817
+      },
+      {
+         "x" : 448,
+         "y" : 319
+      }
+   ],
+   "hotspot" : {
+      "image" : "../assets/textures/hotspot.psd",
+      "position" : {
+         "x" : 960.0,
+         "y" : 540.0
+      },
+      "radius" : 200.0
+   },
+   "image_objects" : null,
+   "objects" : [
+      {
+         "path" : "../assets/objects/level2_hinder_bl.objx",
+         "x" : 256,
+         "y" : 416
+      },
+      {
+         "path" : "../assets/objects/level2_hinder_tr.objx",
+         "x" : 1152,
+         "y" : 96
+      },
+      {
+         "path" : "../assets/objects/level2_log_br.objx",
+         "x" : 1152,
+         "y" : 448
+      },
+      {
+         "path" : "../assets/objects/level2_log_tl.objx",
+         "x" : 256,
+         "y" : 96
+      },
+      {
+         "path" : "../assets/objects/level2_stobe_left.objx",
+         "x" : -64,
+         "y" : 384
+      },
+      {
+         "path" : "../assets/objects/level2_stobe_right.objx",
+         "x" : 1728,
+         "y" : 384
+      },
+      {
+         "path" : "../assets/objects/level2_stone1.objx",
+         "x" : 192,
+         "y" : 704
+      },
+      {
+         "path" : "../assets/objects/level2_stone2.objx",
+         "x" : 192,
+         "y" : 96
+      },
+      {
+         "path" : "../assets/objects/level2_stone1.objx",
+         "x" : 1472,
+         "y" : 736
+      },
+      {
+         "path" : "../assets/objects/level2_stone2.objx",
+         "x" : 1408,
+         "y" : 96
+      },
+      {
+         "path" : "../assets/objects/level2_stonescull_left.objx",
+         "x" : 512,
+         "y" : 416
+      },
+      {
+         "path" : "../assets/objects/level2_stonescull_right.objx",
+         "x" : 1152,
+         "y" : 416
+      },
+      {
+         "path" : "../assets/objects/level2_treescull_bottom.objx",
+         "x" : 832,
+         "y" : -64
+      },
+      {
+         "path" : "../assets/objects/level2_treescull_top.objx",
+         "x" : 832,
+         "y" : 864
+      }
+   ],
+   "players" : [
+      {
+         "defender_position_x" : 192.0,
+         "defender_position_y" : 96.0,
+         "gatherer_position_x" : 64.0,
+         "gatherer_position_y" : 96.0
+      },
+      {
+         "defender_position_x" : 1728.0,
+         "defender_position_y" : 96.0,
+         "gatherer_position_x" : 1856.0,
+         "gatherer_position_y" : 96.0
+      },
+      {
+         "defender_position_x" : 1728.0,
+         "defender_position_y" : 992.0,
+         "gatherer_position_x" : 1856.0,
+         "gatherer_position_y" : 992.0
+      },
+      {
+         "defender_position_x" : 192.0,
+         "defender_position_y" : 992.0,
+         "gatherer_position_x" : 64.0,
+         "gatherer_position_y" : 992.0
+      }
+   ],
+   "powerups" : [
+      {
+         "x" : 443,
+         "y" : 561
+      },
+      {
+         "x" : 1472,
+         "y" : 544
+      }
+   ],
+   "traps" : [
+      {
+         "x" : 1152,
+         "y" : 896
+      },
+      {
+         "x" : 768,
+         "y" : 192
+      },
+      {
+         "x" : 1152,
+         "y" : 192
+      },
+      {
+         "x" : 768,
+         "y" : 896
+      },
+      {
+         "x" : 1600,
+         "y" : 544
+      },
+      {
+         "x" : 320,
+         "y" : 544
+      }
+   ]
+}

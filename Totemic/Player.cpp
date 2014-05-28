@@ -368,7 +368,7 @@ void Player::processEventualDeath(Level* level)
 	}
 	if (m_dead)
 	{
-		std::vector<PlayerSpawn*> playerSpawns = level->getPlayerSpawns();
+		/*std::vector<PlayerSpawn*> playerSpawns = level->getPlayerSpawns();
 		int randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
 		thor::StopWatch bandAid; bandAid.restart();
 		while (playerSpawns[randomSpawnIndex]->occupied == true)
@@ -376,10 +376,11 @@ void Player::processEventualDeath(Level* level)
 			randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
 			if (bandAid.getElapsedTime() > sf::seconds(0.1f))
 			{
+				std::cout << "A bandaid was used :)" << std::endl;
 				break;
 			}
-		}
-		level->setPlayerSpawnOccupied(randomSpawnIndex, true);
+		}*/
+		/*level->setPlayerSpawnOccupied(randomSpawnIndex, true);
 		m_gatherer->getBody()->SetTransform(PhysicsHelper::gameToPhysicsUnits(playerSpawns[randomSpawnIndex]->gat_spawn), m_gatherer->getBody()->GetAngle());
 		m_gatherer->getBody()->SetLinearVelocity(b2Vec2(0.f, 0.f));
 		m_gatherer->getBody()->SetAngularVelocity(0.f);
@@ -387,7 +388,7 @@ void Player::processEventualDeath(Level* level)
 		m_defender->getBody()->SetTransform(PhysicsHelper::gameToPhysicsUnits(playerSpawns[randomSpawnIndex]->def_spawn), m_defender->getBody()->GetAngle());
 		m_defender->getBody()->SetLinearVelocity(b2Vec2(0.f, 0.f));
 		m_defender->getBody()->SetAngularVelocity(0.f);
-
+		*/
 		m_deathTimer->restart(sf::seconds(4.f));
 	}
 	m_postCheckDead = false;
@@ -460,6 +461,29 @@ void Player::onRespawn(thor::CallbackTimer& trigger)
 	m_respawnProtectionTimer.start();
 	m_defender->getBody()->SetActive(true);
 	m_gatherer->getBody()->SetActive(true);
+	
+	Level* level = game->m_currentLevel;
+	std::vector<PlayerSpawn*> playerSpawns = level->getPlayerSpawns();
+	int randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
+	thor::StopWatch bandAid; bandAid.restart();
+	while (playerSpawns[randomSpawnIndex]->occupied == true)
+	{
+		randomSpawnIndex = thor::random(0U, playerSpawns.size() - 1);
+		if (bandAid.getElapsedTime() > sf::seconds(0.5f))
+		{
+			std::cout << "A bandaid was used :)" << std::endl;
+			break;
+		}
+	}
+	level->setPlayerSpawnOccupied(randomSpawnIndex, true);
+	m_gatherer->getBody()->SetTransform(PhysicsHelper::gameToPhysicsUnits(playerSpawns[randomSpawnIndex]->gat_spawn), m_gatherer->getBody()->GetAngle());
+	m_gatherer->getBody()->SetLinearVelocity(b2Vec2(0.f, 0.f));
+	m_gatherer->getBody()->SetAngularVelocity(0.f);
+
+	m_defender->getBody()->SetTransform(PhysicsHelper::gameToPhysicsUnits(playerSpawns[randomSpawnIndex]->def_spawn), m_defender->getBody()->GetAngle());
+	m_defender->getBody()->SetLinearVelocity(b2Vec2(0.f, 0.f));
+	m_defender->getBody()->SetAngularVelocity(0.f);
+
 }
 void Player::setRespawnProtection(bool value)
 {
@@ -506,4 +530,8 @@ thor::StopWatch Player::getRespawnProtectionTimer()
 bool Player::isProtected()
 {
 	return m_respawnProtection;
+}
+void Player::setPoints(int val)
+{
+	m_points = val;
 }

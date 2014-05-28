@@ -76,6 +76,11 @@ const char *ManyMouse_DeviceName(unsigned int index)
     return (driver) ? driver->name(index) : NULL;
 } /* ManyMouse_DeviceName */
 
+char *ManyMouse_ID(unsigned int index)
+{
+	return (driver) ? driver->buffer(index) : NULL;
+} /* ManyMouse_DeviceName */
+
 int ManyMouse_PollEvent(ManyMouseEvent *event)
 {
     return (driver) ? driver->poll(event) : 0;

@@ -228,10 +228,12 @@ public:
 	void setStunned(bool value);
 	void addToBounty(int value);
 	void resetBounty();
+	void setPoints(int val);
 	int getBounty();
 	thor::StopWatch getRespawnProtectionTimer();
 
 public:
+	std::string m_mouseID;
 	float m_tweeningValue;
 	float m_hotspotScoreSum;
 	float m_tweeningScoreTextX;
