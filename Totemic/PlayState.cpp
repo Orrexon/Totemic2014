@@ -49,7 +49,7 @@ void PlayState::entering()
 	m_setupGameWon = false;
 	m_isShowingTimerText = false;
 	m_totemIsBlockingPlayer = false;
-	m_starting = true;
+	m_starting = false;
 	m_321GO_timerExpired = false;
 
 	m_totemTweenerListener = new TotemTweenerListener();
@@ -746,6 +746,22 @@ bool PlayState::update(float dt)
 			}
 		}
 	}
+	
+	int indexJoystick = 0;
+	for (auto &player : m_players)
+	{
+		sf::Vector2f moveSpeed(
+			sf::Joystick::getAxisPosition(indexJoystick, sf::Joystick::Axis::X),
+			sf::Joystick::getAxisPosition(indexJoystick, sf::Joystick::Axis::Y));
+
+		if (std::fabs(moveSpeed.x) < 14) moveSpeed.x = 0.f;
+		if (std::fabs(moveSpeed.y) < 14) moveSpeed.y = 0.f;
+		
+		player->getDefender()->getBody()->ApplyLinearImpulse(b2Vec2(PhysicsHelper::gameToPhysicsUnits(moveSpeed.x), 0.f), player->getDefender()->getBody()->GetWorldCenter(), true);
+		player->getDefender()->getBody()->ApplyLinearImpulse(b2Vec2(0.f, PhysicsHelper::gameToPhysicsUnits(moveSpeed.y)), player->getDefender()->getBody()->GetWorldCenter(), true);
+
+		indexJoystick++;
+	}
 #pragma endregion
 
 #pragma region FloatingTextUpdate
@@ -927,7 +943,26 @@ bool PlayState::update(float dt)
 	b2Vec2 left_impulse(-15.f, 0.f);
 	b2Vec2 right_impulse(15.f, 0.f);
 
-	if (!m_starting && m_players[0] != nullptr && !m_players[0]->getGatherer()->m_shieldStunned && m_players[0]->getGatherer()->getBody()->IsActive() && !m_players[0]->isStunned())
+	int indexJoystickGat = 0;
+	for (auto &player : m_players)
+	{
+		sf::Vector2f moveSpeed(
+			sf::Joystick::getAxisPosition(indexJoystickGat, sf::Joystick::Axis::U),
+			sf::Joystick::getAxisPosition(indexJoystickGat, sf::Joystick::Axis::R));
+
+		if (std::fabs(moveSpeed.x) < 14) moveSpeed.x = 0.f;
+		if (std::fabs(moveSpeed.y) < 14) moveSpeed.y = 0.f;
+
+		player->getGatherer()->getBody()->ApplyLinearImpulse(b2Vec2(PhysicsHelper::gameToPhysicsUnits(moveSpeed.x), 0.f), player->getGatherer()->getBody()->GetWorldCenter(), true);
+		player->getGatherer()->getBody()->ApplyLinearImpulse(b2Vec2(0.f, PhysicsHelper::gameToPhysicsUnits(moveSpeed.y)), player->getGatherer()->getBody()->GetWorldCenter(), true);
+
+		indexJoystickGat++;
+	}
+	
+	if (!m_starting && m_players[0] != nullptr && 
+		!m_players[0]->getGatherer()->m_shieldStunned && 
+		m_players[0]->getGatherer()->getBody()->IsActive() && 
+		!m_players[0]->isStunned())
 	{
 		b2Vec2 body_point = m_players[0]->getGatherer()->getBody()->GetWorldCenter();
 		if (m_actionMap->isActive("p1_up"))
@@ -1701,25 +1736,25 @@ void PlayState::initPlayers()
 
 void PlayState::setupActions()
 {
-	m_actionMap->operator[]("p2_up") = thor::Action(sf::Keyboard::W, thor::Action::Hold);
-	m_actionMap->operator[]("p2_down") = thor::Action(sf::Keyboard::S, thor::Action::Hold);
-	m_actionMap->operator[]("p2_left") = thor::Action(sf::Keyboard::A, thor::Action::Hold);
-	m_actionMap->operator[]("p2_right") = thor::Action(sf::Keyboard::D, thor::Action::Hold);
+	m_actionMap->operator[]("p3_up") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
+	m_actionMap->operator[]("p3_down") = thor::Action(sf::Keyboard::H, thor::Action::Hold);
+	m_actionMap->operator[]("p3_left") = thor::Action(sf::Keyboard::G, thor::Action::Hold);
+	m_actionMap->operator[]("p3_right") = thor::Action(sf::Keyboard::J, thor::Action::Hold);
 
 	m_actionMap->operator[]("p4_up") = thor::Action(sf::Keyboard::Up, thor::Action::Hold);
 	m_actionMap->operator[]("p4_down") = thor::Action(sf::Keyboard::Down, thor::Action::Hold);
 	m_actionMap->operator[]("p4_left") = thor::Action(sf::Keyboard::Left, thor::Action::Hold);
 	m_actionMap->operator[]("p4_right") = thor::Action(sf::Keyboard::Right, thor::Action::Hold);
 
-	m_actionMap->operator[]("p1_up") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
-	m_actionMap->operator[]("p1_down") = thor::Action(sf::Keyboard::H, thor::Action::Hold);
-	m_actionMap->operator[]("p1_left") = thor::Action(sf::Keyboard::G, thor::Action::Hold);
-	m_actionMap->operator[]("p1_right") = thor::Action(sf::Keyboard::J, thor::Action::Hold);
+	m_actionMap->operator[]("p1_up") = thor::Action(sf::Keyboard::W, thor::Action::Hold);
+	m_actionMap->operator[]("p1_down") = thor::Action(sf::Keyboard::S, thor::Action::Hold);
+	m_actionMap->operator[]("p1_left") = thor::Action(sf::Keyboard::A, thor::Action::Hold);
+	m_actionMap->operator[]("p1_right") = thor::Action(sf::Keyboard::D, thor::Action::Hold);
 
-	m_actionMap->operator[]("p3_up") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
-	m_actionMap->operator[]("p3_down") = thor::Action(sf::Keyboard::Numpad5, thor::Action::Hold);
-	m_actionMap->operator[]("p3_left") = thor::Action(sf::Keyboard::Numpad4, thor::Action::Hold);
-	m_actionMap->operator[]("p3_right") = thor::Action(sf::Keyboard::Numpad6, thor::Action::Hold);
+	m_actionMap->operator[]("p2_up") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
+	m_actionMap->operator[]("p2_down") = thor::Action(sf::Keyboard::Numpad5, thor::Action::Hold);
+	m_actionMap->operator[]("p2_left") = thor::Action(sf::Keyboard::Numpad4, thor::Action::Hold);
+	m_actionMap->operator[]("p2_right") = thor::Action(sf::Keyboard::Numpad6, thor::Action::Hold);
 }
 
 void PlayState::loadNewLevel()

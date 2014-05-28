@@ -63,5 +63,6 @@ private:
 
 public: // Public variables
 	std::vector<PlayerMenu> m_players;
+	bool m_useJoysticks;
 };
 
