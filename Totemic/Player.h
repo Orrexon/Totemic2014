@@ -228,6 +228,7 @@ public:
 	void setStunned(bool value);
 	void addToBounty(int value);
 	void resetBounty();
+	void setPoints(int val);
 	int getBounty();
 	thor::StopWatch getRespawnProtectionTimer();
 

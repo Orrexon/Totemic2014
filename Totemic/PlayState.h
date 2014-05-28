@@ -137,9 +137,11 @@ public:
 	thor::ForceAffector* m_scoreIndicatorAffector;
 	thor::StopWatch m_glowUpdate;
 	sf::Texture m_glow1;
+	int scoreTextureIndex0, scoreTextureIndex1, scoreTextureIndex2, scoreTextureIndex3;
 
 	sf::Vector2f m_leaderPoint;
 
 	sf::Text mToMenuTimerText;
 
+	bool updateGlow;
 };

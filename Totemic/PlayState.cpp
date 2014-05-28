@@ -171,14 +171,15 @@ void PlayState::entering()
 	m_scoreIndicatorEmitter = new thor::UniversalEmitter;
 	m_scoreIndicatorSystem = new thor::ParticleSystem;
 	m_scoreIndicatorAffector = new thor::ForceAffector(sf::Vector2f(0.f, 20.f));
-	m_glow1.loadFromFile("../assets/textures/sparcle_particles.png", sf::IntRect(0, 0, 80, 16));
+	m_glow1.loadFromFile("../assets/textures/sparcle_particles_001.png", sf::IntRect(0, 0, 40, 8));
+	scoreTextureIndex0 = m_scoreIndicatorSystem->addTextureRect(sf::IntRect(16, 0, 8, 8));
+	scoreTextureIndex1 = m_scoreIndicatorSystem->addTextureRect(sf::IntRect(32, 0, 8, 8));
+	scoreTextureIndex2 = m_scoreIndicatorSystem->addTextureRect(sf::IntRect(8, 0, 8, 8));
+	scoreTextureIndex3 = m_scoreIndicatorSystem->addTextureRect(sf::IntRect(24, 0, 8, 8));
 	m_scoreIndicatorSystem->setTexture(m_glow1);
-	m_scoreIndicatorSystem->addTextureRect(sf::IntRect(0, 0, 15, 16));
-	m_scoreIndicatorSystem->addTextureRect(sf::IntRect(16, 0, 15, 16));
-	m_scoreIndicatorSystem->addTextureRect(sf::IntRect(64, 0, 15, 16));
 	m_leaderPoint = { 0.f, 0.f };
 	//m_glowUpdate.restart();
-
+	updateGlow = false;
 
 	m_123GO.setTexture(m_stateAsset->resourceHolder->getTexture("321go.png"));
 	m_123GO.setOrigin(418, 186);
@@ -204,7 +205,7 @@ void PlayState::entering()
 	m_hotSpot->getSprite()->setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f, m_stateAsset->windowManager->getWindow()->getSize().y / 2.f);
 
 	mToMenuTimerText.setFont(m_stateAsset->resourceHolder->getFont(DEFAULT_FONT));
-	mToMenuTimerText.setCharacterSize(48);
+	mToMenuTimerText.setCharacterSize(44);
 	mToMenuTimerText.setPosition(m_stateAsset->windowManager->getWindow()->getSize().x / 2.f + 400, 1080 + 100);
 	m_toMenuTimerTextY = mToMenuTimerText.getPosition().y;
 
@@ -305,6 +306,7 @@ void PlayState::releaving()
 
 bool PlayState::update(float dt)
 {
+	updateGlow = false;
 	m_deathcloudTweener.step(dt);
 
 	// Update deathclouds
@@ -348,7 +350,7 @@ bool PlayState::update(float dt)
 	while (itTotemParticle != m_totemParticles.end())
 	{
 		TotemParticle* totemParticle = (*itTotemParticle);
-		
+
 		sf::Color oldColor = totemParticle->m_sprite->getColor();
 		oldColor.a = totemParticle->fadeInAlpha;
 		totemParticle->m_sprite->setColor(oldColor);
@@ -427,6 +429,7 @@ bool PlayState::update(float dt)
 		{
 			m_stateAsset->gameStateManager->m_players.clear();
 			m_stateAsset->gameStateManager->changeState(new MenuState());
+			return true;
 		}
 
 		if (!m_isShowingTimerText && m_toMenuTimer.getRemainingTime().asSeconds() <= SECONDS_WHEN_TEXT_SHOWS)
@@ -438,7 +441,11 @@ bool PlayState::update(float dt)
 			m_winGameTweener.addTween(tween);
 		}
 		mToMenuTimerText.setPosition(mToMenuTimerText.getPosition().x, m_toMenuTimerTextY);
-		mToMenuTimerText.setString(std::to_string(m_toMenuTimer.getRemainingTime().asSeconds()).substr(0, 4));
+
+		if (!m_toMenuTimer.isExpired())
+		{
+			mToMenuTimerText.setString("Entering menu in " + std::to_string(m_toMenuTimer.getRemainingTime().asSeconds()).substr(0, 1));
+		}
 		return true;
 	}
 
@@ -878,6 +885,7 @@ bool PlayState::update(float dt)
 	}
 #pragma endregion
 
+
 	m_defenderParticleSystem->update(sf::seconds(dt));
 	m_gathererDeathSystem->update(sf::seconds(dt));
 
@@ -896,21 +904,21 @@ bool PlayState::update(float dt)
 	}
 	for (int j = 0; j < m_players.size(); j++)
 	{
-
 		if (temp[j].getPosition().x >= m_leaderPoint.x)
 		{
 			m_leaderPoint = temp[j].getPosition();
 		}
 	}
-	m_scoreIndicatorEmitter->setEmissionRate(2.f);
-	m_scoreIndicatorEmitter->setParticleLifetime(thor::Distributions::uniform(sf::seconds(.3f), sf::seconds(.4f)));
+	m_scoreIndicatorEmitter->setEmissionRate(4.f);
+	m_scoreIndicatorEmitter->setParticleLifetime(thor::Distributions::uniform(sf::seconds(.1f), sf::seconds(.4f)));
 	m_scoreIndicatorEmitter->setParticleVelocity(thor::Distributions::deflect(sf::Vector2f(0.f, -100.f), 180.f));
-	m_scoreIndicatorEmitter->setParticlePosition(m_leaderPoint + sf::Vector2f(10.f, 0.f));
-	
+	m_scoreIndicatorEmitter->setParticlePosition(m_leaderPoint + sf::Vector2f(5.f, 0.f));
+
 	m_scoreIndicatorSystem->addAffector(*m_scoreIndicatorAffector, sf::seconds(1.f));
 	m_scoreIndicatorSystem->addEmitter(*m_scoreIndicatorEmitter, sf::milliseconds(1000));
 	m_scoreIndicatorSystem->update(sf::seconds(dt + 0.025));
-	
+
+
 
 #pragma endregion
 #pragma region Gatherer_Movement
@@ -1085,7 +1093,7 @@ bool PlayState::update(float dt)
 		player->getDefender()->m_stunBirdsAnimator->animate(*player->getDefender()->m_stunBirds);
 		player->getGatherer()->getAnimatior()->animate(*player->getGatherer()->getSprite());
 		player->getGatherer()->m_shieldOverlayAnimatior->animate(*player->getGatherer()->m_shieldOverlay);
-		
+
 
 		if (player->isDying())
 		{
@@ -1138,25 +1146,25 @@ bool PlayState::update(float dt)
 				{
 				case LIGHTNING:
 				{
-					for (std::size_t i = 0; i < m_players.size(); i++)
-					{
-						if (m_players[i] == nullptr) continue;
-						if (m_players[i] != player)
-						{
-							m_players[i]->setStunned(true);
-						}
-					}
+								  for (std::size_t i = 0; i < m_players.size(); i++)
+								  {
+									  if (m_players[i] == nullptr) continue;
+									  if (m_players[i] != player)
+									  {
+										  m_players[i]->setStunned(true);
+									  }
+								  }
 
-					m_lightningAlpha = 255.f;
+								  m_lightningAlpha = 255.f;
 
-					CDBTweener::CTween* tween = new CDBTweener::CTween();
-					tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
-					tween->addValue(&m_lightningAlpha, 0.f);
-					m_totemTweener.addTween(tween);
+								  CDBTweener::CTween* tween = new CDBTweener::CTween();
+								  tween->setEquation(&CDBTweener::TWEQ_LINEAR, CDBTweener::TWEA_OUT, 1.f);
+								  tween->addValue(&m_lightningAlpha, 0.f);
+								  m_totemTweener.addTween(tween);
 
-					m_stateAsset->audioSystem->playSound("Lightning");
+								  m_stateAsset->audioSystem->playSound("Lightning");
 
-					break;
+								  break;
 				}
 				case SHIELD:
 					player->setShield(true);
@@ -1263,6 +1271,24 @@ bool PlayState::update(float dt)
 			onEnterTotem(activePlayers.back());
 		}
 		activePlayers.back()->addPoints(POINTS_PER_SECOND * dt, activePlayers.back()->getGatherer()->getSprite()->getPosition(), SCORE_HOTSPOT);
+		//update bar particles
+		updateGlow = true;
+		if (activePlayers.back()->getColor() == sf::Color(99, 152, 211, 94)) // "blue"
+		{
+			m_scoreIndicatorEmitter->setParticleTextureIndex(scoreTextureIndex0);
+		}
+		else if (activePlayers.back()->getColor() == sf::Color(244, 86, 86, 94))//"red
+		{
+			m_scoreIndicatorEmitter->setParticleTextureIndex(scoreTextureIndex1);
+		}
+		else if (activePlayers.back()->getColor() == sf::Color(248, 248, 83, 94))//"yellow"
+		{
+			m_scoreIndicatorEmitter->setParticleTextureIndex(scoreTextureIndex2);
+		}
+		else if (activePlayers.back()->getColor() == sf::Color(209, 105, 225, 94))//purple
+		{
+			m_scoreIndicatorEmitter->setParticleTextureIndex(scoreTextureIndex3);
+		}
 		if (activePlayers.back()->getBounty() > 0)
 		{
 			float score = activePlayers.back()->getBounty() * SCORE_PER_COIN;
@@ -1307,7 +1333,7 @@ bool PlayState::update(float dt)
 
 		if (m_totemHeadAnimator.getPlayingAnimation() != "idle")
 			m_totemHeadAnimator.playAnimation("idle", true);
-		
+
 		updateHoldingTotem(nullptr); // Set all to false
 	}
 
@@ -1331,7 +1357,7 @@ bool PlayState::update(float dt)
 	// Update totemhead animations
 	m_totemHeadAnimator.update(sf::seconds(dt));
 	m_totemHeadAnimator.animate(m_totemHead);
-	
+
 	m_321GO_timerExpired = m_321GOTimer.isExpired();
 
 	if (!m_hasStarted321GOTimer && m_starting && m_321GO_timerExpired && !m_stateAsset->audioSystem->getSound("321GO")->isPlaying())
@@ -1404,7 +1430,11 @@ void PlayState::draw()
 	m_stateAsset->windowManager->getWindow()->draw(m_frame);
 	m_stateAsset->windowManager->getWindow()->draw(*m_defenderParticleSystem);
 	m_stateAsset->windowManager->getWindow()->draw(*m_gathererDeathSystem);
-	m_stateAsset->windowManager->getWindow()->draw(*m_scoreIndicatorSystem);
+	if (updateGlow)
+	{
+		m_stateAsset->windowManager->getWindow()->draw(*m_scoreIndicatorSystem);
+	}
+	
 	for (auto &player : m_players)
 	{
 		if (player->m_online)
@@ -1590,6 +1620,7 @@ void PlayState::initPlayers()
 		if (!m_stateAsset->gameStateManager->m_players[i].m_ready)
 		{
 			m_players.back()->m_online = false;
+			m_players.back()->setPoints(-1);
 		}
 	}
 	/*
@@ -1931,6 +1962,13 @@ void PlayState::setupGameWon()
 	float middle_y = static_cast<float>(m_stateAsset->windowManager->getWindow()->getSize().y / 2);
 	float middle_x = static_cast<float>(m_stateAsset->windowManager->getWindow()->getSize().x / 2);
 	std::vector<Player*> players = m_players;
+	for (auto &player : players)
+	{
+		if (!player->m_online)
+		{
+			player->setPoints(-1);
+		}
+	}
 	std::sort(players.begin(), players.end(), sortWinningPlayers);
 
 	float startY = middle_y - 390.f;
@@ -1976,7 +2014,7 @@ void PlayState::setupGameWon()
 		p->mWinNumberSpriteY = 1080 + 300;
 		p->m_winNumberSprite->setTextureRect(sf::IntRect(width, 0, 252, 372));
 		p->m_winNumberSprite->setPosition(startXDef - 140, p->mWinNumberSpriteY);
-		
+
 		CDBTweener::CTween* tweenNumberSprite = new CDBTweener::CTween();
 		tweenNumberSprite->setEquation(&CDBTweener::TWEQ_ELASTIC, CDBTweener::TWEA_OUT, 1.f);
 		tweenNumberSprite->addValue(&p->mWinNumberSpriteY, startY + 40);
@@ -2010,7 +2048,7 @@ void PlayState::setupGameWon()
 		p->m_tweeningScoreTextX = 1920 + 400;
 		p->m_tweeningScoreTextXTarget = startXGat + 170;
 		p->m_scoreTextTimer.restart(sf::seconds(dist_secs[a]));
-		
+
 		startY += 250;
 		width += 252;
 		a--;
@@ -2107,7 +2145,7 @@ void PlayState::addTotemParticle(sf::IntRect textureRect)
 {
 	// get random position
 	sf::Vector2f random_pos = m_hotSpot->getPosition();
-	
+
 	float q = thor::random(0.f, 1.f) * (b2_pi * 2);
 	float r = std::sqrtf(thor::random(0.f, 1.f));
 	float x = (m_hotSpot->getRadius() * r) * std::cosf(q);
