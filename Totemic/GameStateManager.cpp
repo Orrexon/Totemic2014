@@ -10,6 +10,7 @@ GameStateManager::GameStateManager()
 {
 	m_stateAsset = new StateAsset();
 	m_stateAsset->gameStateManager = this;
+	m_useJoysticks = false;
 }
 
 

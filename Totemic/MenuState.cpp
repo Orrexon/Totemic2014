@@ -25,6 +25,11 @@ MenuState::~MenuState()
 
 void MenuState::entering()
 {
+	if (sf::Joystick::isConnected(0))
+	{
+		m_stateAsset->gameStateManager->m_useJoysticks = true;
+	}
+
 	m_exclusive = false;
 	m_timerActive = false;
 
@@ -312,9 +317,17 @@ void MenuState::draw()
 
 void MenuState::setupActions()
 {
+<<<<<<< HEAD
+	m_actionMap->operator[]("up_p2") = thor::Action(sf::Keyboard::W, thor::Action::Hold) || thor::Action(thor::JoystickButton::JoystickButton(1, 0));
+	m_actionMap->operator[]("up_p4") = thor::Action(sf::Keyboard::Up, thor::Action::Hold) || thor::Action(thor::JoystickButton::JoystickButton(3, 0));
+	m_actionMap->operator[]("up_p1") = thor::Action(sf::Keyboard::Y, thor::Action::Hold) || thor::Action(thor::JoystickButton::JoystickButton(0, 0));
+	m_actionMap->operator[]("up_p3") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold) || thor::Action(thor::JoystickButton::JoystickButton(2, 0));
+	m_actionMap->operator[]("level_editor") = thor::Action(sf::Keyboard::S, thor::Action::Hold);
+=======
 	m_actionMap->operator[]("up_p1") = thor::Action(sf::Keyboard::W, thor::Action::Hold);
 	m_actionMap->operator[]("up_p2") = thor::Action(sf::Keyboard::Numpad8, thor::Action::Hold);
 	m_actionMap->operator[]("up_p3") = thor::Action(sf::Keyboard::Y, thor::Action::Hold);
 	m_actionMap->operator[]("up_p4") = thor::Action(sf::Keyboard::Up, thor::Action::Hold);
 	m_actionMap->operator[]("level_editor") = thor::Action(sf::Keyboard::V, thor::Action::Hold);
+>>>>>>> a3dd516a06c52d8f157abe4d3e1e3f84a4a5be4a
 }
