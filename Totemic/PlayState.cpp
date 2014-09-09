@@ -49,7 +49,7 @@ void PlayState::entering()
 	m_setupGameWon = false;
 	m_isShowingTimerText = false;
 	m_totemIsBlockingPlayer = false;
-	m_starting = false;
+	m_starting = true;
 	m_321GO_timerExpired = false;
 
 	m_totemTweenerListener = new TotemTweenerListener();
@@ -191,7 +191,7 @@ void PlayState::entering()
 	m_123GOAnimation.addFrame(1.f, sf::IntRect(2508, 0, 836, 372));
 
 	m_123GOAnimator.addAnimation("idle", m_123GOAnimation, sf::seconds(4));
-
+	
 	m_321GOTimer.reset(sf::seconds(PLAYSTATE_SECONDS_BEFORE_COUNTDOWN));
 	m_321GOTimer.start();
 
@@ -307,6 +307,10 @@ void PlayState::releaving()
 bool PlayState::update(float dt)
 {
 	updateGlow = false;
+	/*for (auto& player : m_players)
+	{
+		player->getGatherer()->getBody()->SetAngularDamping(10.f);
+	}*/
 	m_deathcloudTweener.step(dt);
 
 	// Update deathclouds
@@ -543,7 +547,7 @@ bool PlayState::update(float dt)
 					{
 						for (std::size_t k = 0; k < m_players.size(); k++)
 						{
-							if (m_players[k] == nullptr) continue;
+							if (m_players[k] == nullptr || m_players[k]->isDead() || m_players[k]->isDying()) continue;
 							if (Math::pointInCircle(m_players[k]->getGatherer()->getSprite()->getPosition(), traps[i]->getExplosionPosition(), traps[i]->getExplosionRadius()))
 							{
 								m_players[k]->setDying(true);
@@ -1458,7 +1462,7 @@ void PlayState::draw()
 	Box2DWorldDraw debugDraw(m_stateAsset->windowManager->getWindow());
 	debugDraw.SetFlags(b2Draw::e_shapeBit);
 	m_world.SetDebugDraw(&debugDraw);
-	//m_world.DrawDebugData();
+	//2m_world.DrawDebugData();
 
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBarBackground);
 	m_stateAsset->windowManager->getWindow()->draw(m_timerBar);
@@ -1875,6 +1879,7 @@ void PlayState::createPlayerBodies()
 		bodyDef.type = b2_dynamicBody;
 		bodyDef.angle = 0;
 		bodyDef.linearDamping = 0.3f;
+		bodyDef.angularDamping = 1.f;
 		b2Body* body = m_world.CreateBody(&bodyDef);
 
 		b2CircleShape shape;
